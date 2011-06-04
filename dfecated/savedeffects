@@ -1,0 +1,4 @@
+tremolo trem 5 square
+stutter stut 10 10
+stutter stut 3
+./catchup catch 3 5 .2
