@@ -3,13 +3,15 @@
 #include <stdio.h>
 
 #include <jack/jack.h>
+#include <curses.h>
 #include "Stutter.h"
+#include "Tremolo.h"
 
 using namespace std;
 
 jack_port_t *input_port;
 jack_port_t *output_port;
-Effect *e;
+Effect *e, *e1, *e2;
 
 jack_nframes_t sr;
 
@@ -42,7 +44,8 @@ int main (int argc, char *argv[]){
     jack_client_t *client;
     const char **ports;
 
-    e = new Stutter(10000, 3);
+    e = e1 = new Stutter(10000, 3);
+    e2 = new Tremolo(10000, WaveMaker::kSine);
 
     if (argc < 2) {
         fprintf (stderr, "usage: controller config_file \n");
@@ -106,7 +109,21 @@ int main (int argc, char *argv[]){
     }
 
     free (ports);
-    sleep (-1);
+
+    initscr(); 
+    keypad(stdscr, TRUE);
+    noecho();
+
+    char c;
+    while(1) {
+        c = getch();
+        if (e == e1)
+            e = e2;
+        else
+            e = e1;
+    }
+
+    free(e);
     jack_client_close (client);
 
     exit (0);
