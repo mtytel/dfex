@@ -4,6 +4,9 @@
 
 #include <jack/jack.h>
 #include <curses.h>
+
+#include "Series.h"
+#include "Parallel.h"
 #include "Stutter.h"
 #include "Tremolo.h"
 
@@ -11,7 +14,7 @@ using namespace std;
 
 jack_port_t *input_port;
 jack_port_t *output_port;
-Effect *e, *e1, *e2;
+Effect *e, *e1, *e2, *ser, *par;
 
 jack_nframes_t sr;
 
@@ -44,8 +47,11 @@ int main (int argc, char *argv[]){
     jack_client_t *client;
     const char **ports;
 
-    e = e1 = new Stutter(10000, 3);
-    e2 = new Tremolo(10000, WaveMaker::kSine);
+    e1 = new Stutter(10000, 10);
+    e2 = new Tremolo(10000, WaveMaker::kSquare);
+
+    e = ser = new Series(e1, e2, 1);
+    par = new Parallel(e1, e2, 1);
 
     if (argc < 2) {
         fprintf (stderr, "usage: controller config_file \n");
@@ -117,13 +123,14 @@ int main (int argc, char *argv[]){
     char c;
     while(1) {
         c = getch();
-        if (e == e1)
-            e = e2;
+        if (e == ser)
+            e = par;
         else
-            e = e1;
+            e = ser;
     }
 
-    free(e);
+    free(e1);
+    free(e2);
     jack_client_close (client);
 
     exit (0);

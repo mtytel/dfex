@@ -4,6 +4,8 @@
 #include <jack/jack.h>
 #include <string.h>
 
+#define MAXBUFFER 1024
+
 typedef jack_default_audio_sample_t sample_t;
 
 class Effect {
