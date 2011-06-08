@@ -6,7 +6,7 @@ LDFLAGS=
 
 OBJS := $(patsubst src/%.cpp,src/%.o,$(wildcard src/*.cpp))
 
-all: dfex
+all: clean dfex
 
 dfex: $(OBJS)
 	@echo 'Building Effects Pedal: $@'

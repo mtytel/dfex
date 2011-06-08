@@ -5,17 +5,27 @@
 
 class Parallel : public Effect {
 public:
-    void process(const sample_t* in, sample_t* out, int num);
 
-    Parallel(Effect *left, Effect *right, float wet = 1) : mLeft(left),
-     mRight(right), Effect::Effect(wet) { }
-
+    Parallel() : mLeft(0), mRight(0), Effect::Effect() { }
     ~Parallel() {}
 
+    const Class *GetClass() const { return &mClass; }
+    static Object *newInstance() { return new Parallel(); }
+
+    void process(const sample_t* in, sample_t* out, int num);
+    void setLeft(Effect *left) { mLeft = left; }
+    void setRight(Effect *right) { mRight = right; }
+
 protected:
+
+    static Class mClass;
+
     Effect *mLeft;
     Effect *mRight;
     sample_t mOutRight[MAXBUFFER];
+
+    std::istream &Read(std::istream &);
+    std::ostream &Write(std::ostream &) const;
 };
 
 #endif

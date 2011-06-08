@@ -6,21 +6,34 @@
 
 class Stutter : public Effect {
 public:
-    void process(const sample_t* in, sample_t* out, int num);
 
-    Stutter(int fpc, int numStutters, float wet = 1) : mFPC(fpc), mOffset(0), 
-     mNumStutters(numStutters), mCurStutter(0), Effect::Effect(wet) {
-        mMemory = (sample_t*)malloc(fpc * sizeof(sample_t));
+    Stutter() : mFPC(1), mOffset(0), mNumStutter(2), mCurStutter(0), 
+     Effect::Effect() {
+        mMemory = (sample_t*)malloc(sizeof(sample_t));
     }
 
     ~Stutter() { free(mMemory); }
 
+    const Class *GetClass() const { return &mClass; }
+    static Object *newInstance() { return new Stutter(); }
+
+    void process(const sample_t* in, sample_t* out, int num);
+    void setNumStutter(int num) { mNumStutter = num; }
+    void setFPC(int fpc);
+    void setOffset(int offset) { mOffset = offset % mFPC; }
+
 protected:
+
+    static Class mClass;
+
     sample_t* mMemory;
     jack_nframes_t mFPC; // Frames per cycle
     long mOffset;
-    int mNumStutters;
+    int mNumStutter;
     int mCurStutter;
+
+    std::istream &Read(std::istream &);
+    std::ostream &Write(std::ostream &) const;
 };
 
 #endif

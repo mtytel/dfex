@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include "WaveMaker.h"
 
-using namespace std;
-
 sample_t* WaveMaker::create_wave(int type, int frames, int neg) {
     sample_t* wave = (sample_t*)malloc(frames * sizeof(sample_t));
     float k = (2 * PI) / frames;
