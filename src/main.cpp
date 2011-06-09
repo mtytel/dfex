@@ -7,20 +7,12 @@
 #include <iostream>
 #include <fstream>
 
-#include "Series.h"
-#include "Parallel.h"
-#include "Stutter.h"
-#include "Tremolo.h"
-
 #define SR 44000
 
 using namespace std;
 
 jack_port_t *input_port;
 jack_port_t *output_port;
-Stutter *e1, *e2, *e3;
-Parallel *par1, *par2;
-Tremolo *trem;
 Effect *e;
 
 jack_nframes_t sr;
@@ -53,32 +45,6 @@ void jack_shutdown (void *arg){
 int main (int argc, char *argv[]){
     jack_client_t *client;
     const char **ports;
-
-    e1 = new Stutter();
-    e1->setFPC(SR / 9);
-    e1->setNumStutter(3);
-
-    e2 = new Stutter();
-    e2->setFPC(SR / 25);
-    e2->setNumStutter(5);
-    e2->setOffset(5422);
-
-    e3 = new Stutter();
-    e3->setFPC(SR / 100);
-    e3->setNumStutter(10);
-    e2->setOffset(39300);
-
-    trem = new Tremolo();
-    trem->setWave(10000, WaveMaker::kSquare);
-
-    par1 = new Parallel();
-    par1->setLeft(e1);
-    par1->setRight(e2);
-
-    e = par2 = new Parallel();
-    par2->setLeft(par1);
-    par2->setRight(e3);
-
 
     if (argc < 2) {
         fprintf(stderr, "usage: controller config_file \n");
