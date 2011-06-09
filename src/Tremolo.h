@@ -14,7 +14,7 @@ public:
 
     ~Tremolo() { free(mCycle); }
 
-    const Class *GetClass() const { return &mClass; }
+    const Class *GetClass() const { return &cls; }
     static Object *newInstance() { return new Tremolo(); }
 
     void process(const sample_t* in, sample_t* out, int num);
@@ -22,10 +22,11 @@ public:
 
 protected:
 
-    static Class mClass;
+    static Class cls;
 
     sample_t* mCycle;
     jack_nframes_t mFPC; // Frames per cycle
+    int mWave;
     long mOffset;
 
     std::istream &Read(std::istream &);

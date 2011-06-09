@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Class BitCrush::mClass(string("BitCrush"), newInstance);
+Class BitCrush::cls(string("BitCrush"), newInstance);
 
 void BitCrush::process(const sample_t* in, sample_t* out, int num) {
     for (int i = 0; i < num; i++) {
@@ -12,10 +12,18 @@ void BitCrush::process(const sample_t* in, sample_t* out, int num) {
     }
 }
 
-istream &BitCrush::Read(istream &in) {
-    return in;
+istream &BitCrush::Read(istream &is) {
+
+    Effect::Read(is);
+    is >> mPossible;
+    
+    return is;
 }
 
-ostream &BitCrush::Write(ostream &out) const {
-    return out;
+ostream &BitCrush::Write(ostream &os) const {
+
+    Effect::Write(os);
+    os << mPossible << endl;
+
+    return os;
 }

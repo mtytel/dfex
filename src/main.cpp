@@ -4,6 +4,8 @@
 
 #include <jack/jack.h>
 #include <curses.h>
+#include <iostream>
+#include <fstream>
 
 #include "Series.h"
 #include "Parallel.h"
@@ -79,15 +81,24 @@ int main (int argc, char *argv[]){
 
 
     if (argc < 2) {
-        fprintf (stderr, "usage: controller config_file \n");
+        fprintf(stderr, "usage: controller config_file \n");
         return 1;
     }
+
+    ifstream config(argv[1]);
+
+    if (!config.is_open()) {
+        fprintf(stderr, "Cannot open configuration file \n");
+        return 1;
+    }
+    
+    e = Effect::readEffect(config);
 
     jack_set_error_function(error);
 
     if ((client = jack_client_open ("controller", 
             (jack_options_t)(JackNullOption | JackNoStartServer), NULL)) == 0) {
-        fprintf (stderr, "jack server not running?\n");
+        fprintf(stderr, "jack server not running?\n");
         return 1;
     }
 
@@ -111,7 +122,7 @@ int main (int argc, char *argv[]){
     }
 
     if (jack_activate (client)) {
-        fprintf (stderr, "cannot activate client");
+        fprintf(stderr, "cannot activate client");
         return 1;
     }
 
@@ -148,10 +159,10 @@ int main (int argc, char *argv[]){
     char c;
     while(1) {
         c = getch();
-        if (e == par2)
+        /*if (e == par2)
             e = trem;
         else
-            e = par2;
+            e = par2;*/
     }
 
     free(e1);

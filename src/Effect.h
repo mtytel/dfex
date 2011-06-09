@@ -13,8 +13,10 @@ typedef jack_default_audio_sample_t sample_t;
 class Effect : public Object {
 public:
 
-    Effect() : mWet(1.0) {}
-    virtual ~Effect() {}
+    Effect() : mWet(1.0) { }
+    virtual ~Effect() { }
+
+    static Effect* readEffect(std::istream &is);
 
     virtual void process(const sample_t* in, sample_t* out, int num){
         memcpy(out, in, num * sizeof(sample_t));
@@ -30,9 +32,11 @@ public:
 protected:
     char mOn;
     float mWet; 
+    static int indent;
 
-    virtual std::istream &Read(std::istream &) = 0;
-    virtual std::ostream &Write(std::ostream &) const = 0;
+    //After the class is determined, then read/write data
+    virtual std::istream &Read(std::istream &);
+    virtual std::ostream &Write(std::ostream &) const;
 };
 
 #endif

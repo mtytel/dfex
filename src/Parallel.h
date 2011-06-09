@@ -3,13 +3,16 @@
 
 #include "Effect.h"
 
+#define CONT "-"
+#define END "end"
+
 class Parallel : public Effect {
 public:
 
     Parallel() : mLeft(0), mRight(0), Effect::Effect() { }
-    ~Parallel() {}
+    ~Parallel() { }
 
-    const Class *GetClass() const { return &mClass; }
+    const Class *GetClass() const { return &cls; }
     static Object *newInstance() { return new Parallel(); }
 
     void process(const sample_t* in, sample_t* out, int num);
@@ -18,7 +21,7 @@ public:
 
 protected:
 
-    static Class mClass;
+    static Class cls;
 
     Effect *mLeft;
     Effect *mRight;

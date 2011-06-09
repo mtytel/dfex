@@ -12,7 +12,7 @@ class WaveMaker {
 public:
     enum {kSine, kSquare, kSaw};
 
-    static sample_t* create_wave(int type, int frames, int neg);
+    static sample_t* create_wave(int, int, int, int offset = 0);
 };
 
 #endif

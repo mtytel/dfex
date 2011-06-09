@@ -14,7 +14,7 @@ public:
 
     ~Stutter() { free(mMemory); }
 
-    const Class *GetClass() const { return &mClass; }
+    const Class *GetClass() const { return &cls; }
     static Object *newInstance() { return new Stutter(); }
 
     void process(const sample_t* in, sample_t* out, int num);
@@ -24,7 +24,7 @@ public:
 
 protected:
 
-    static Class mClass;
+    static Class cls;
 
     sample_t* mMemory;
     jack_nframes_t mFPC; // Frames per cycle

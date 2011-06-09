@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Class Stutter::mClass(string("Stutter"), newInstance);
+Class Stutter::cls(string("Stutter"), newInstance);
 
 void Stutter::process(const sample_t* in, sample_t* out, int num) {
 
@@ -22,14 +22,24 @@ void Stutter::process(const sample_t* in, sample_t* out, int num) {
 }
 
 void Stutter::setFPC(int fpc) {
+
     mFPC = fpc;
     mMemory = (sample_t*)realloc(mMemory, fpc * sizeof(sample_t));
 }
 
-istream &Stutter::Read(istream &in) {
-    return in;
+istream &Stutter::Read(istream &is) {
+
+    Effect::Read(is);
+    is >> mFPC >> mNumStutter;
+    setFPC(mFPC);
+    
+    return is;
 }
 
-ostream &Stutter::Write(ostream &out) const {
-    return out;
+ostream &Stutter::Write(ostream &os) const {
+
+    Effect::Write(os);
+    os << mFPC << ' ' << mNumStutter << endl;
+
+    return os;
 }

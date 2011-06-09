@@ -3,14 +3,17 @@
 
 #include "Effect.h"
 
+#define CONT "-"
+#define END "end"
+
 class Series : public Effect {
 public:
 
     Series() : mFirst(0), mNext(0), Effect::Effect() { }
-    ~Series() {}
+    ~Series() { }
 
     static Object *newInstance() { return new Series(); }
-    const Class *GetClass() const { return &mClass; }
+    const Class *GetClass() const { return &cls; }
 
     void process(const sample_t* in, sample_t* out, int num);
     void setFirst(Effect *first) { mFirst = first; }
@@ -18,7 +21,7 @@ public:
 
 protected:
 
-    static Class mClass;
+    static Class cls;
 
     Effect *mFirst;
     Effect *mNext;

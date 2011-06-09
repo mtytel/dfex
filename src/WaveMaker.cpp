@@ -2,11 +2,12 @@
 #include <stdlib.h>
 #include "WaveMaker.h"
 
-sample_t* WaveMaker::create_wave(int type, int frames, int neg) {
+sample_t* WaveMaker::create_wave(int type, int frames, int neg, int phase) {
+
     sample_t* wave = (sample_t*)malloc(frames * sizeof(sample_t));
     float k = (2 * PI) / frames;
 
-    for (int i = 0; i < frames; i++) {
+    for (int i = phase; i < frames + phase; i++) {
         if (type == kSine)
             wave[i] = sin(i * k);
 

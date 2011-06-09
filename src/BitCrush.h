@@ -8,20 +8,20 @@
 class BitCrush : public Effect {
 public:
 
-    BitCrush() : mPossible(2), Effect::Effect() {}
-    ~BitCrush() {}
+    BitCrush() : mPossible(2), Effect::Effect() { }
+    ~BitCrush() { }
 
-    const Class *GetClass() const { return &mClass; }
+    const Class *GetClass() const { return &cls; }
     static Object *newInstance() { return new BitCrush(); }
 
     void process(const sample_t* in, sample_t* out, int num);
     void setResolution(int bits, int zero = 1) {
         mPossible = pow(2, bits) + zero;
     }
-   
+
 protected:
 
-    static Class mClass;
+    static Class cls;
 
     int mPossible;
 
