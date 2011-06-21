@@ -1,3 +1,7 @@
+/* Class.cpp - reflection implemented for configuration files
+ * Author: Matthew Tytel
+ */
+
 #include "Class.h"
 
 Class *Class::mClsHead;

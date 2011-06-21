@@ -1,3 +1,9 @@
+/* Series.h - Creates a linear effects pipeline, first effect output is the
+ *            nexts effect input
+ *            For a pipeline longer than two, use recursion
+ * Author: Matthew Tytel
+ */
+
 #ifndef SERIES_H
 #define SERIES_H
 

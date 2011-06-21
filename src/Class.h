@@ -1,3 +1,7 @@
+/* Class.h - reflection implemented for configuration files
+ * Author: Matthew Tytel
+ */
+
 #ifndef CLASS_H
 #define CLASS_H
 

@@ -1,4 +1,4 @@
-/* Parallel.h - Splits input into two effects and recombines when both finish
+/* Controller.h - Splits input into two effects and recombines when both finish
  *              For a split into multiple effects, use recursion
  * Author: Matthew Tytel
  */
@@ -11,14 +11,14 @@
 #define CONT "-"
 #define END "end"
 
-class Parallel : public Effect {
+class Controller : public Effect {
 public:
 
-    Parallel() : mLeft(0), mRight(0), Effect::Effect() { }
-    ~Parallel() { }
+    Controller() : mLeft(0), mRight(0), Effect::Effect() { }
+    ~Controller() { }
 
     const Class *GetClass() const { return &cls; }
-    static Object *newInstance() { return new Parallel(); }
+    static Object *newInstance() { return new Controller(); }
 
     void process(const sample_t* in, sample_t* out, int num);
     void setLeft(Effect *left) { mLeft = left; }

@@ -1,15 +1,15 @@
-/* Parallel.h - Splits input into two effects and recombines when both finish
+/* Controller.h - Splits input into two effects and recombines when both finish
  *              For a split into multiple effects, use recursion
  * Author: Matthew Tytel
  */
 
-#include "Parallel.h"
+#include "Controller.h"
 
 using namespace std;
 
-Class Parallel::cls(string("Parallel"), newInstance);
+Class Controller::cls(string("Controller"), newInstance);
 
-void Parallel::process(const sample_t* in, sample_t* out, int num) {
+void Controller::process(const sample_t* in, sample_t* out, int num) {
     mLeft->process(in, out, num);
     mRight->process(in, mOutRight, num);
     
@@ -17,10 +17,10 @@ void Parallel::process(const sample_t* in, sample_t* out, int num) {
         out[i] = (out[i] + mOutRight[i]) * mWet + in[i] * (1 - mWet);
 }
 
-istream &Parallel::Read(istream &is) {
+istream &Controller::Read(istream &is) {
 
     Effect::Read(is);    
-    Parallel *root = 0;
+    Controller *root = 0;
     string cont;
 
     is >> cont;
@@ -30,7 +30,7 @@ istream &Parallel::Read(istream &is) {
     mRight = Effect::readEffect(is);
 
     for (is >> cont; cont == CONT; is >> cont) {
-        root = new Parallel();
+        root = new Controller();
         root->setLeft(mLeft);
         root->setRight(mRight);
 
@@ -41,11 +41,11 @@ istream &Parallel::Read(istream &is) {
     return is;
 }
 
-ostream &Parallel::Write(ostream &os) const {
+ostream &Controller::Write(ostream &os) const {
 
     Effect::Write(os);
-    os << endl << "- " << mLeft;
-    os << "- " << mRight;
+    os << endl << mLeft;
+    os << mRight;
     os << END;
 
     return os;

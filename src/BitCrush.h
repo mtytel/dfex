@@ -1,3 +1,7 @@
+/* BitCrush.h - a bit crush effect
+ * Author: Matthew Tytel
+ */
+
 #ifndef BITCRUSH_H
 #define BITCRUSH_H
 

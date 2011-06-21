@@ -1,27 +1,27 @@
-/* Stutter.h - takes input from one section of time,
- *             then repeats it a given amount of times
- *             ignoring input when repeating or 'stuttering'
+/* StutterUp.h - takes input from one section of time,
+ *             then repeats it a given amount of times increasing volume
+ *             each iteration.
  * Author: Matthew Tytel
  */
 
-#ifndef STUTTER_H
-#define STUTTER_H
+#ifndef STUTTERUP_H
+#define STUTTERUP_H
 
 #include <stdlib.h>
 #include "Effect.h"
 
-class Stutter : public Effect {
+class StutterUp : public Effect {
 public:
 
-    Stutter() : mFPC(1), mOffset(0), mNumStutter(2), mCurStutter(0), 
+    StutterUp() : mFPC(1), mOffset(0), mNumStutter(2), mCurStutter(0), 
      Effect::Effect() {
         mMemory = (sample_t*)malloc(sizeof(sample_t));
     }
 
-    ~Stutter() { free(mMemory); }
+    ~StutterUp() { free(mMemory); }
 
     const Class *GetClass() const { return &cls; }
-    static Object *newInstance() { return new Stutter(); }
+    static Object *newInstance() { return new StutterUp(); }
 
     void process(const sample_t* in, sample_t* out, int num);
     void setNumStutter(int num) { mNumStutter = num; }

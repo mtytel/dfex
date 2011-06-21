@@ -6,6 +6,7 @@
 #include <curses.h>
 #include <iostream>
 #include <fstream>
+#include "Effect.h"
 
 #define SR 44000
 
@@ -124,15 +125,9 @@ int main (int argc, char *argv[]){
 
     char c;
     while(1) {
-        c = getch();
-        /*if (e == par2)
-            e = trem;
-        else
-            e = par2;*/
+        e->input(getch());
     }
 
-    free(e1);
-    free(e2);
     jack_client_close (client);
 
     exit (0);

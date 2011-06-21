@@ -1,3 +1,7 @@
+/* Tremolo.h - tremolo implemented with different wave forms
+ * Author: Matthew Tytel
+ */
+
 #ifndef TREMOLO_H
 #define TREMOLO_H
 

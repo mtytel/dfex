@@ -1,3 +1,6 @@
+/* WaveMaker.h - Creates waveforms for use in effects
+ * Author: Matthew Tytel
+ */
 
 #include <stdlib.h>
 #include "WaveMaker.h"

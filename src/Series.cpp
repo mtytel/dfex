@@ -1,3 +1,9 @@
+/* Series.h - Creates a linear effects pipeline, first effect output is the
+ *            nexts effect input
+ *            For a pipeline longer than two, use recursion
+ * Author: Matthew Tytel
+ */
+
 #include "Series.h"
 
 using namespace std;

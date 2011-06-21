@@ -1,3 +1,7 @@
+/* BitCrush.cpp - a bit crush effect
+ * Author: Matthew Tytel
+ */
+
 #include "BitCrush.h"
 
 using namespace std;

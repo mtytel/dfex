@@ -1,3 +1,7 @@
+/* Effect.h - super class for all effects
+ * Author: Matthew Tytel
+ */
+
 #include "Effect.h"
 
 using namespace std;

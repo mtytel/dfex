@@ -1,3 +1,7 @@
+/* WaveMaker.h - Creates waveforms for use in effects
+ * Author: Matthew Tytel
+ */
+
 #ifndef WAVEMAKER_H
 #define WAVEMAKER_H
 

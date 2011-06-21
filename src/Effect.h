@@ -1,3 +1,7 @@
+/* Effect.h - super class for all effects
+ * Author: Matthew Tytel
+ */
+
 #ifndef EFFECT_H
 #define EFFECT_H
 
@@ -23,6 +27,7 @@ public:
     }
 
     void setWet(float wet) { mWet = wet; }
+    virtual void input(char c) { }
 
     friend std::ostream &operator<<(std::ostream &os, const Effect &b)
      {return b.Write(os);}

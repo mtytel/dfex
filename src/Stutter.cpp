@@ -1,3 +1,9 @@
+/* Stutter.h - takes input from one section of time,
+ *             then repeats it a given amount of times
+ *             ignoring input when repeating or 'stuttering'
+ * Author: Matthew Tytel
+ */
+
 #include "Stutter.h"
 
 using namespace std;
@@ -43,3 +49,4 @@ ostream &Stutter::Write(ostream &os) const {
 
     return os;
 }
+

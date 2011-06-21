@@ -1,3 +1,7 @@
+/* Tremolo.cpp - tremolo implemented with different wave forms
+ * Author: Matthew Tytel
+ */
+
 #include "Tremolo.h"
 
 using namespace std;
