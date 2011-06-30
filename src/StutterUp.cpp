@@ -15,7 +15,9 @@ void StutterUp::process(const sample_t* in, sample_t* out, int num) {
     float mult = 0;
     for (int i = 0; i < num; i++) {
 
-        mMemory[mCurStutter * mFPC + mOffset] = in[i];
+        if (mInputEnabled)
+            mMemory[mCurStutter * mFPC + mOffset] = in[i];
+
         out[i] = 0;
 
         for (int st = 0; st < mNumStutter; st++) {

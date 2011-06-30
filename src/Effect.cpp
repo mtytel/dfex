@@ -18,6 +18,10 @@ Effect* Effect::readEffect(istream &is) {
     return e;
 }
 
+sample_t Effect::linearInterpolate(sample_t left, sample_t right, float perc) {
+    return perc * right + (1 - perc) * left;
+}
+
 istream &Effect::Read(istream &is) {
     
     is >> mWet;
