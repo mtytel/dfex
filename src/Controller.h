@@ -3,8 +3,8 @@
  * Author: Matthew Tytel
  */
 
-#ifndef PARALLEL_H
-#define PARALLEL_H
+#ifndef CONTROLLER_H
+#define CONTROLLER_H
 
 #include "Effect.h"
 

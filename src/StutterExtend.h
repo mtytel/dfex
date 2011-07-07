@@ -4,8 +4,8 @@
  * Author: Matthew Tytel
  */
 
-#ifndef STUTTERUP_H
-#define STUTTERUP_H
+#ifndef STUTTEREXTEND_H
+#define STUTTEREXTEND_H
 
 #include <stdlib.h>
 #include "Effect.h"

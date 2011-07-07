@@ -2,8 +2,8 @@
  * Author: Matthew Tytel
  */
 
-#ifndef SWTICH_H
-#define SWTICH_H
+#ifndef SWITCH_H
+#define SWITCH_H
 
 #include <string>
 #include "Effect.h"
