@@ -1,22 +1,28 @@
-/* WaveMaker.h - Creates waveforms for use in effects
- * Author: Matthew Tytel
- */
-
 #ifndef WAVEMAKER_H
 #define WAVEMAKER_H
 
 #include <math.h>
-#include <jack/jack.h>
+#include <stdlib.h>
+#include "Setup.h"
 
 #define PI 3.141529
 
-typedef jack_default_audio_sample_t sample_t;
+typedef double(*waveFunction)(double);
 
 class WaveMaker {
 public:
-    enum {kSine, kSquare, kSaw};
+    enum {kOn, kOff, kSine, kCos, kSquare, kSawRise, kSawFall};
 
-    static sample_t* create_wave(int, int, int, int offset = 0);
+    static sample_t* createWave(int, int, float, float, int offset = 0);
+
+    static double on(double val) { return 1; }
+    static double off(double val) { return 0; }
+    static double sine(double val);
+    static double cosine(double val);
+    static double square(double val);
+    static double sawRise(double val);
+    static double sawFall(double val);
+    static waveFunction getFunction(int type);
 };
 
 #endif

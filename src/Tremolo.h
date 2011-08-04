@@ -1,40 +1,21 @@
-/* Tremolo.h - tremolo implemented with different wave forms
- * Author: Matthew Tytel
- */
-
 #ifndef TREMOLO_H
 #define TREMOLO_H
 
 #include <stdlib.h>
-#include "WaveMaker.h"
-#include "Effect.h"
+#include "Volume.h"
+#include "Oscillator.h"
 
-class Tremolo : public Effect {
+class Tremolo : public Volume, public Oscillator {
 public:
 
-    Tremolo() : mFPC(1), mOffset(0), Effect::Effect() {
-        mCycle = WaveMaker::create_wave(WaveMaker::kSine, mFPC, 0);
-    }
+    Tremolo() : Oscillator::Oscillator(0.0, 1.0) { }
 
-    ~Tremolo() { free(mCycle); }
-
-    const Class *GetClass() const { return &cls; }
+    const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Tremolo(); }
-
-    void process(const sample_t* in, sample_t* out, int num);
-    void setWave(int fpc, int wave); 
 
 protected:
 
     static Class cls;
-
-    sample_t* mCycle;
-    jack_nframes_t mFPC; // Frames per cycle
-    int mWave;
-    long mOffset;
-
-    std::istream &Read(std::istream &);
-    std::ostream &Write(std::ostream &) const;
 };
 
 #endif

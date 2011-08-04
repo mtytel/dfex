@@ -1,40 +1,27 @@
-/* Series.h - Creates a linear effects pipeline, first effect output is the
- *            nexts effect input
- *            For a pipeline longer than two, use recursion
- * Author: Matthew Tytel
- */
-
 #ifndef SERIES_H
 #define SERIES_H
 
-#include "Effect.h"
+#include "EffectsList.h"
 
-#define CONT "-"
-#define END "end"
-
-class Series : public Effect {
+class Series : public EffectsList {
 public:
 
-    Series() : mFirst(0), mNext(0), Effect::Effect() { }
+    Series() : EffectsList::EffectsList() { }
     ~Series() { }
 
     static Object *newInstance() { return new Series(); }
-    const Class *GetClass() const { return &cls; }
+    const Class *getClass() const { return &cls; }
 
     void process(const sample_t* in, sample_t* out, int num);
-    void setFirst(Effect *first) { mFirst = first; }
-    void setNext(Effect *next) { mNext = next; }
 
 protected:
 
     static Class cls;
 
-    Effect *mFirst;
-    Effect *mNext;
     sample_t mBuffer[MAXBUFFER];
 
-    std::istream &Read(std::istream &);
-    std::ostream &Write(std::ostream &) const;
+    std::istream &read(std::istream &);
+    std::ostream &write(std::ostream &) const;
 };
 
 #endif

@@ -1,7 +1,3 @@
-/* Class.h - reflection implemented for configuration files
- * Author: Matthew Tytel
- */
-
 #ifndef CLASS_H
 #define CLASS_H
 
@@ -12,7 +8,7 @@ class Class;
 
 class Object {
 public:
-    virtual const Class *GetClass() const = 0;
+    virtual const Class *getClass() const = 0;
 };
 
 class Class {

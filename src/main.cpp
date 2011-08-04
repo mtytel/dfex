@@ -125,7 +125,7 @@ int main (int argc, char *argv[]){
 
     char c;
     while(1) {
-        e->input(getch());
+        e->keyInput(getch());
     }
 
     jack_client_close (client);

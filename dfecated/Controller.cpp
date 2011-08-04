@@ -17,9 +17,9 @@ void Controller::process(const sample_t* in, sample_t* out, int num) {
         out[i] = (out[i] + mOutRight[i]) * mWet + in[i] * (1 - mWet);
 }
 
-istream &Controller::Read(istream &is) {
+istream &Controller::read(istream &is) {
 
-    Effect::Read(is);    
+    Effect::read(is);    
     Controller *root = 0;
     string cont;
 
@@ -41,9 +41,9 @@ istream &Controller::Read(istream &is) {
     return is;
 }
 
-ostream &Controller::Write(ostream &os) const {
+ostream &Controller::write(ostream &os) const {
 
-    Effect::Write(os);
+    Effect::write(os);
     os << endl << mLeft;
     os << mRight;
     os << END;

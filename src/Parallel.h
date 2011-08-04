@@ -1,39 +1,27 @@
-/* Parallel.h - Splits input into two effects and recombines when both finish
- *              For a split into multiple effects, use recursion
- * Author: Matthew Tytel
- */
-
 #ifndef PARALLEL_H
 #define PARALLEL_H
 
-#include "Effect.h"
+#include "EffectsList.h"
 
-#define CONT "-"
-#define END "end"
-
-class Parallel : public Effect {
+class Parallel : public EffectsList {
 public:
 
-    Parallel() : mLeft(0), mRight(0), Effect::Effect() { }
+    Parallel() : EffectsList::EffectsList() { }
     ~Parallel() { }
 
-    const Class *GetClass() const { return &cls; }
+    const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Parallel(); }
 
     void process(const sample_t* in, sample_t* out, int num);
-    void setLeft(Effect *left) { mLeft = left; }
-    void setRight(Effect *right) { mRight = right; }
 
 protected:
 
     static Class cls;
 
-    Effect *mLeft;
-    Effect *mRight;
-    sample_t mOutRight[MAXBUFFER];
+    sample_t mBuffer[MAXBUFFER];
 
-    std::istream &Read(std::istream &);
-    std::ostream &Write(std::ostream &) const;
+    std::istream &read(std::istream &);
+    std::ostream &write(std::ostream &) const;
 };
 
 #endif

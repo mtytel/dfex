@@ -1,4 +1,3 @@
-Debug StutterExtend.
+Rewrite all effect i/o using a configuration tool (yaml?)
 
-Refactor all Stutter effects. I think I can combine these into one effect
-and come up with a better name for them.
+Write FFT section.

@@ -1,7 +1,3 @@
-/* Switch.h - Splits input into two effects and recombines when both finish
- * Author: Matthew Tytel
- */
-
 #ifndef SWITCH_H
 #define SWITCH_H
 
@@ -22,12 +18,12 @@ public:
     }
     ~Switch() { }
 
-    const Class *GetClass() const { return &cls; }
+    const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Switch(); }
 
     void process(const sample_t* in, sample_t* out, int num);
     void setEffect(int id, Effect *e) { mEffects[id] = e; }
-    void input(char c);
+    void keyInput(char c);
 
 protected:
 
@@ -36,8 +32,8 @@ protected:
     Effect *mEffects[NUMEFFECTS];
     int mCur;
 
-    std::istream &Read(std::istream &);
-    std::ostream &Write(std::ostream &) const;
+    std::istream &read(std::istream &);
+    std::ostream &write(std::ostream &) const;
 };
 
 #endif

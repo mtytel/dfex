@@ -1,49 +1,44 @@
-/* Effect.h - super class for all effects
- * Author: Matthew Tytel
- */
-
 #ifndef EFFECT_H
 #define EFFECT_H
 
-#include <jack/jack.h>
 #include <string.h>
 #include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "Setup.h"
 #include "Class.h"
-
-#define MAXBUFFER 1024
-
-typedef jack_default_audio_sample_t sample_t;
+#include "Process.h"
 
 class Effect : public Object {
 public:
 
-    Effect() : mWet(1.0), mInputEnabled(1) { }
+    Effect() : mWet(1.0) { }
     virtual ~Effect() { }
 
+    const Class *getClass() const { return &cls; }
+    static Object *newInstance() { return new Effect(); }
     static Effect* readEffect(std::istream &is);
-    static sample_t linearInterpolate(sample_t, sample_t, float);
 
-    virtual void process(const sample_t* in, sample_t* out, int num){
-        memcpy(out, in, num * sizeof(sample_t));
-    }
+    virtual void process(const sample_t* in, sample_t* out, int num);
+    virtual void postProcess(const sample_t* in, sample_t* out, int num);
 
     void setWet(float wet) { mWet = wet; }
-    virtual void input(char c) { }
-    void setInputEnabled(char en) { mInputEnabled = en; } 
+    virtual void keyInput(char c) { }
 
     friend std::ostream &operator<<(std::ostream &os, const Effect &b)
-     {return b.Write(os);}
+     {return b.write(os);}
     friend std::istream &operator>>(std::istream &is, Effect &b)
-     {return b.Read(is);}
+     {return b.read(is);}
 
 protected:
-    float mWet; 
-    static int indent;
-    char mInputEnabled;
 
-    //After the class is determined, then read/write data
-    virtual std::istream &Read(std::istream &);
-    virtual std::ostream &Write(std::ostream &) const;
+    static Class cls;
+
+    float mWet; 
+
+    virtual std::istream &read(std::istream &);
+    virtual std::ostream &write(std::ostream &) const;
 };
 
 #endif

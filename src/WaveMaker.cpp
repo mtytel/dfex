@@ -1,28 +1,55 @@
-/* WaveMaker.h - Creates waveforms for use in effects
- * Author: Matthew Tytel
- */
-
-#include <stdlib.h>
 #include "WaveMaker.h"
+#include <stdio.h>
 
-sample_t* WaveMaker::create_wave(int type, int frames, int neg, int phase) {
+using namespace std;
+
+double WaveMaker::sine(double val) {
+    return sin(val) / 2 + 0.5;
+}
+
+double WaveMaker::cosine(double val) {
+    return cos(val) / 2 + 0.5;
+}
+
+double WaveMaker::square(double val) {
+    return sin(val) >= 0 ? 1 : 0;
+}
+
+double WaveMaker::sawRise(double val) {
+    val /= (2 * PI);
+    return val - floor(val);
+}
+
+double WaveMaker::sawFall(double val) {
+    return 1 - sawRise(val);
+}
+
+waveFunction WaveMaker::getFunction(int type) {
+    if (type == kOn)
+        return on;
+    if (type == kOff)
+        return off;
+    if (type == kSine)
+        return sine;
+    if (type == kCos)
+        return cosine;
+    if (type == kSquare)
+        return square;
+    if (type == kSawRise)
+        return sawRise;
+    return sawFall;
+}
+
+sample_t* WaveMaker::createWave(int type, int frames, float min, 
+ float max, int offset) {
 
     sample_t* wave = (sample_t*)malloc(frames * sizeof(sample_t));
-    float k = (2 * PI) / frames;
+    waveFunction waveFunc = getFunction(type);
+    float k = 2 * PI / frames;
+    float a = max - min;
 
-    for (int i = phase; i < frames + phase; i++) {
-        if (type == kSine)
-            wave[i] = sin(i * k);
-
-        else if (type == kSquare)
-            wave[i] = sin(i * k) >= 0 ? 1 : -1;
-
-        else
-            wave[i] = 2 * frames / i - 1;
-
-        if (!neg)
-            wave[i] = wave[i] / 2 + .5;
-    }
+    for (int i = offset; i < frames + offset; i++)
+        wave[i] = a * waveFunc(k * i) + min;
 
     return wave;
 }

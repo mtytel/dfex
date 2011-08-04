@@ -1,8 +1,3 @@
-/* Switch.h - Switch controlled by keyboard
- *              For a split into multiple effects, use recursion
- * Author: Matthew Tytel
- */
-
 #include "Switch.h"
 
 using namespace std;
@@ -19,9 +14,11 @@ void Switch::process(const sample_t* in, sample_t* out, int num) {
     
     for (int i = 0; i < num; i++)
         out[i] = out[i] * mWet + in[i] * (1 - mWet);
+
+    postProcess(in, out, num);
 }
 
-void Switch::input(char c) {
+void Switch::keyInput(char c) {
 
     for (int i = 0; i < NUMEFFECTS; i++) {
         if (mappings[i].find(c) != -1)
@@ -29,9 +26,9 @@ void Switch::input(char c) {
     }
 }
 
-istream &Switch::Read(istream &is) {
+istream &Switch::read(istream &is) {
 
-    Effect::Read(is); 
+    Effect::read(is); 
     string cont;
     int i = 0;
 
@@ -41,9 +38,9 @@ istream &Switch::Read(istream &is) {
     return is;
 }
 
-ostream &Switch::Write(ostream &os) const {
+ostream &Switch::write(ostream &os) const {
 
-    Effect::Write(os);
+    Effect::write(os);
     os << endl;
     //FIXME
     for (int i = 0; i < NUMEFFECTS; i++)

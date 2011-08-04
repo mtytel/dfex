@@ -17,7 +17,7 @@ public:
     Controller() : mLeft(0), mRight(0), Effect::Effect() { }
     ~Controller() { }
 
-    const Class *GetClass() const { return &cls; }
+    const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Controller(); }
 
     void process(const sample_t* in, sample_t* out, int num);
@@ -32,8 +32,8 @@ protected:
     Effect *mRight;
     sample_t mOutRight[MAXBUFFER];
 
-    std::istream &Read(std::istream &);
-    std::ostream &Write(std::ostream &) const;
+    std::istream &read(std::istream &);
+    std::ostream &write(std::ostream &) const;
 };
 
 #endif
