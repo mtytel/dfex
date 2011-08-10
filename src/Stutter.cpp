@@ -12,12 +12,12 @@ void Stutter::process(const sample_t* in, sample_t* out, int num) {
     for (int i = 0; i < num; i++) {
         fpc = round(getVal());
 
-        sample_t val = (mCycleOffset < fpc && mSingle) ? 0 : in[i];
+        sample_t val = (mCycleOffset >= fpc && mSingle) ? 0 : in[i];
         mMemory[mOffset] = mMemory[mOffset + MEMORYSIZE] = val;
-        
+
         if (++mOffset >= MEMORYSIZE)
             mOffset = 0;
-        if (++mCycleOffset >= fpc)
+        if (++mCycleOffset >= fpc * mEffects.size())
             mCycleOffset = 0;
     }
 

@@ -22,5 +22,5 @@ debug/src/%.o: src/%.cpp
 	@echo 'Done'
 
 clean:
-	-$(RM) debug/src/*.o $(EXEC)
+	-$(RM) debug/src/*.o
 

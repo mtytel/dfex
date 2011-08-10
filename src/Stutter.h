@@ -6,7 +6,7 @@
 #include "Modifier.h"
 #include "EffectsList.h"
 
-#define MEMORYSIZE 480000
+#define MEMORYSIZE 4800000
 
 class Stutter : virtual public EffectsList, virtual public Modifier {
 public:
