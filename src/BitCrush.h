@@ -5,11 +5,10 @@
 #include <math.h>
 #include "Modifier.h"
 
-class BitCrush : virtual public Modifier {
+class BitCrush : public Modifier {
 public:
 
-    BitCrush() : Modifier::Modifier(2) { }
-    ~BitCrush() { }
+    BitCrush(float bits = 2) : Modifier::Modifier(bits) { }
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new BitCrush(); }

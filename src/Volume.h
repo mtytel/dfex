@@ -4,12 +4,10 @@
 #include <stdlib.h>
 #include "Modifier.h"
 
-class Volume : virtual public Modifier {
+class Volume : public Modifier {
 public:
 
-    Volume() : Modifier::Modifier(1) { }
-
-    ~Volume() { }
+    Volume(float vol = 1.0) : Modifier::Modifier(vol) { }
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Volume(); }

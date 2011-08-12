@@ -5,11 +5,11 @@
 #include <math.h>
 #include "Modifier.h"
 
-class Aliaser : virtual public Modifier {
+class Aliaser : public Modifier {
 public:
 
-    Aliaser() : mOffset(0), mCurSamp(0), Modifier::Modifier(2) { }
-    ~Aliaser() { }
+    Aliaser(float ratio = 2.0) : mOffset(0), mCurSamp(0), 
+     Modifier::Modifier(ratio) { }
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Aliaser(); }

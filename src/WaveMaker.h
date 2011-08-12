@@ -11,9 +11,13 @@ typedef double(*waveFunction)(double);
 
 class WaveMaker {
 public:
+
     enum {kOn, kOff, kSine, kCos, kSquare, kSawRise, kSawFall};
 
     static sample_t* createWave(int, int, float, float, int offset = 0);
+    static waveFunction getFunction(int type);
+
+protected:
 
     static double on(double val) { return 1; }
     static double off(double val) { return 0; }
@@ -22,7 +26,6 @@ public:
     static double square(double val);
     static double sawRise(double val);
     static double sawFall(double val);
-    static waveFunction getFunction(int type);
 };
 
 #endif

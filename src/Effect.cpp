@@ -27,8 +27,10 @@ void Effect::process(const sample_t* in, sample_t* out, int num) {
 }
 
 void Effect::postProcess(const sample_t* in, sample_t* out, int num) {
+    float wet = mWet.getVal();
+
     for (int i = 0; i < num; i++)
-        out[i] = out[i] * mWet + in[i] * (1 - mWet);
+        out[i] = out[i] * wet + in[i] * (1 - wet);
 }
 
 istream &Effect::read(istream &is) {
@@ -39,6 +41,6 @@ istream &Effect::read(istream &is) {
 
 ostream &Effect::write(ostream &os) const {
     
-    os << getClass()->GetName() << ' ' << mWet << ' '; 
+    os << mWet;
     return os;
 }

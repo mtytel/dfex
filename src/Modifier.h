@@ -2,24 +2,22 @@
 #define MODIFIER_H
 
 #include <stdlib.h>
-#include "WaveMaker.h"
 #include "Effect.h"
 
-class Modifier : virtual public Effect {
+class Modifier : public Effect {
 public:
 
-    Modifier(float val = 0) : mVal(val), Effect::Effect() { }
+    Modifier(float val = 0) { mPar = new Parameter(val); }
 
-    ~Modifier() { }
+    double getVal() { return mPar->getVal(); }
+    void setVal(double val) { mPar->setVal(val); }
 
-    virtual float getVal() { return mVal; }
-    virtual float setVal(float val) { mVal = val; }
-
+    void setParameter(Parameter *par) { free(mPar); mPar = par; }
+    void setParameter(double val) { free(mPar); mPar = new Parameter(val); }
+       
 protected:
 
-    static Class cls;
-
-    float mVal;
+    Parameter *mPar;
 
     virtual std::istream &read(std::istream &);
     virtual std::ostream &write(std::ostream &) const;

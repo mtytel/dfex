@@ -28,6 +28,7 @@ void EffectsList::readWaveModifier(istream &is, vector<Series*> *fx) {
 
 istream &EffectsList::read(istream &is) {
 
+    Effect::read(is);
     Effect *e;
     string tok;
     
@@ -38,7 +39,7 @@ istream &EffectsList::read(istream &is) {
         ser->addEffect(readEffect(is));
         fx->push_back(ser);
     }
-    
+
     if (fx->size() == 0) {
         int numEffects = atoi(tok.c_str());
         if (numEffects == 0) {

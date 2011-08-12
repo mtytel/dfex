@@ -3,17 +3,18 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "Modifier.h"
+#include "Parameter.h"
 #include "EffectsList.h"
 
 #define MEMORYSIZE 4800000
 
-class Stutter : virtual public EffectsList, virtual public Modifier {
+class Stutter : virtual public EffectsList {
 public:
 
-    Stutter() : mSingle(0), mOffset(0), mCycleOffset(0), Modifier::Modifier() {
+    Stutter(float fpc = 5000) : mSingle(0), mOffset(0), mCycleOffset(0) {
         memset(mMemory, 0, MEMORYSIZE * 2 * sizeof(sample_t));
         memset(mBuffer, 0, MAXBUFFER * sizeof(sample_t));
+        mFPC = new Parameter(fpc);
     }
 
     const Class *getClass() const { return &cls; }
@@ -30,6 +31,7 @@ protected:
     sample_t mBuffer[MAXBUFFER];
     int mSingle;
     long mOffset, mCycleOffset;
+    Parameter *mFPC;
 
     virtual std::istream &read(std::istream &);
     virtual std::ostream &write(std::ostream &) const;

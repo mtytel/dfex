@@ -16,18 +16,3 @@ void Parallel::process(const sample_t* in, sample_t* out, int num) {
     postProcess(in, out, num);
 }
 
-istream &Parallel::read(istream &is) {
-
-    Effect::read(is);
-    EffectsList::read(is);
-
-    return is;
-}
-
-ostream &Parallel::write(ostream &os) const {
-
-    Effect::write(os);
-    EffectsList::write(os);
-
-    return os;
-}

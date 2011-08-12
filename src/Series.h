@@ -19,9 +19,6 @@ protected:
     static Class cls;
 
     sample_t mBuffer[MAXBUFFER];
-
-    std::istream &read(std::istream &);
-    std::ostream &write(std::ostream &) const;
 };
 
 #endif

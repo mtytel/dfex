@@ -17,19 +17,3 @@ void Series::process(const sample_t* in, sample_t* out, int num) {
     postProcess(in, out, num);
 }
 
-
-istream &Series::read(istream &is) {
-
-    Effect::read(is);    
-    EffectsList::read(is);
-
-    return is;
-}
-
-ostream &Series::write(ostream &os) const {
-
-    Effect::write(os);
-    EffectsList::write(os);
-
-    return os;
-}

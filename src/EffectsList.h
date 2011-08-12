@@ -6,14 +6,14 @@
 
 #include "Modifier.h"
 #include "WaveMaker.h"
-#
+
 #define CONT "-"
 #define MOD "+"
 #define END "end"
 
 class Series;
 
-class EffectsList : virtual public Effect {
+class EffectsList : public Effect {
 public:
 
     const Class *getClass() const { return &cls; }

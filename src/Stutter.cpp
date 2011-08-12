@@ -10,7 +10,7 @@ void Stutter::process(const sample_t* in, sample_t* out, int num) {
     int curOffset = mOffset, fpc;
     
     for (int i = 0; i < num; i++) {
-        fpc = round(getVal());
+        fpc = round(mFPC->getVal());
 
         sample_t val = (mCycleOffset >= fpc && mSingle) ? 0 : in[i];
         mMemory[mOffset] = mMemory[mOffset + MEMORYSIZE] = val;
@@ -32,16 +32,16 @@ void Stutter::process(const sample_t* in, sample_t* out, int num) {
 
 istream &Stutter::read(istream &is) {
 
-    Modifier::read(is);
-    is >> mSingle;
     EffectsList::read(is);
+    free(mFPC);
+    mFPC = Parameter::readParameter(is);
+    is >> mSingle;
+
     return is;
 }
 
 ostream &Stutter::write(ostream &os) const {
 
-    Modifier::write(os);
-    os << mSingle << " ";
     EffectsList::write(os);
     return os;
 }

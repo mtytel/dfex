@@ -31,9 +31,6 @@ protected:
 
     Effect *mEffects[NUMEFFECTS];
     int mCur;
-
-    std::istream &read(std::istream &);
-    std::ostream &write(std::ostream &) const;
 };
 
 #endif
