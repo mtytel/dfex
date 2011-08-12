@@ -1,2 +1,3 @@
+- cleanup main file
 - fix all config i/o
 - write FFT code for pitch shift and others

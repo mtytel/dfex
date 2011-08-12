@@ -25,8 +25,6 @@
 #include <fstream>
 #include "Effect.h"
 
-#define SR 44000
-
 using namespace std;
 
 jack_port_t *input_port;
@@ -136,7 +134,6 @@ int main (int argc, char *argv[]){
 
     free (ports);
 
-    //initscr(); 
     keypad(stdscr, TRUE);
     noecho();
 
