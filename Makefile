@@ -10,7 +10,7 @@ OBJS := $(patsubst src/%.cpp,debug/src/%.o,$(wildcard src/*.cpp))
 all: dfex
 
 dfex: $(OBJS)
-	@echo 'Building Effects Pedal: $@'
+	@echo 'Building Executable: $@'
 	@echo $(CC) $(CFLAGS) $(OBJS) 
 	@$(CC) $(CFLAGS) $(OBJS)
 	@echo 'Complete'
@@ -19,7 +19,6 @@ dfex: $(OBJS)
 debug/src/%.o: src/%.cpp
 	@echo 'Building $@'
 	$(COMPILE) $< -o $@
-	@echo 'Done'
 
 clean:
 	-$(RM) debug/src/*.o
