@@ -18,6 +18,7 @@
 #ifndef PROCESS_H
 #define PROCESS_H
 
+#include <math.h>
 #include <jack/jack.h>
 #include <string.h>
 #include <stdlib.h>
@@ -29,6 +30,7 @@ public:
 
     static sample_t linearInterpolate(sample_t, sample_t, float);
     static void combine(const sample_t* one, sample_t* two, int num);
+    static void fit(const sample_t* from, sample_t* to, int numFrom, int numTo);
 };
 
 #endif

@@ -27,9 +27,10 @@ float Modulator::getVal() {
     float val = mWaveFunc(1.0 * mOffset++ / fpc);
 
     if (mOffset >= fpc)
-        mOffset = 0;
+        mOffset -= fpc;
 
-    return val * mMax->getVal() + (1 - val) * mMin->getVal();
+    mVal = val * mMax->getVal() + (1 - val) * mMin->getVal();
+    return mVal;
 }
 
 void Modulator::setWave(int wave) {

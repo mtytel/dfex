@@ -24,7 +24,7 @@ Class Stutter::cls(string("Stutter"), newInstance);
 void Stutter::process(const sample_t* in, sample_t* out, int num) {
 
     memset(out, 0, num * sizeof(sample_t));
-    int curOffset = mOffset, fpc;
+    int curOffset = mOffset, fpcPrev = round(mFPC->getLastVal()), fpc;
     
     for (int i = 0; i < num; i++) {
         fpc = round(mFPC->getVal());
@@ -39,8 +39,12 @@ void Stutter::process(const sample_t* in, sample_t* out, int num) {
     }
 
     for (int st = 0; st < mEffects.size(); st++) {
-        int stIndex = (MEMORYSIZE + curOffset - st * fpc) % MEMORYSIZE;
-        mEffects[st]->process(&mMemory[stIndex], mBuffer, num);
+        int stIndex = (MEMORYSIZE + curOffset - st * fpcPrev) % MEMORYSIZE;
+
+        sample_t fit[num];
+        Process::fit(&mMemory[stIndex], fit, num + st * (fpcPrev - fpc), num);
+
+        mEffects[st]->process(fit, mBuffer, num);
         Process::combine(mBuffer, out, num);
     }
 

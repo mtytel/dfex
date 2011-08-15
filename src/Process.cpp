@@ -28,3 +28,14 @@ sample_t Process::linearInterpolate(sample_t left, sample_t right, float perc) {
     return perc * right + (1 - perc) * left;
 }
 
+void Process::fit(const sample_t* from, sample_t* to, int numFrom, int numTo) {
+    float fromInc = 1.0 * numFrom / numTo;
+    float fromIndex = 0;
+
+    for (int i = 0; i < numTo; i++) {
+        to[i] = linearInterpolate(from[(int)(fromIndex)], 
+         from[(int)ceil(fromIndex)], fromIndex - floor(fromIndex));
+        fromIndex += fromInc;
+    }
+}
+

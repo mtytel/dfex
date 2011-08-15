@@ -33,6 +33,7 @@ public:
     static Parameter *readParameter(std::istream &is);
 
     virtual float getVal() { return mVal; }
+    float getLastVal() { return mVal; }
     virtual float setVal(float val) { mVal = val; }
 
     friend std::ostream &operator<<(std::ostream &os, const Parameter &b)
