@@ -19,20 +19,18 @@
 #define SWITCH_H
 
 #include <string>
-#include "Effect.h"
+#include "EffectsList.h"
 
 #define CONT "-"
 #define END "end"
 #define NUMEFFECTS 3
 
-class Switch : public Effect {
+class Switch : public EffectsList {
 public:
 
     static const std::string mappings[NUMEFFECTS];
 
-    Switch() : mCur(0), Effect::Effect() { 
-        memset(mEffects, 0, NUMEFFECTS * sizeof(Effect*));
-    }
+    Switch() : mCur(0), EffectsList::EffectsList() { }
     ~Switch() { }
 
     const Class *getClass() const { return &cls; }
@@ -45,8 +43,6 @@ public:
 protected:
 
     static Class cls;
-
-    Effect *mEffects[NUMEFFECTS];
     int mCur;
 };
 
