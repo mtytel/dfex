@@ -134,8 +134,11 @@ int main (int argc, char *argv[]){
 
     free (ports);
 
-    keypad(stdscr, TRUE);
+    initscr();
+    clear;
     noecho();
+    //keypad(stdscr, TRUE);
+    cbreak();
 
     char c;
     while(1) {
