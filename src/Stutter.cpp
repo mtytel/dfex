@@ -15,13 +15,13 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Delay.h"
+#include "Stutter.h"
 
 using namespace std;
 
-Class Delay::cls(string("Delay"), newInstance);
+Class Stutter::cls(string("Stutter"), newInstance);
 
-void Delay::process(const sample_t* in, sample_t* out, int num) {
+void Stutter::process(const sample_t* in, sample_t* out, int num) {
 
     memset(out, 0, num * sizeof(sample_t));
     int curOffset = mOffset, fpcPrev = round(mFPC->getLastVal()), fpc;
@@ -51,7 +51,7 @@ void Delay::process(const sample_t* in, sample_t* out, int num) {
     postProcess(in, out, num);
 }
 
-istream &Delay::read(istream &is) {
+istream &Stutter::read(istream &is) {
 
     EffectsList::read(is);
     free(mFPC);
@@ -61,7 +61,7 @@ istream &Delay::read(istream &is) {
     return is;
 }
 
-ostream &Delay::write(ostream &os) const {
+ostream &Stutter::write(ostream &os) const {
 
     EffectsList::write(os);
     return os;
