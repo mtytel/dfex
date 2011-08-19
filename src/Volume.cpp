@@ -17,15 +17,37 @@
 
 #include "Volume.h"
 
+using namespace rapidxml;
 using namespace std;
 
 Class Volume::cls(string("Volume"), newInstance);
 
 void Volume::process(const sample_t* in, sample_t* out, int num) {
 
-    for (int i = 0; i < num; i++)
-        out[i] = in[i] * getVal();
+    float vol[num];
+    mVol->process(in, vol, num);
 
+    for (int i = 0; i < num; i++)
+        out[i] = in[i] * vol[i];
+
+    cout << vol[0];
     postProcess(in, out, num);
 }
 
+xml_node<> &Volume::read(xml_node<> &inode) {
+    
+    Effect::read(inode);
+    xml_node<> *vol_node = inode.first_node("volume");
+    if (vol_node) 
+        mVol = Processor::readProcessor(*vol_node->first_node());
+    else
+        mVol = new Constant(1.0);
+
+    return inode;
+}
+
+xml_node<> &Volume::write(xml_node<> &onode) const {
+    
+    //onode << *mWet;
+    return onode;
+}

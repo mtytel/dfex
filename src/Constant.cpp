@@ -15,33 +15,25 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef VOLUME_H
-#define VOLUME_H
+#include "Constant.h"
 
-#include <stdlib.h>
+using namespace std;
 
-#include "Effect.h"
+Class Constant::cls(string("Constant"), newInstance);
 
-class Volume : public Effect {
-public:
+void Constant::process(const sample_t* in, sample_t* out, int num) {
+    for (int i = 0; i < num; i++)
+        out[i] = mVal;
+}
 
-    Volume(float vol = 1.0) : Effect::Effect() { 
-        mVol = new Constant(vol);
-    }
+istream &Constant::read(istream &is) {
+    
+    is >> mVal;
+    return is;
+}
 
-    const Class *getClass() const { return &cls; }
-    static Object *newInstance() { return new Volume(); }
-
-    void process(const sample_t* in, sample_t* out, int num);
-
-protected:
-
-    static Class cls;
-
-    Processor *mVol;
-
-    virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
-    virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
-};
-
-#endif
+ostream &Constant::write(ostream &os) const {
+    
+    os << mVal;
+    return os;
+}

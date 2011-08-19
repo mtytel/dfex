@@ -17,47 +17,35 @@
 
 #include "Effect.h"
 
-using namespace std;
+using namespace rapidxml;
 
-Class Effect::cls(string("Effect"), newInstance);
-
-Effect* Effect::readEffect(istream &is) {
-    
-    string clsName;
-    is >> clsName;
-    
-    const Class *eCls = Class::ForName(clsName);
-    if (!eCls) {
-        cerr << "Error reading configuration: No Effect '" 
-         << clsName << "'" << endl;
-        exit(1);
-    }
-    Effect *e = dynamic_cast<Effect *>(eCls->NewInstance());
-    is >> *e;
-
-    return e;
-}
+Class Effect::cls(std::string("Effect"), newInstance);
 
 void Effect::process(const sample_t* in, sample_t* out, int num) {
-    memcpy(out, in, num * sizeof(sample_t));
+    Processor::process(in, out, num);
     postProcess(in, out, num);
 }
 
 void Effect::postProcess(const sample_t* in, sample_t* out, int num) {
-    float wet = mWet.getVal();
+    sample_t wet[num];
+    mWet->process(in, wet, num);
 
     for (int i = 0; i < num; i++)
-        out[i] = out[i] * wet + in[i] * (1 - wet);
+        out[i] = out[i] * wet[i] + in[i] * (1 - wet[i]);
 }
 
-istream &Effect::read(istream &is) {
+xml_node<> &Effect::read(xml_node<> &inode) {
     
-    is >> mWet;
-    return is;
+    xml_node<> *wet_node = inode.first_node("wet");
+    if (wet_node)
+        mWet = Processor::readProcessor(*wet_node->first_node());
+    else
+        mWet = new Constant(1.0);
+    return inode;
 }
 
-ostream &Effect::write(ostream &os) const {
+xml_node<> &Effect::write(xml_node<> &onode) const {
     
-    os << mWet;
-    return os;
+    //onode << *mWet;
+    return onode;
 }

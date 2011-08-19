@@ -23,10 +23,10 @@ Class Series::cls(string("Series"), newInstance);
 
 void Series::process(const sample_t* in, sample_t* out, int num) {
     const sample_t* from = in;
-    sample_t* to = mEffects.size() % 2 ? out : mBuffer;
+    sample_t* to = mProcessors.size() % 2 ? out : mBuffer;
 
-    for (int i = 0; i < mEffects.size(); i++) {
-        mEffects[i]->process(from, to, num);
+    for (int i = 0; i < mProcessors.size(); i++) {
+        mProcessors[i]->process(from, to, num);
         from = to;
         to = from == out ? mBuffer : out;
     }

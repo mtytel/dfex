@@ -15,13 +15,13 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Modulator.h"
+#include "Oscillator.h"
 
-using namespace std;
+using namespace rapidxml;
 
-Class Modulator::cls(string("Modulator"), newInstance);
+Class Oscillator::cls(std::string("Oscillator"), newInstance);
 
-float Modulator::getVal() {
+/*float Oscillator::getVal() {
 
     float fpc = mFPC->getVal();
     float val = mWaveFunc(1.0 * mOffset++ / fpc);
@@ -31,15 +31,15 @@ float Modulator::getVal() {
 
     mVal = val * mMax->getVal() + (1 - val) * mMin->getVal();
     return mVal;
-}
+}*/
 
-void Modulator::setWave(int wave) {
+void Oscillator::setWave(int wave) {
 
     mWaveFunc = WaveMaker::getFunction(wave);
 }
 
-istream &Modulator::read(istream &is) {
-
+xml_node<> &Oscillator::read(xml_node<> &inode) {
+/*
     int wave;
     is >> wave;
     setWave(wave);
@@ -47,16 +47,16 @@ istream &Modulator::read(istream &is) {
     free(mFPC);
     free(mMin);
     free(mMax);
-    mFPC = readParameter(is);
-    mMin = readParameter(is);
-    mMax = readParameter(is);
-
-    return is;
+    mFPC = readProcessor(is);
+    mMin = readProcessor(is);
+    mMax = readProcessor(is);
+*/
+    return inode;
 }
 
-ostream &Modulator::write(ostream &os) const {
+xml_node<> &Oscillator::write(xml_node<> &onode) const {
 
-    os << mFPC << " " << mMin << " " << mMax << endl;
-    return os;
+    //os << mFPC << " " << mMin << " " << mMax << endl;
+    return onode;
 }
 

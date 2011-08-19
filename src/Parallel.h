@@ -18,12 +18,12 @@
 #ifndef PARALLEL_H
 #define PARALLEL_H
 
-#include "EffectsList.h"
+#include "ProcessorList.h"
 
-class Parallel : public EffectsList {
+class Parallel : public ProcessorList {
 public:
 
-    Parallel() : EffectsList::EffectsList() { }
+    Parallel() : ProcessorList::ProcessorList() { }
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Parallel(); }

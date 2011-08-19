@@ -23,12 +23,14 @@ Class Aliaser::cls(string("Aliaser"), newInstance);
 
 void Aliaser::process(const sample_t* in, sample_t* out, int num) {
 
-    for (int i = 0; i < num; i++) {
-        float ratio = getVal();
+    float ratio[num];
+    mRatio->process(in, ratio, num);
 
-        if (++mOffset > ratio) { 
+    for (int i = 0; i < num; i++) {
+
+        if (++mOffset > ratio[i]) { 
             mCurSamp = in[i];
-            mOffset -= ratio;
+            mOffset -= ratio[i];
         }
         out[i] = mCurSamp;
     }

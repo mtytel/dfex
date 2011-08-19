@@ -15,40 +15,31 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef EFFECTSLIST_H
-#define EFFECTSLIST_H
+#ifndef CONSTANT_H
+#define CONSTANT_H
 
-#include <vector>
-#include <stdlib.h>
+#include "Processor.h"
 
-#include "Modifier.h"
-#include "WaveMaker.h"
-
-#define CONT "-"
-#define MOD "+"
-#define END "end"
-
-class Series;
-
-class EffectsList : public Effect {
+class Constant : public Processor {
 public:
 
-    const Class *getClass() const { return &cls; }
-    static Object *newInstance() { return new EffectsList(); }
+    Constant(float val = 0) : mVal(val), Processor::Processor() { }
+    virtual ~Constant() { }
 
-    void addEffect(Effect* e);
-    void createList(Class *cls, int waveType, int num);
-    void readWaveModifier(std::istream &is, std::vector<Series*> *fx); 
-    int size() { return mEffects.size(); }
+    const Class *getClass() const { return &cls; }
+    static Object *newInstance() { return new Constant(); }
+    static Constant *readConstant(std::istream &is);
+
+    virtual void process(const sample_t* in, sample_t* out, int num);
 
 protected:
 
     static Class cls;
 
-    std::vector<Effect*> mEffects;
-
-    std::istream &read(std::istream &);
-    std::ostream &write(std::ostream &) const;
+    float mVal;
+    
+    virtual std::istream &read(std::istream &);
+    virtual std::ostream &write(std::ostream &) const;
 };
 
 #endif

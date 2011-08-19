@@ -20,12 +20,15 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "Modifier.h"
 
-class BitCrush : public Modifier {
+#include "Effect.h"
+
+class BitCrush : public Effect {
 public:
 
-    BitCrush(float bits = 2) : Modifier::Modifier(bits) { }
+    BitCrush(float bits = 2) : Effect::Effect() {
+        mBits = new Constant(bits);
+    }
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new BitCrush(); }
@@ -35,6 +38,8 @@ public:
 protected:
 
     static Class cls;
+
+    Processor *mBits;
 };
 
 #endif

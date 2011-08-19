@@ -19,25 +19,25 @@
 #define SWITCH_H
 
 #include <string>
-#include "EffectsList.h"
+#include "ProcessorList.h"
 
 #define CONT "-"
 #define END "end"
 #define NUMEFFECTS 3
 
-class Switch : public EffectsList {
+class Switch : public ProcessorList {
 public:
 
     static const std::string mappings[NUMEFFECTS];
 
-    Switch() : mCur(0), EffectsList::EffectsList() { }
+    Switch() : mCur(0), ProcessorList::ProcessorList() { }
     ~Switch() { }
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Switch(); }
 
     void process(const sample_t* in, sample_t* out, int num);
-    void setEffect(int id, Effect *e) { mEffects[id] = e; }
+    void setEffect(int id, Effect *e) { mProcessors[id] = e; }
     void keyInput(char c);
 
 protected:

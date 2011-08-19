@@ -15,58 +15,45 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "EffectsList.h"
+#include "ProcessorList.h"
 #include "Series.h"
 
+using namespace rapidxml;
 using namespace std;
 
-Class EffectsList::cls(string("EffectsList"), newInstance);
+Class ProcessorList::cls(std::string("ProcessorList"), newInstance);
 
-void EffectsList::addEffect(Effect* e) {
-    mEffects.push_back(e);
+void ProcessorList::addProcessor(Processor* p) {
+    mProcessors.push_back(p);
 }
 
-void EffectsList::readWaveModifier(istream &is, vector<Series*> *fx) {
+void ProcessorList::readWaveModifier(xml_node<> &inode, vector<Series*> *fx) {
 
-    string name;
-    int waveType;
-    float min, max;
-    is >> name >> waveType >> min >> max;
-
-    const Class *cls = Class::ForName(name);
-    sample_t* wave = WaveMaker::createWave(waveType, fx->size(), min, max);
-
-    for (int i = 0; i < fx->size(); i++) {
-        Modifier *m = dynamic_cast<Modifier*>(cls->NewInstance());
-        m->setVal(wave[i]);
-        (*fx)[i]->addEffect(m);
-    }
 }
 
-istream &EffectsList::read(istream &is) {
-
+xml_node<> &ProcessorList::read(xml_node<> &inode) {
+/*
     Effect::read(is);
-    Effect *e;
     string tok;
     
     vector<Series*> *fx = new vector<Series*>();
 
     for (is >> tok; tok == CONT; is >> tok) {
         Series *ser = new Series();
-        ser->addEffect(readEffect(is));
+        ser->addProcessor(readProcessor(is));
         fx->push_back(ser);
     }
 
     if (fx->size() == 0) {
-        int numEffects = atoi(tok.c_str());
-        if (numEffects == 0) {
+        int numProcessor = atoi(tok.c_str());
+        if (numProcessor == 0) {
             cerr << "Expected effects list or number, found: " << tok << endl;
             exit(1);
         }
 
-        for (int i = 0; i < numEffects; i++) {
+        for (int i = 0; i < numProcessor; i++) {
             Series *ser = new Series();
-            ser->addEffect(new Effect());
+            ser->addProcessor(new Processor());
             fx->push_back(ser);
         }
     }
@@ -75,19 +62,20 @@ istream &EffectsList::read(istream &is) {
         readWaveModifier(is, fx);
 
     for (int i = 0; i < fx->size(); i++) 
-        addEffect((*fx)[i]);
-
-    return is;
+        addProcessor((*fx)[i]);
+*/
+    return inode;
 }
 
-ostream &EffectsList::write(ostream &os) const {
-
+xml_node<> &ProcessorList::write(xml_node<> &onode) const {
+/*
     Effect::write(os);
 
-    for (int i = 0; i < mEffects.size(); i++)
-        os << CONT << " " << mEffects[i] << endl;
+    for (int i = 0; i < mProcessors.size(); i++)
+        os << CONT << " " << mProcessors[i] << endl;
     
     os << END << endl;
-    return os;
+    */
+    return onode;
 }
 

@@ -15,30 +15,37 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef VOLUME_H
-#define VOLUME_H
+#ifndef PROCESSORLIST_H
+#define PROCESSORLIST_H
 
+#include <vector>
 #include <stdlib.h>
 
+#include "WaveMaker.h"
 #include "Effect.h"
 
-class Volume : public Effect {
+#define CONT "-"
+#define MOD "+"
+#define END "end"
+
+class Series;
+
+class ProcessorList : public Effect {
 public:
 
-    Volume(float vol = 1.0) : Effect::Effect() { 
-        mVol = new Constant(vol);
-    }
-
     const Class *getClass() const { return &cls; }
-    static Object *newInstance() { return new Volume(); }
+    static Object *newInstance() { return new ProcessorList(); }
 
-    void process(const sample_t* in, sample_t* out, int num);
+    void addProcessor(Processor* p);
+    void createList(Class *cls, int waveType, int num);
+    void readWaveModifier(rapidxml::xml_node<> &, std::vector<Series*> *); 
+    int size() { return mProcessors.size(); }
 
 protected:
 
     static Class cls;
 
-    Processor *mVol;
+    std::vector<Processor*> mProcessors;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;

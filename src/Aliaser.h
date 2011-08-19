@@ -20,13 +20,14 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "Modifier.h"
+#include "Effect.h"
 
-class Aliaser : public Modifier {
+class Aliaser : public Effect {
 public:
 
-    Aliaser(float ratio = 2.0) : mOffset(0), mCurSamp(0), 
-     Modifier::Modifier(ratio) { }
+    Aliaser(float ratio = 2.0) : mOffset(0), mCurSamp(0), Effect::Effect() { 
+        mRatio = new Constant(ratio);
+    }
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Aliaser(); }
@@ -37,6 +38,7 @@ protected:
 
     static Class cls;
 
+    Processor *mRatio;
     float mOffset;
     sample_t mCurSamp;
 };

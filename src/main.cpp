@@ -23,13 +23,15 @@
 #include <curses.h>
 #include <iostream>
 #include <fstream>
-#include "Effect.h"
+
+#include "Processor.h"
+#include "rapidxml.hpp"
 
 using namespace std;
 
 jack_port_t *input_port;
 jack_port_t *output_port;
-Effect *e;
+Processor *p;
 
 jack_nframes_t sr;
 
@@ -39,7 +41,7 @@ int process (jack_nframes_t nframes, void *arg){
     in = (sample_t*)jack_port_get_buffer(input_port, nframes);
     out = (sample_t*)jack_port_get_buffer(output_port, nframes);
 
-    e->process(in, out, nframes);
+    p->process(in, out, nframes);
 
     return 0;      
 }
@@ -58,6 +60,24 @@ void jack_shutdown (void *arg){
     exit (1);
 }
 
+void read_xml(const char* fileName, rapidxml::xml_document<> *doc) {
+    ifstream config(fileName);
+
+    if (!config.is_open()) {
+        fprintf(stderr, "Cannot open configuration file \n");
+        exit(1);
+    }
+
+    config.seekg(0, ios::end);
+    int size = (int)config.tellg();
+    config.seekg(0, ios::beg);
+    char *data = (char*)malloc(size);
+    config.read(data, size);
+    data[size] = 0;
+
+    doc->parse<0>(data);
+}
+
 int main (int argc, char *argv[]){
     jack_client_t *client;
     const char **ports;
@@ -67,14 +87,9 @@ int main (int argc, char *argv[]){
         return 1;
     }
 
-    ifstream config(argv[1]);
-
-    if (!config.is_open()) {
-        fprintf(stderr, "Cannot open configuration file \n");
-        return 1;
-    }
-    
-    e = Effect::readEffect(config);
+    rapidxml::xml_document<> doc;
+    read_xml(argv[1], &doc);
+    p = Processor::readProcessor(*doc.first_node());
 
     jack_set_error_function(error);
 
@@ -137,12 +152,11 @@ int main (int argc, char *argv[]){
     initscr();
     clear;
     noecho();
-    //keypad(stdscr, TRUE);
     cbreak();
 
     char c;
     while(1) {
-        e->keyInput(getch());
+        p->keyInput(getch());
     }
 
     jack_client_close (client);
