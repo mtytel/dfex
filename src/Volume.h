@@ -22,6 +22,8 @@
 
 #include "Effect.h"
 
+#define DEFAULTVOLUME 1.0
+
 class Volume : public Effect {
 public:
 

@@ -27,55 +27,56 @@ void ProcessorList::addProcessor(Processor* p) {
     mProcessors.push_back(p);
 }
 
-void ProcessorList::readWaveModifier(xml_node<> &inode, vector<Series*> *fx) {
-
+void ProcessorList::readModifier(xml_node<> &inode) {
+    
 }
 
-xml_node<> &ProcessorList::read(xml_node<> &inode) {
-/*
-    Effect::read(is);
-    string tok;
+void ProcessorList::initList(xml_node<> &inode) {
     
-    vector<Series*> *fx = new vector<Series*>();
-
-    for (is >> tok; tok == CONT; is >> tok) {
-        Series *ser = new Series();
-        ser->addProcessor(readProcessor(is));
-        fx->push_back(ser);
+    xml_node<> *pList = inode.first_node("processors");
+    if (pList) {
+        for (xml_node<> *proc = pList->first_node(); proc;
+         proc = proc->next_sibling()) {
+            Series *s = new Series();
+            Processor *p = Processor::readProcessor(*proc);
+            s->addProcessor(p);
+            addProcessor(s);
+        }
     }
+    else {
+        xml_node<> *sizeNode = inode.first_node("size");
 
-    if (fx->size() == 0) {
-        int numProcessor = atoi(tok.c_str());
-        if (numProcessor == 0) {
-            cerr << "Expected effects list or number, found: " << tok << endl;
+        if (!sizeNode) {
+            cerr << "Expected size or processors tag in ProcessorsList" << endl;
             exit(1);
         }
 
-        for (int i = 0; i < numProcessor; i++) {
-            Series *ser = new Series();
-            ser->addProcessor(new Processor());
-            fx->push_back(ser);
+        int size = atof(sizeNode->value());
+        for (int i = 0; i < size; i++) {
+            Series *s = new Series();
+            s->addProcessor(new Processor());
+            addProcessor(s);
         }
     }
+}
 
-    for (is >> tok; tok == MOD; is >> tok)
-        readWaveModifier(is, fx);
+xml_node<> &ProcessorList::read(xml_node<> &inode) {
 
-    for (int i = 0; i < fx->size(); i++) 
-        addProcessor((*fx)[i]);
-*/
+    Effect::read(inode);
+    initList(inode);
+
+    xml_node<> *mList = inode.first_node("modifiers");
+    if (mList) {
+        for (xml_node<> *modNode = mList->first_node(); modNode; 
+         modNode = modNode->next_sibling())
+            readModifier(*modNode);
+    }
+
     return inode;
 }
 
 xml_node<> &ProcessorList::write(xml_node<> &onode) const {
-/*
-    Effect::write(os);
 
-    for (int i = 0; i < mProcessors.size(); i++)
-        os << CONT << " " << mProcessors[i] << endl;
-    
-    os << END << endl;
-    */
     return onode;
 }
 

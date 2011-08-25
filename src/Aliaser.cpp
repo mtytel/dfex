@@ -17,6 +17,7 @@
 
 #include "Aliaser.h"
 
+using namespace rapidxml;
 using namespace std;
 
 Class Aliaser::cls(string("Aliaser"), newInstance);
@@ -38,3 +39,17 @@ void Aliaser::process(const sample_t* in, sample_t* out, int num) {
     postProcess(in, out, num);
 }
 
+xml_node<> &Aliaser::read(xml_node<> &inode) {
+    
+    Effect::read(inode);
+
+    free(mRatio);
+    mRatio = Processor::tryReadProcessor(inode, "ratio", DEFAULTRATIO);
+
+    return inode;
+}
+
+xml_node<> &Aliaser::write(xml_node<> &onode) const {
+    
+    return onode;
+}

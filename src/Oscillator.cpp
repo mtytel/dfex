@@ -21,17 +21,20 @@ using namespace rapidxml;
 
 Class Oscillator::cls(std::string("Oscillator"), newInstance);
 
-/*float Oscillator::getVal() {
+void Oscillator::process(const sample_t* in, sample_t* out, int num) {
+    sample_t fpc[num], max[num], min[num];
+    mFPC->process(in, fpc, num);
+    mMax->process(in, max, num);
+    mMin->process(in, min, num);
 
-    float fpc = mFPC->getVal();
-    float val = mWaveFunc(1.0 * mOffset++ / fpc);
+    for (int i = 0; i < num; i ++) {
+        float val = mWaveFunc(1.0 * mOffset++ / fpc[i]);
+        out[i] = val * max[i] + (1 - val) * min[i];
 
-    if (mOffset >= fpc)
-        mOffset -= fpc;
-
-    mVal = val * mMax->getVal() + (1 - val) * mMin->getVal();
-    return mVal;
-}*/
+        if (mOffset >= fpc[i])
+            mOffset -= fpc[i];
+    }
+}
 
 void Oscillator::setWave(int wave) {
 
@@ -39,24 +42,22 @@ void Oscillator::setWave(int wave) {
 }
 
 xml_node<> &Oscillator::read(xml_node<> &inode) {
-/*
     int wave;
-    is >> wave;
+    wave = atof(inode.first_node("wave")->value());
     setWave(wave);
 
     free(mFPC);
+    mFPC = tryReadProcessor(inode, "fpc", DEFAULTFPC);
     free(mMin);
+    mMin = tryReadProcessor(inode, "min", DEFAULTMIN);
     free(mMax);
-    mFPC = readProcessor(is);
-    mMin = readProcessor(is);
-    mMax = readProcessor(is);
-*/
+    mMax = tryReadProcessor(inode, "max", DEFAULTMAX);
+
     return inode;
 }
 
 xml_node<> &Oscillator::write(xml_node<> &onode) const {
 
-    //os << mFPC << " " << mMin << " " << mMax << endl;
     return onode;
 }
 

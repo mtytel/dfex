@@ -21,10 +21,12 @@
 #include "Processor.h"
 #include "Constant.h"
 
+#define DEFAULTWET 1.0
+
 class Effect : public Processor {
 public:
 
-    Effect(float wet = 0.0) : Processor::Processor() { 
+    Effect(float wet = DEFAULTWET) : Processor::Processor() { 
         mWet = new Constant(wet);
     }
     virtual ~Effect() { }

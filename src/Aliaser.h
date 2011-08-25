@@ -22,10 +22,13 @@
 #include <math.h>
 #include "Effect.h"
 
+#define DEFAULTRATIO 2.0
+
 class Aliaser : public Effect {
 public:
 
-    Aliaser(float ratio = 2.0) : mOffset(0), mCurSamp(0), Effect::Effect() { 
+    Aliaser(float ratio = DEFAULTRATIO) : mOffset(0), mCurSamp(0), 
+     Effect::Effect() { 
         mRatio = new Constant(ratio);
     }
 
@@ -41,6 +44,9 @@ protected:
     Processor *mRatio;
     float mOffset;
     sample_t mCurSamp;
+
+    virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
+    virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
 };
 
 #endif

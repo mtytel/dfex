@@ -17,6 +17,8 @@
 
 #include "BitCrush.h"
 
+using namespace rapidxml;
+
 Class BitCrush::cls(std::string("BitCrush"), newInstance);
 
 void BitCrush::process(const sample_t* in, sample_t* out, int num) {
@@ -33,3 +35,17 @@ void BitCrush::process(const sample_t* in, sample_t* out, int num) {
     postProcess(in, out, num);
 }
 
+xml_node<> &BitCrush::read(xml_node<> &inode) {
+    
+    Effect::read(inode);
+
+    free(mBits);
+    mBits = Processor::tryReadProcessor(inode, "bits", DEFAULTBITS);
+
+    return inode;
+}
+
+xml_node<> &BitCrush::write(xml_node<> &onode) const {
+    
+    return onode;
+}

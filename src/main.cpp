@@ -71,7 +71,7 @@ void read_xml(const char* fileName, rapidxml::xml_document<> *doc) {
     config.seekg(0, ios::end);
     int size = (int)config.tellg();
     config.seekg(0, ios::beg);
-    char *data = (char*)malloc(size);
+    char *data = (char*)malloc((size + 1) * sizeof(char));
     config.read(data, size);
     data[size] = 0;
 

@@ -23,6 +23,7 @@
 #include "ProcessorList.h"
 
 #define MEMORYSIZE 4800000
+#define DEFAULTFPC 5000
 
 class Delay : virtual public ProcessorList {
 public:

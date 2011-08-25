@@ -36,16 +36,11 @@ void Effect::postProcess(const sample_t* in, sample_t* out, int num) {
 
 xml_node<> &Effect::read(xml_node<> &inode) {
     
-    xml_node<> *wet_node = inode.first_node("wet");
-    if (wet_node)
-        mWet = Processor::readProcessor(*wet_node->first_node());
-    else
-        mWet = new Constant(1.0);
+    mWet = Processor::tryReadProcessor(inode, "wet", DEFAULTWET);
     return inode;
 }
 
 xml_node<> &Effect::write(xml_node<> &onode) const {
-    
-    //onode << *mWet;
+
     return onode;
 }

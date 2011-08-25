@@ -37,8 +37,8 @@ public:
     static Object *newInstance() { return new ProcessorList(); }
 
     void addProcessor(Processor* p);
-    void createList(Class *cls, int waveType, int num);
-    void readWaveModifier(rapidxml::xml_node<> &, std::vector<Series*> *); 
+    void initList(rapidxml::xml_node<> &inode);
+    void readModifier(rapidxml::xml_node<> &); 
     int size() { return mProcessors.size(); }
 
 protected:

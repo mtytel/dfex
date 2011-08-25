@@ -23,7 +23,7 @@ using namespace std;
 
 Class Processor::cls(string("Processor"), newInstance);
 
-Processor *Processor::createConstant(char *val) {
+Processor *Processor::createConstant(const char *val) {
 
     float num = atof(val);
 
@@ -53,7 +53,18 @@ Processor* Processor::readProcessor(xml_node<> &inode) {
     return p;
 }
 
+Processor *Processor::tryReadProcessor(rapidxml::xml_node<> &node, 
+ const char *tag, float defaultVal) {
+
+    xml_node<> *found_node = node.first_node(tag);
+    if (found_node) 
+        return Processor::readProcessor(*found_node->first_node());
+    
+    return new Constant(defaultVal);
+}
+
 void Processor::process(const sample_t* in, sample_t* out, int num) {
+
     memcpy(out, in, num * sizeof(sample_t));
 }
 

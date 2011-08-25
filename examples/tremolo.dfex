@@ -1,2 +1,11 @@
-Volume 1.0 
-    Modulator 3 5000 0.0 1.0
+<?xml version="1.0" encoding="utf-8"?>
+<Volume>
+    <volume>
+        <Oscillator>
+            <wave>3</wave>
+            <fpc>5000</fpc>
+            <min>0.0</min>
+            <max>1.0</max>
+        </Oscillator>
+    </volume>
+</Volume>

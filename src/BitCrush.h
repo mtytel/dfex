@@ -23,10 +23,12 @@
 
 #include "Effect.h"
 
+#define DEFAULTBITS 2.0
+
 class BitCrush : public Effect {
 public:
 
-    BitCrush(float bits = 2) : Effect::Effect() {
+    BitCrush(float bits = DEFAULTBITS) : Effect::Effect() {
         mBits = new Constant(bits);
     }
 
@@ -40,6 +42,9 @@ protected:
     static Class cls;
 
     Processor *mBits;
+
+    virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
+    virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
 };
 
 #endif

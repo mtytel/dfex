@@ -55,17 +55,18 @@ void Delay::process(const sample_t* in, sample_t* out, int num) {
 }
 
 xml_node<> &Delay::read(xml_node<> &inode) {
-/*
-    ProcessorList::read(is);
+
+    ProcessorList::read(inode);
     free(mFPC);
-    mFPC = Processor::readProcessor(is);
-    is >> mSingle;
-*/
+    mFPC = Processor::tryReadProcessor(inode, "fpc", DEFAULTFPC);
+    
+    xml_node<> *singNode = inode.first_node("single");
+    mSingle = singNode ? 1 : 0;
+
     return inode;
 }
 
 xml_node<> &Delay::write(xml_node<> &onode) const {
 
-    //ProcessorList::write(os);
     return onode;
 }
