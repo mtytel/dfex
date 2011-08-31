@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Switch>
+    <processors>
+        <Volume> <!-- Modulator -->
+            <volume>
+                <Oscillator wave="3">
+                    <fpc>100</fpc>
+                    <max>1.0</max>
+                    <min>-1.0</min>
+                </Oscillator>
+            </volume>
+        </Volume>
+        <Volume> <!-- Tremolo -->
+            <volume>
+                <Oscillator wave="3">
+                    <fpc>100</fpc>
+                    <max>1.0</max>
+                    <min>0.0</min>
+                </Oscillator>
+            </volume>
+        </Volume>
+        <Processor /> <!-- Through Line -->
+    </processors>
+</Switch>

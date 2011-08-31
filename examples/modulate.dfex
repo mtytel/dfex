@@ -2,9 +2,9 @@
 <Volume>
     <volume>
         <Oscillator wave="3">
-            <fpc>5000</fpc>
-            <min>0.0</min>
+            <fpc>100</fpc>
             <max>1.0</max>
+            <min>0</min>
         </Oscillator>
     </volume>
 </Volume>

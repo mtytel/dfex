@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Delay>
+    <fpc>5000</fpc>
+    <num>10</num>
+    <modifiers>
+        <Volume>
+            <volume mod="true">
+                <Oscillator wave="6">
+                    <min>0.1</min>
+                    <max>1.0</max>
+                </Oscillator>
+            </volume>
+        </Volume>
+    </modifiers>
+</Delay>
+

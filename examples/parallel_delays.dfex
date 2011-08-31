@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Parallel>
+    <processors>
+        <Delay>
+            <fpc>5333</fpc>
+            <num>3</num>
+            <single />
+        </Delay>
+        <Delay>
+            <fpc>1920</fpc>
+            <num>5</num>
+            <single />
+        </Delay>
+        <Delay>
+            <fpc>480</fpc>
+            <num>10</num>
+            <single />
+        </Delay>
+    </processors>
+</Parallel>
