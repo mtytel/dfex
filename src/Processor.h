@@ -15,33 +15,45 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef EFFECT_H
-#define EFFECT_H
+#ifndef PROCESSOR_H
+#define PROCESSOR_H
 
-#include "Processor.h"
-#include "Constant.h"
+#include <string.h>
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
 
-#define DEFAULTWET 1.0
+#include "Setup.h"
+#include "Class.h"
+#include "Process.h"
+#include "rapidxml.hpp"
 
-class Effect : public Processor {
+class Processor : public Object {
 public:
 
-    Effect(float wet = DEFAULTWET) : Processor::Processor() { 
-        mWet = new Constant(wet);
-    }
-    virtual ~Effect() { }
+    Processor() { }
+    virtual ~Processor() { }
 
     const Class *getClass() const { return &cls; }
-    static Object *newInstance() { return new Effect(); }
+    static Object *newInstance() { return new Processor(); }
+    static Processor *readProcessor(rapidxml::xml_node<> &);
+    static Processor *tryReadProcessor(rapidxml::xml_node<> &, const char *, 
+     float);
+    static Processor *createConstant(const char *);
 
     virtual void process(const sample_t* in, sample_t* out, int num);
-    virtual void postProcess(const sample_t* in, sample_t* out, int num);
+    virtual void postProcess(const sample_t* in, sample_t* out, int num) { }
+
+    virtual void keyInput(char c) { }
+
+    friend rapidxml::xml_node<> &operator<<(rapidxml::xml_node<> &onode, 
+     const Processor &p) { return p.write(onode); }
+    friend rapidxml::xml_node<> &operator>>(rapidxml::xml_node<> &inode, 
+     Processor &p) { return p.read(inode); }
 
 protected:
 
     static Class cls;
-
-    Processor *mWet; 
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;

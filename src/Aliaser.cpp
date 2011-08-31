@@ -17,18 +17,21 @@
 
 #include "Aliaser.h"
 
+using namespace rapidxml;
 using namespace std;
 
 Class Aliaser::cls(string("Aliaser"), newInstance);
 
 void Aliaser::process(const sample_t* in, sample_t* out, int num) {
 
-    for (int i = 0; i < num; i++) {
-        float ratio = getVal();
+    float ratio[num];
+    mRatio->process(in, ratio, num);
 
-        if (++mOffset > ratio) { 
+    for (int i = 0; i < num; i++) {
+
+        if (++mOffset > ratio[i]) { 
             mCurSamp = in[i];
-            mOffset -= ratio;
+            mOffset -= ratio[i];
         }
         out[i] = mCurSamp;
     }
@@ -36,3 +39,17 @@ void Aliaser::process(const sample_t* in, sample_t* out, int num) {
     postProcess(in, out, num);
 }
 
+xml_node<> &Aliaser::read(xml_node<> &inode) {
+    
+    Effect::read(inode);
+
+    free(mRatio);
+    mRatio = Processor::tryReadProcessor(inode, "ratio", DEFAULTRATIO);
+
+    return inode;
+}
+
+xml_node<> &Aliaser::write(xml_node<> &onode) const {
+    
+    return onode;
+}

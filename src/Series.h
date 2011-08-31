@@ -18,12 +18,12 @@
 #ifndef SERIES_H
 #define SERIES_H
 
-#include "EffectsList.h"
+#include "ProcessorList.h"
 
-class Series : public EffectsList {
+class Series : public ProcessorList {
 public:
 
-    Series() : EffectsList::EffectsList() { }
+    Series() : ProcessorList::ProcessorList() { }
     ~Series() { }
 
     static Object *newInstance() { return new Series(); }

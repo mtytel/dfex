@@ -15,40 +15,44 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef EFFECTSLIST_H
-#define EFFECTSLIST_H
+#ifndef PROCESSORLIST_H
+#define PROCESSORLIST_H
 
 #include <vector>
 #include <stdlib.h>
+#include <sstream>
 
-#include "Modifier.h"
 #include "WaveMaker.h"
+#include "Effect.h"
 
 #define CONT "-"
 #define MOD "+"
 #define END "end"
 
 class Series;
+class Oscillator;
 
-class EffectsList : public Effect {
+class ProcessorList : public Effect {
 public:
 
     const Class *getClass() const { return &cls; }
-    static Object *newInstance() { return new EffectsList(); }
+    static Object *newInstance() { return new ProcessorList(); }
 
-    void addEffect(Effect* e);
-    void createList(Class *cls, int waveType, int num);
-    void readWaveModifier(std::istream &is, std::vector<Series*> *fx); 
-    int size() { return mEffects.size(); }
+    void addProcessor(Processor* p);
+    void readList(rapidxml::xml_node<> &inode, std::vector<Series*> *);
+    void loadAllModifications(rapidxml::xml_node<> &, int, 
+     std::vector<std::pair<rapidxml::xml_node<> *, Oscillator*> > *);
+    void readModifier(rapidxml::xml_node<> &, std::vector<Series*> *); 
+    int size() { return mProcessors.size(); }
 
 protected:
 
     static Class cls;
 
-    std::vector<Effect*> mEffects;
+    std::vector<Processor*> mProcessors;
 
-    std::istream &read(std::istream &);
-    std::ostream &write(std::ostream &) const;
+    virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
+    virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
 };
 
 #endif

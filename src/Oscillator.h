@@ -15,39 +15,46 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MODULATOR_H
-#define MODULATOR_H
+#ifndef OSCILLATOR_H
+#define OSCILLATOR_H
 
 #include <stdlib.h>
 #include "WaveMaker.h"
-#include "Parameter.h"
+#include "Processor.h"
+#include "Constant.h"
 
-class Modulator : public Parameter {
+#define DEFAULTMIN 0.0
+#define DEFAULTMAX 1.0
+#define DEFAULTFPC 4000
+
+class Oscillator : public Processor {
 public:
 
-    Modulator(float min = 0, float max = 0, int fpc = 1) :  mOffset(0), 
-     Parameter::Parameter(max) { 
-        mMin = new Parameter(min);
-        mMax = new Parameter(max);
-        mFPC = new Parameter(fpc);
+    Oscillator(int fpc = DEFAULTFPC, float min = DEFAULTMIN,
+     float max = DEFAULTMAX) : mOffset(0), 
+     Processor::Processor() { 
+        mMin = new Constant(min);
+        mMax = new Constant(max);
+        mFPC = new Constant(fpc);
     }
 
     const Class *getClass() const { return &cls; }
-    static Object *newInstance() { return new Modulator(); }
+    static Object *newInstance() { return new Oscillator(); }
 
-    virtual float getVal();
+    virtual void process(const sample_t* in, sample_t* out, int num);
     void setWave(int wave);
+    void setFPC(float fpc); 
 
 protected:
 
     static Class cls;
 
-    Parameter *mMin, *mMax, *mFPC;
+    Processor *mMin, *mMax, *mFPC;
     long mOffset;
     waveFunction mWaveFunc;
 
-    std::istream &read(std::istream &);
-    std::ostream &write(std::ostream &) const;
+    virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
+    virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
 };
 
 #endif

@@ -19,12 +19,17 @@
 #define VOLUME_H
 
 #include <stdlib.h>
-#include "Modifier.h"
 
-class Volume : public Modifier {
+#include "Effect.h"
+
+#define DEFAULTVOLUME 1.0
+
+class Volume : public Effect {
 public:
 
-    Volume(float vol = 1.0) : Modifier::Modifier(vol) { }
+    Volume(float vol = 1.0) : Effect::Effect() { 
+        mVol = new Constant(vol);
+    }
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Volume(); }
@@ -34,6 +39,11 @@ public:
 protected:
 
     static Class cls;
+
+    Processor *mVol;
+
+    virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
+    virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
 };
 
 #endif

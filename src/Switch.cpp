@@ -27,7 +27,7 @@ const string Switch::mappings[NUMEFFECTS] = {
 
 void Switch::process(const sample_t* in, sample_t* out, int num) {
     
-    mEffects[mCur]->process(in, out, num);
+    mProcessors[mCur]->process(in, out, num);
     postProcess(in, out, num);
 }
 

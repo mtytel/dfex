@@ -17,14 +17,17 @@
 
 #include "BitCrush.h"
 
-using namespace std;
+using namespace rapidxml;
 
-Class BitCrush::cls(string("BitCrush"), newInstance);
+Class BitCrush::cls(std::string("BitCrush"), newInstance);
 
 void BitCrush::process(const sample_t* in, sample_t* out, int num) {
 
+    float bits[num];
+    mBits->process(in, bits, num);
+
     for (int i = 0; i < num; i++) {
-        float mult = getVal() / 2;
+        float mult = bits[i] / 2;
         float temp = round(mult * in[i]);
         out[i] = temp / mult;
     }
@@ -32,3 +35,17 @@ void BitCrush::process(const sample_t* in, sample_t* out, int num) {
     postProcess(in, out, num);
 }
 
+xml_node<> &BitCrush::read(xml_node<> &inode) {
+    
+    Effect::read(inode);
+
+    free(mBits);
+    mBits = Processor::tryReadProcessor(inode, "bits", DEFAULTBITS);
+
+    return inode;
+}
+
+xml_node<> &BitCrush::write(xml_node<> &onode) const {
+    
+    return onode;
+}

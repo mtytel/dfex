@@ -20,12 +20,17 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "Modifier.h"
 
-class BitCrush : public Modifier {
+#include "Effect.h"
+
+#define DEFAULTBITS 2.0
+
+class BitCrush : public Effect {
 public:
 
-    BitCrush(float bits = 2) : Modifier::Modifier(bits) { }
+    BitCrush(float bits = DEFAULTBITS) : Effect::Effect() {
+        mBits = new Constant(bits);
+    }
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new BitCrush(); }
@@ -35,6 +40,11 @@ public:
 protected:
 
     static Class cls;
+
+    Processor *mBits;
+
+    virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
+    virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
 };
 
 #endif

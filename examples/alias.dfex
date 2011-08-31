@@ -1,1 +1,5 @@
-Aliaser 1.0 20
+<?xml version="1.0" encoding="utf-8"?>
+<Aliaser>
+    <wet>1.0</wet>
+    <ratio>20</ratio>
+</Aliaser>

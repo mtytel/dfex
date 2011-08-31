@@ -15,29 +15,28 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MODIFIER_H
-#define MODIFIER_H
+#ifndef CONSTANT_H
+#define CONSTANT_H
 
-#include <stdlib.h>
-#include "Effect.h"
+#include "Processor.h"
 
-class Modifier : public Effect {
+class Constant : public Processor {
 public:
 
-    Modifier(float val = 0) { mPar = new Parameter(val); }
+    Constant(float val = 0) : mVal(val), Processor::Processor() { }
+    virtual ~Constant() { }
 
-    double getVal() { return mPar->getVal(); }
-    void setVal(double val) { mPar->setVal(val); }
+    const Class *getClass() const { return &cls; }
+    static Object *newInstance() { return new Constant(); }
+    static Constant *readConstant(std::istream &is);
 
-    void setParameter(Parameter *par) { free(mPar); mPar = par; }
-    void setParameter(double val) { free(mPar); mPar = new Parameter(val); }
-       
+    virtual void process(const sample_t* in, sample_t* out, int num);
+
 protected:
 
-    Parameter *mPar;
+    static Class cls;
 
-    virtual std::istream &read(std::istream &);
-    virtual std::ostream &write(std::ostream &) const;
+    float mVal;
 };
 
 #endif

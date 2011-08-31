@@ -1,1 +1,4 @@
-BitCrush 1.0 2.0
+<?xml version="1.0" encoding="utf-8"?>
+<BitCrush>
+    <bits>2.0</bits>
+</BitCrush>

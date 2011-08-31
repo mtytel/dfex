@@ -15,21 +15,14 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Modifier.h"
+#include "Constant.h"
 
 using namespace std;
 
-istream &Modifier::read(istream &is) {
-    
-    Effect::read(is);
-    free(mPar);
-    mPar = Parameter::readParameter(is);
-    return is;
+Class Constant::cls(string("Constant"), newInstance);
+
+void Constant::process(const sample_t* in, sample_t* out, int num) {
+    for (int i = 0; i < num; i++)
+        out[i] = mVal;
 }
 
-ostream &Modifier::write(ostream &os) const {
-    
-    Effect::write(os);
-    os << *mPar;
-    return os;
-}
