@@ -37,9 +37,6 @@ protected:
     static Class cls;
 
     float mVal;
-    
-    virtual std::istream &read(std::istream &);
-    virtual std::ostream &write(std::ostream &) const;
 };
 
 #endif

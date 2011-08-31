@@ -18,6 +18,7 @@
 #include "Oscillator.h"
 
 using namespace rapidxml;
+using namespace std;
 
 Class Oscillator::cls(std::string("Oscillator"), newInstance);
 
@@ -41,9 +42,14 @@ void Oscillator::setWave(int wave) {
     mWaveFunc = WaveMaker::getFunction(wave);
 }
 
+void Oscillator::setFPC(float fpc) { 
+    free(mFPC);
+    mFPC = new Constant(fpc); 
+}
+
 xml_node<> &Oscillator::read(xml_node<> &inode) {
     int wave;
-    wave = atof(inode.first_node("wave")->value());
+    wave = atof(inode.first_attribute("wave")->value());
     setWave(wave);
 
     free(mFPC);

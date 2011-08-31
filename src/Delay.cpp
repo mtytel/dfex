@@ -57,6 +57,7 @@ void Delay::process(const sample_t* in, sample_t* out, int num) {
 xml_node<> &Delay::read(xml_node<> &inode) {
 
     ProcessorList::read(inode);
+
     free(mFPC);
     mFPC = Processor::tryReadProcessor(inode, "fpc", DEFAULTFPC);
     

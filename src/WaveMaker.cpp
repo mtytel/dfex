@@ -36,7 +36,7 @@ double WaveMaker::sawRise(double val) {
 }
 
 double WaveMaker::sawFall(double val) {
-    return ceil(val) - val;
+    return 1 - sawRise(val);
 }
 
 waveFunction WaveMaker::getFunction(int type) {

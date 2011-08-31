@@ -75,7 +75,7 @@ void read_xml(const char* fileName, rapidxml::xml_document<> *doc) {
     config.read(data, size);
     data[size] = 0;
 
-    doc->parse<0>(data);
+    doc->parse<rapidxml::parse_no_data_nodes>(data);
 }
 
 int main (int argc, char *argv[]){

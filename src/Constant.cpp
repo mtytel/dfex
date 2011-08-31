@@ -26,14 +26,3 @@ void Constant::process(const sample_t* in, sample_t* out, int num) {
         out[i] = mVal;
 }
 
-istream &Constant::read(istream &is) {
-    
-    is >> mVal;
-    return is;
-}
-
-ostream &Constant::write(ostream &os) const {
-    
-    os << mVal;
-    return os;
-}

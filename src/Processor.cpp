@@ -17,6 +17,7 @@
 
 #include "Processor.h"
 #include "Constant.h"
+#include "rapidxml_print.hpp"
 
 using namespace rapidxml;
 using namespace std;
@@ -35,12 +36,14 @@ Processor *Processor::createConstant(const char *val) {
     exit(1);
 }
 
+void Processor::process(const sample_t* in, sample_t* out, int num) {
+
+    memcpy(out, in, num * sizeof(sample_t));
+}
+
 Processor* Processor::readProcessor(xml_node<> &inode) {
     
     string clsName = string(inode.name());
-    if (clsName.empty())
-        return createConstant(inode.value());
-
     const Class *eCls = Class::ForName(clsName);
     if (!eCls) {
         cerr << "Error reading configuration: No Processor '" 
@@ -57,15 +60,17 @@ Processor *Processor::tryReadProcessor(rapidxml::xml_node<> &node,
  const char *tag, float defaultVal) {
 
     xml_node<> *found_node = node.first_node(tag);
-    if (found_node) 
-        return Processor::readProcessor(*found_node->first_node());
+
+    if (found_node) {
+        xml_node<> *processor = found_node->first_node();
+
+        if (processor)
+            return Processor::readProcessor(*processor);
+
+        return createConstant(found_node->value());
+    }
     
     return new Constant(defaultVal);
-}
-
-void Processor::process(const sample_t* in, sample_t* out, int num) {
-
-    memcpy(out, in, num * sizeof(sample_t));
 }
 
 xml_node<> &Processor::read(xml_node<> &inode) {

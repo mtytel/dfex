@@ -25,13 +25,13 @@
 
 #define DEFAULTMIN 0.0
 #define DEFAULTMAX 1.0
-#define DEFAULTFPC 5000
+#define DEFAULTFPC 4000
 
 class Oscillator : public Processor {
 public:
 
-    Oscillator(float min = DEFAULTMIN, float max = DEFAULTMAX, 
-     int fpc = DEFAULTFPC) :  mOffset(0), 
+    Oscillator(int fpc = DEFAULTFPC, float min = DEFAULTMIN,
+     float max = DEFAULTMAX) : mOffset(0), 
      Processor::Processor() { 
         mMin = new Constant(min);
         mMax = new Constant(max);
@@ -43,6 +43,7 @@ public:
 
     virtual void process(const sample_t* in, sample_t* out, int num);
     void setWave(int wave);
+    void setFPC(float fpc); 
 
 protected:
 

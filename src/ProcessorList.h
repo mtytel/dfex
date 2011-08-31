@@ -20,6 +20,7 @@
 
 #include <vector>
 #include <stdlib.h>
+#include <sstream>
 
 #include "WaveMaker.h"
 #include "Effect.h"
@@ -29,6 +30,7 @@
 #define END "end"
 
 class Series;
+class Oscillator;
 
 class ProcessorList : public Effect {
 public:
@@ -37,8 +39,10 @@ public:
     static Object *newInstance() { return new ProcessorList(); }
 
     void addProcessor(Processor* p);
-    void initList(rapidxml::xml_node<> &inode);
-    void readModifier(rapidxml::xml_node<> &); 
+    void readList(rapidxml::xml_node<> &inode, std::vector<Series*> *);
+    void loadAllModifications(rapidxml::xml_node<> &, int, 
+     std::vector<std::pair<rapidxml::xml_node<> *, Oscillator*> > *);
+    void readModifier(rapidxml::xml_node<> &, std::vector<Series*> *); 
     int size() { return mProcessors.size(); }
 
 protected:

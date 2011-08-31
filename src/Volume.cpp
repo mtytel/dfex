@@ -47,3 +47,4 @@ xml_node<> &Volume::write(xml_node<> &onode) const {
     
     return onode;
 }
+
