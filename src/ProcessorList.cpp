@@ -18,7 +18,6 @@
 #include "ProcessorList.h"
 #include "Oscillator.h"
 #include "Series.h"
-#include "rapidxml_print.hpp"
 
 using namespace rapidxml;
 using namespace std;

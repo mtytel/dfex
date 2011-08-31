@@ -26,7 +26,6 @@
 #include "Setup.h"
 #include "Class.h"
 #include "Process.h"
-#include "rapidxml.hpp"
 
 class Processor : public Object {
 public:
