@@ -22,6 +22,12 @@ using namespace std;
 Class Series::cls(string("Series"), newInstance);
 
 void Series::process(const sample_t* in, sample_t* out, int num) {
+
+    if (mProcessors.size() == 0) {
+        Effect::process(in, out, num);
+        return;
+    }
+
     const sample_t* from = in;
     sample_t* to = mProcessors.size() % 2 ? out : mBuffer;
 

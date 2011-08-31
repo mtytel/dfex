@@ -51,11 +51,8 @@ void ProcessorList::readList(xml_node<> &inode, vector<Series*> *procs) {
         }
 
         int size = atof(sizeNode->value());
-        for (int i = 0; i < size; i++) {
-            Series *s = new Series();
-            s->addProcessor(new Processor());
-            procs->push_back(s);
-        }
+        for (int i = 0; i < size; i++)
+            procs->push_back(new Series());
     }
 }
 

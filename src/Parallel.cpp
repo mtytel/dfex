@@ -23,6 +23,11 @@ Class Parallel::cls(string("Parallel"), newInstance);
 
 void Parallel::process(const sample_t* in, sample_t* out, int num) {
 
+    if (mProcessors.size() == 0) {
+        Effect::process(in, out, num);
+        return;
+    }
+
     memset(out, 0, num * sizeof(sample_t));
 
     for (int i = 0; i < mProcessors.size(); i++) {

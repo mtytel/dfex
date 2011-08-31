@@ -45,6 +45,7 @@ Processor* Processor::readProcessor(xml_node<> &inode) {
     
     string clsName = string(inode.name());
     const Class *eCls = Class::ForName(clsName);
+
     if (!eCls) {
         cerr << "Error reading configuration: No Processor '" 
          << clsName << "'" << endl;
@@ -63,7 +64,6 @@ Processor *Processor::tryReadProcessor(rapidxml::xml_node<> &node,
 
     if (found_node) {
         xml_node<> *processor = found_node->first_node();
-
         if (processor)
             return Processor::readProcessor(*processor);
 
