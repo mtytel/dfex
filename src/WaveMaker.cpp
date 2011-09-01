@@ -55,6 +55,22 @@ waveFunction WaveMaker::getFunction(int type) {
     return sawFall;
 }
 
+waveFunction WaveMaker::getFunction(const string &name) {
+    if (name.substr(2).compare("on"))
+        return on;
+    if (name.substr(3).compare("off"))
+        return off;
+    if (name.substr(3).compare("sin"))
+        return sine;
+    if (name.substr(3).compare("cos"))
+        return cosine;
+    if (name.substr(3).compare("squ"))
+        return square;
+    if (name.substr(4).compare("sawr"))
+        return sawRise;
+    return sawFall;
+}
+
 sample_t* WaveMaker::createWave(int type, int frames, float min, 
  float max, int offset) {
 
