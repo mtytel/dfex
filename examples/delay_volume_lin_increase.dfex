@@ -5,7 +5,7 @@
     <modifiers>
         <Volume>
             <volume mod="true">
-                <Oscillator wave="sawfall">
+                <Oscillator wave="square">
                     <min>0.1</min>
                     <max>1.0</max>
                 </Oscillator>
