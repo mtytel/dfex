@@ -3,7 +3,7 @@
     <processors>
         <Volume> <!-- Modulator -->
             <volume>
-                <Oscillator wave="3">
+                <Oscillator wave="cos">
                     <fpc>100</fpc>
                     <max>1.0</max>
                     <min>-1.0</min>
@@ -12,7 +12,7 @@
         </Volume>
         <Volume> <!-- Tremolo -->
             <volume>
-                <Oscillator wave="3">
+                <Oscillator wave="cos">
                     <fpc>100</fpc>
                     <max>1.0</max>
                     <min>0.0</min>
