@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Series>
+    <processors>
+        <Aliaser>
+            <ratio>10</ratio>
+        </Aliaser>
+        <BitCrush>
+            <bits>3</bits>
+        </BitCrush>
+    </processors>
+</Series>
+
