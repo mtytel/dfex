@@ -37,20 +37,13 @@ void Oscillator::process(const sample_t* in, sample_t* out, int num) {
     }
 }
 
-void Oscillator::setWave(int wave) {
-
-    mWaveFunc = WaveMaker::getFunction(wave);
-}
-
 void Oscillator::setFPC(float fpc) { 
     free(mFPC);
     mFPC = new Constant(fpc); 
 }
 
 xml_node<> &Oscillator::read(xml_node<> &inode) {
-    int wave;
-    wave = atof(inode.first_attribute("wave")->value());
-    setWave(wave);
+    mWaveFunc = WaveMaker::getFunction(inode.first_attribute("wave")->value());
 
     free(mFPC);
     mFPC = tryReadProcessor(inode, "fpc", DEFAULTFPC);

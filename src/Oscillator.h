@@ -42,7 +42,6 @@ public:
     static Object *newInstance() { return new Oscillator(); }
 
     virtual void process(const sample_t* in, sample_t* out, int num);
-    void setWave(int wave);
     void setFPC(float fpc); 
 
 protected:
