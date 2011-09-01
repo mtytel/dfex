@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Volume>
     <volume>
-        <Oscillator wave="cos">
+        <Oscillator wave="square">
             <fpc>5000</fpc>
             <min>0.0</min>
             <max>1.0</max>

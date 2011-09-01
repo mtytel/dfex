@@ -20,6 +20,7 @@
 
 #include <math.h>
 #include <stdlib.h>
+#include <string>
 #include "Setup.h"
 
 #define PI 3.141529
@@ -33,6 +34,7 @@ public:
 
     static sample_t* createWave(int, int, float, float, int offset = 0);
     static waveFunction getFunction(int type);
+    static waveFunction getFunction(const std::string &name);
 
 protected:
 

@@ -42,15 +42,15 @@ void ProcessorList::readList(xml_node<> &inode, vector<Series*> *procs) {
         }
     }
     else {
-        xml_node<> *sizeNode = inode.first_node("size");
+        xml_node<> *numNode = inode.first_node("num");
 
-        if (!sizeNode) {
-            cerr << "Expected size or processors tag in ProcessorsList" << endl;
+        if (!numNode) {
+            cerr << "Expected num or processors tag in ProcessorsList" << endl;
             exit(1);
         }
 
-        int size = atof(sizeNode->value());
-        for (int i = 0; i < size; i++)
+        int num = atof(numNode->value());
+        for (int i = 0; i < num; i++)
             procs->push_back(new Series());
     }
 }
