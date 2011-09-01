@@ -56,17 +56,17 @@ waveFunction WaveMaker::getFunction(int type) {
 }
 
 waveFunction WaveMaker::getFunction(const string &name) {
-    if (name.substr(2).compare("on"))
+    if (name.substr(2).compare("on") == 0)
         return on;
-    if (name.substr(3).compare("off"))
+    if (name.substr(3).compare("off") == 0)
         return off;
-    if (name.substr(3).compare("sin"))
+    if (name.substr(3).compare("sin") == 0)
         return sine;
-    if (name.substr(3).compare("cos"))
+    if (name.substr(3).compare("cos") == 0)
         return cosine;
-    if (name.substr(3).compare("squ"))
+    if (name.substr(3).compare("squ") == 0)
         return square;
-    if (name.substr(4).compare("sawr"))
+    if (name.substr(4).compare("sawr") == 0)
         return sawRise;
     return sawFall;
 }
