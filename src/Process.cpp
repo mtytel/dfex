@@ -49,10 +49,3 @@ void Process::power(const sample_t* from, sample_t* to, float exp, int num) {
         to[i] = pow(from[i], exp);
 }
 
-void Process::derivative(const sample_t* from, sample_t* to, int num) {
-    for (int i = 0; i < num - 1; i++)
-        to[i] = from[i + 1] - from[i];
-
-    to[num - 1] = to[num - 2];
-}
-
