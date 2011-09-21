@@ -15,24 +15,20 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PROCESS_H
-#define PROCESS_H
+#include "Differentiator.h"
 
-#include <math.h>
-#include <jack/jack.h>
-#include <string.h>
-#include <stdlib.h>
+using namespace rapidxml;
+using namespace std;
 
-typedef jack_default_audio_sample_t sample_t;
+Class Differentiator::cls(string("Differentiator"), newInstance);
 
-class Process {
-public:
+void Differentiator::process(const sample_t* in, sample_t* out, int num) {
 
-    static sample_t linearInterpolate(sample_t left, sample_t right, float val);
-    static void combine(const sample_t* one, sample_t* two, int num);
-    static void fit(const sample_t* from, sample_t* to, int numFrom, int numTo);
-    static void power(const sample_t* from, sample_t* to, float exp, int num);
-    static void invert(const sample_t* from, sample_t* to, int num);
-};
+    for (int i = 0; i < num; i++) {
 
-#endif
+        out[i] = in[i] - mLastSamp;
+        mLastSamp = in[i];
+    }
+
+    postProcess(in, out, num);
+}
