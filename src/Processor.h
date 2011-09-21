@@ -30,9 +30,6 @@
 class Processor : public Object {
 public:
 
-    Processor() { }
-    virtual ~Processor() { }
-
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Processor(); }
     static Processor *readProcessor(rapidxml::xml_node<> &);

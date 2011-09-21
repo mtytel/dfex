@@ -150,11 +150,9 @@ int main (int argc, char *argv[]){
     free (ports);
 
     initscr();
-    clear;
     noecho();
     cbreak();
 
-    char c;
     while(1) {
         p->keyInput(getch());
     }

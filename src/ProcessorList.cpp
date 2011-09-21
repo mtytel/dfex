@@ -58,8 +58,6 @@ void ProcessorList::readList(xml_node<> &inode, vector<Series*> *procs) {
 void ProcessorList::loadAllModifications(xml_node<> &node, int length, 
  vector<pair<xml_node<> *, Oscillator*> > *mods) {
 
-    xml_node<> *next;
-
     for (xml_node<> *chi = node.first_node(); chi; chi = chi->next_sibling()) {
         if (chi->first_attribute("mod")) {
             Oscillator *o = new Oscillator();
@@ -81,11 +79,11 @@ void ProcessorList::readModifier(xml_node<> &inode, vector<Series*> *procs) {
 
     sample_t vals[mods.size()][procs->size()], blank[procs->size()];
 
-    for (int m = 0; m < mods.size(); m++)
+    for (uint m = 0; m < mods.size(); m++)
         mods[m].second->process(blank, vals[m], procs->size());
 
-    for (int p = 0; p < procs->size(); p++) {
-        for (int m = 0; m < mods.size(); m++) {
+    for (uint p = 0; p < procs->size(); p++) {
+        for (uint m = 0; m < mods.size(); m++) {
             ostringstream buffer;
             buffer << vals[m][p];
             char *val = doc.allocate_string(buffer.str().c_str());
@@ -95,7 +93,7 @@ void ProcessorList::readModifier(xml_node<> &inode, vector<Series*> *procs) {
         (*procs)[p]->addProcessor(Processor::readProcessor(inode));
     }
 
-    for (int i = 0; i < mods.size(); i++)
+    for (uint i = 0; i < mods.size(); i++)
         free(mods[i].second);
 }
 
@@ -112,7 +110,7 @@ xml_node<> &ProcessorList::read(xml_node<> &inode) {
             readModifier(*modNode, &procs);
     }
 
-    for (int i = 0; i < procs.size(); i++)
+    for (uint i = 0; i < procs.size(); i++)
         addProcessor(procs[i]);
 
     return inode;

@@ -32,6 +32,10 @@ public:
         mBits = new Constant(bits);
     }
 
+    ~BitCrush() {
+        delete mBits;
+    }
+
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new BitCrush(); }
 

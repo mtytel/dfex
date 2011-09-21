@@ -23,8 +23,7 @@
 class Constant : public Processor {
 public:
 
-    Constant(float val = 0) : mVal(val), Processor::Processor() { }
-    virtual ~Constant() { }
+    Constant(float val = 0) : Processor::Processor(), mVal(val) { }
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Constant(); }

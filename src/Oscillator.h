@@ -31,11 +31,16 @@ class Oscillator : public Processor {
 public:
 
     Oscillator(int fpc = DEFAULTFPC, float min = DEFAULTMIN,
-     float max = DEFAULTMAX) : mOffset(0), 
-     Processor::Processor() { 
+     float max = DEFAULTMAX) : Processor::Processor(), mOffset(0) { 
         mMin = new Constant(min);
         mMax = new Constant(max);
         mFPC = new Constant(fpc);
+    }
+
+    ~Oscillator() {
+        delete mMin;
+        delete mMax;
+        delete mFPC;
     }
 
     const Class *getClass() const { return &cls; }

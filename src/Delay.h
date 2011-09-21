@@ -35,6 +35,10 @@ public:
         mFPC = new Constant(fpc);
     }
 
+    ~Delay() {
+        delete mFPC;
+    }
+
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Delay(); }
 

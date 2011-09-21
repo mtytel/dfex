@@ -30,7 +30,7 @@ void Parallel::process(const sample_t* in, sample_t* out, int num) {
 
     memset(out, 0, num * sizeof(sample_t));
 
-    for (int i = 0; i < mProcessors.size(); i++) {
+    for (uint i = 0; i < mProcessors.size(); i++) {
         mProcessors[i]->process(in, mBuffer, num);
         Process::combine(mBuffer, out, num);
     }

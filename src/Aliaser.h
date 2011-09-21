@@ -27,9 +27,13 @@
 class Aliaser : public Effect {
 public:
 
-    Aliaser(float ratio = DEFAULTRATIO) : mOffset(0), mCurSamp(0), 
-     Effect::Effect() { 
+    Aliaser(float ratio = DEFAULTRATIO) : Effect::Effect(), mOffset(0), 
+     mCurSamp(0) { 
         mRatio = new Constant(ratio);
+    }
+
+    ~Aliaser() {
+        delete mRatio;
     }
 
     const Class *getClass() const { return &cls; }

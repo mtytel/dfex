@@ -23,9 +23,6 @@
 class Series : public ProcessorList {
 public:
 
-    Series() : ProcessorList::ProcessorList() { }
-    ~Series() { }
-
     static Object *newInstance() { return new Series(); }
     const Class *getClass() const { return &cls; }
 

@@ -34,7 +34,7 @@ void Switch::process(const sample_t* in, sample_t* out, int num) {
 void Switch::keyInput(char c) {
 
     for (int i = 0; i < NUMEFFECTS; i++) {
-        if (mappings[i].find(c) != -1)
+        if (mappings[i].find(c) != string::npos)
             mCur = i;
     }
 }

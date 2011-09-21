@@ -29,7 +29,10 @@ public:
     Effect(float wet = DEFAULTWET) : Processor::Processor() { 
         mWet = new Constant(wet);
     }
-    virtual ~Effect() { }
+
+    virtual ~Effect() {
+        delete mWet;    
+    }
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Effect(); }

@@ -41,7 +41,7 @@ void Delay::process(const sample_t* in, sample_t* out, int num) {
 
     memset(out, 0, num * sizeof(sample_t));
 
-    for (int st = 0; st < mProcessors.size(); st++) {
+    for (uint st = 0; st < mProcessors.size(); st++) {
         int stIndex = (MEMORYSIZE + curOffset - st * fpcPrev) % MEMORYSIZE;
 
         sample_t fit[num];

@@ -31,6 +31,10 @@ public:
         mVol = new Constant(vol);
     }
 
+    ~Volume() {
+        delete mVol;
+    }
+
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Volume(); }
 

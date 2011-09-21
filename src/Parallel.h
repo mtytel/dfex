@@ -23,8 +23,6 @@
 class Parallel : public ProcessorList {
 public:
 
-    Parallel() : ProcessorList::ProcessorList() { }
-
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Parallel(); }
 

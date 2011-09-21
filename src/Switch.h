@@ -30,8 +30,7 @@ public:
 
     static const std::string mappings[NUMEFFECTS];
 
-    Switch() : mCur(0), ProcessorList::ProcessorList() { }
-    ~Switch() { }
+    Switch() : ProcessorList::ProcessorList(), mCur(0) { }
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Switch(); }
