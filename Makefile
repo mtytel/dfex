@@ -1,7 +1,7 @@
 
 CC=g++
 EXEC=dfex
-CFLAGS=-o $(EXEC) -g -Wall -O3 -lncurses `pkg-config --cflags --libs jack` -I "lib/rapidxml-1.13/"
+CFLAGS=-o $(EXEC) -g -Wall -O3 -lncurses -lfftw3 -lm `pkg-config --cflags --libs jack` -I "lib/rapidxml-1.13/"
 COMPILE=$(CC) $(CFLAGS) -c
 LDFLAGS=
 

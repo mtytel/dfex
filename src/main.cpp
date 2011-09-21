@@ -26,6 +26,7 @@
 
 #include "Processor.h"
 #include "rapidxml.hpp"
+#include <fftw3.h>
 
 using namespace std;
 
