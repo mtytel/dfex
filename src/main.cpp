@@ -27,6 +27,7 @@
 #include "Processor.h"
 #include "Keyboard.h"
 #include "rapidxml.hpp"
+#include <fftw3.h>
 
 using namespace std;
 

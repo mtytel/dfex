@@ -20,6 +20,7 @@
 
 #include <jack/jack.h>
 #define MAXBUFFER 1024
+#define BUFFERSIZE 256
 
 typedef jack_default_audio_sample_t sample_t;
 

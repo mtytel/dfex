@@ -1,2 +1,3 @@
 - cleanup main file
 - write FFT code for pitch shift and others
+- convert effects to VST plugins
