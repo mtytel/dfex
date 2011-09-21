@@ -25,7 +25,7 @@
 class Differentiator : public Effect {
 public:
 
-    Differentiator() : mLastSamp(0), Effect::Effect() { }
+    Differentiator() : Effect::Effect(), mLastSamp(0) { }
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Differentiator(); }
