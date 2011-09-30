@@ -15,40 +15,35 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Using a Sli
+// Using a Sliding Discrete Fourier Transform
 
 #ifndef FREQUENCYEFFECT_H
 #define FREQUENCYEFFECT_H
-#define TRANSFORMSIZE 1024
 
 #include "Effect.h"
 
 class FrequencyEffect : public Effect {
 public:
 
-    FrequencyEffect() : Effect::Effect(), mOffset(0) { 
-        mMemory = (sample_t*)malloc(TRANSFORMSIZE * sizeof(sample_t));
-        mTransform = (std::complex<sample_t>*)malloc(TRANSFORMSIZE *
-         sizeof(std::complex<sample_t>));
-    }
+    FrequencyEffect(); 
 
-    virtual ~FrequencyEffect() { 
-        free(mMemory);
-        free(mTransform);
-    }
+    virtual ~FrequencyEffect(); 
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new FrequencyEffect(); }
 
     virtual void process(const sample_t* in, sample_t* out, int num);
-    void initialTransform(const sample_t* in);
+    virtual void modifyTransform();
+    //void initialTransform(const sample_t* in);
     void updateTransform(sample_t next);
+    sample_t updateInverse();
 
 protected:
 
     static Class cls;
 
     std::complex<sample_t> *mTransform;
+    std::complex<sample_t> *mModTransform;
     sample_t *mMemory;
 
     uint mOffset;

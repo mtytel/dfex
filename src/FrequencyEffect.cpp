@@ -21,12 +21,37 @@ using namespace std;
 
 Class FrequencyEffect::cls(std::string("FrequencyEffect"), newInstance);
 
+FrequencyEffect::FrequencyEffect() : Effect::Effect(), mOffset(0) { 
+
+    mMemory = (sample_t*)calloc(TRANSFORMSIZE, sizeof(sample_t));
+    mTransform = new complex<sample_t>[TRANSFORMSIZE];
+    mModTransform = mTransform;
+
+    for (int i = 0; i < TRANSFORMSIZE; i++)
+        mTransform[i] *= 0;
+}
+
+FrequencyEffect::~FrequencyEffect() {
+
+    free(mMemory);
+    free(mTransform);
+}
+
 void FrequencyEffect::process(const sample_t* in, sample_t* out, int num) {
 
-    Effect::process(in, out, num);
+    for (int i = 0; i < num; i++) { 
+        updateTransform(in[i]);
+        out[i] = updateInverse();
+    }
+    
     postProcess(in, out, num);
 }
 
+void FrequencyEffect::modifyTransform() {
+    //memcpy(mTransform, mModTrasform, TRANSFORMSIZE * sizeof(sample_t));
+}
+
+/*
 void FrequencyEffect::initialTransform(const sample_t *in) {
 
     memcpy(mMemory, in, TRANSFORMSIZE * sizeof(sample_t));
@@ -40,14 +65,27 @@ void FrequencyEffect::initialTransform(const sample_t *in) {
             mTransform[f] += 
              Process::euler(1.0f * f * x / TRANSFORMSIZE) * in[x];
     }
-}
+}*/
 
+/* Sliding Discrete Fourier Transform, starts with 0s */
 void FrequencyEffect::updateTransform(sample_t next) {
     
     for (int f = 0; f < TRANSFORMSIZE; f++) {
-        mTransform[f] = Process::euler(1.0 * f / TRANSFORMSIZE) * 
+        mTransform[f] = Process::euler(f) * 
          (mTransform[f] - mMemory[mOffset] + next);
     }
 
-    mMemory[mOffset++] = next;
+    mMemory[mOffset] = next;
+    mOffset = (mOffset + 1) % TRANSFORMSIZE;
 }
+
+sample_t FrequencyEffect::updateInverse() {
+
+    complex<sample_t> ret(0, 0);
+
+    for (int f = 0; f < TRANSFORMSIZE; f++) 
+        ret += mModTransform[f] * Process::euler(-f);
+
+    return ret.real() / TRANSFORMSIZE;
+}
+
