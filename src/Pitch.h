@@ -15,13 +15,34 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SETUP_H
-#define SETUP_H
+#ifndef PITCH_H
+#define PITCH_H
 
-#include <jack/jack.h>
-#define MAXBUFFER 2048
-#define BUFFERSIZE 2048
+#include <stdlib.h>
+#include <math.h>
+#include <fftw3.h>
+#include "Effect.h"
 
-typedef jack_default_audio_sample_t sample_t;
+class Pitch : public Effect {
+public:
+
+    Pitch(); 
+
+    const Class *getClass() const { return &cls; }
+    static Object *newInstance() { return new Pitch(); }
+
+    void process(const sample_t* in, sample_t* out, int num);
+
+protected:
+
+    static Class cls;
+
+    double *mInput, *mInvResult;
+    fftw_complex *mResult;
+    fftw_plan mForward, mBackward;
+
+    virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
+    virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
+};
 
 #endif
