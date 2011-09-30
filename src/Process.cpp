@@ -49,3 +49,7 @@ void Process::power(const sample_t* from, sample_t* to, float exp, int num) {
         to[i] = pow(from[i], exp);
 }
 
+complex<sample_t> Process::euler(sample_t omega) {
+    return complex<sample_t>(cos(2 * PI * omega), sin(2 * PI * omega));
+}
+
