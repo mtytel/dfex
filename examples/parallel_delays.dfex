@@ -2,7 +2,7 @@
 <Parallel>
     <processors>
         <Delay>
-            <fpc>5333</fpc>
+            <fpc>10000</fpc>
             <num>3</num>
             <single />
         </Delay>
@@ -12,7 +12,7 @@
             <single />
         </Delay>
         <Delay>
-            <fpc>480</fpc>
+            <fpc>3000</fpc>
             <num>10</num>
             <single />
         </Delay>
