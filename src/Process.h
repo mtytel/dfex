@@ -42,8 +42,8 @@ public:
     static float* cosInit();
     static float* sinInit();
 
-    static float *cosLookup;
-    static float *sinLookup;
+    static const float *cosLookup;
+    static const float *sinLookup;
 };
 
 #endif

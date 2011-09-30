@@ -19,8 +19,8 @@
 
 using namespace std;
 
-float* Process::cosLookup = cosInit();
-float* Process::sinLookup = sinInit();
+const float* Process::cosLookup = cosInit();
+const float* Process::sinLookup = sinInit();
 
 float* Process::cosInit() {
 
