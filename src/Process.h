@@ -24,6 +24,8 @@
 #include <stdlib.h>
 #include <complex>
 
+#include "Setup.h"
+
 #define PI 3.141529
 
 typedef jack_default_audio_sample_t sample_t;
@@ -36,7 +38,12 @@ public:
     static void fit(const sample_t* from, sample_t* to, int numFrom, int numTo);
     static void power(const sample_t* from, sample_t* to, float exp, int num);
     static void invert(const sample_t* from, sample_t* to, int num);
-    static std::complex<sample_t> euler(sample_t omega);
+    static std::complex<sample_t> euler(int idx);
+    static float* cosInit();
+    static float* sinInit();
+
+    static float *cosLookup;
+    static float *sinLookup;
 };
 
 #endif

@@ -19,16 +19,40 @@
 
 using namespace std;
 
+float* Process::cosLookup = cosInit();
+float* Process::sinLookup = sinInit();
+
+float* Process::cosInit() {
+
+    float* lookup = (float*)malloc(TRANSFORMSIZE * sizeof(float));
+    for (int i = 0; i < TRANSFORMSIZE; i++) 
+        lookup[i] = cos(2 * PI * i / TRANSFORMSIZE);
+
+    return lookup;
+}
+
+float* Process::sinInit() {
+
+    float* lookup = (float*)malloc(TRANSFORMSIZE * sizeof(float));
+    for (int i = 0; i < TRANSFORMSIZE; i++) 
+        lookup[i] = sin(2 * PI * i / TRANSFORMSIZE);
+
+    return lookup;
+}
+
 void Process::combine(const sample_t* from, sample_t* to, int num) {
+
     for (int i = 0; i < num; i++)
         to[i] += from[i];
 }
 
 sample_t Process::linearInterpolate(sample_t left, sample_t right, float perc) {
+
     return perc * right + (1 - perc) * left;
 }
 
 void Process::fit(const sample_t* from, sample_t* to, int numFrom, int numTo) {
+
     float fromInc = 1.0 * numFrom / numTo;
     float fromIndex = 0;
 
@@ -40,16 +64,21 @@ void Process::fit(const sample_t* from, sample_t* to, int numFrom, int numTo) {
 }
 
 void Process::invert(const sample_t* from, sample_t* to, int num) {
+
     for (int i = 0; i < num; i++)
         to[i] = -from[i];
 }
 
 void Process::power(const sample_t* from, sample_t* to, float exp, int num) {
+
     for (int i = 0; i < num; i++)
         to[i] = pow(from[i], exp);
 }
 
-complex<sample_t> Process::euler(sample_t omega) {
-    return complex<sample_t>(cos(2 * PI * omega), sin(2 * PI * omega));
+complex<sample_t> Process::euler(int idx) {
+
+    int norm = idx % TRANSFORMSIZE;
+    norm = norm < 0 ? TRANSFORMSIZE - norm : norm;
+    return complex<sample_t>(cosLookup[norm], sinLookup[norm]);
 }
 
