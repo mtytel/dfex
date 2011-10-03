@@ -20,29 +20,30 @@
 
 #include <string>
 #include "ProcessorList.h"
+#include "Constant.h"
 
-#define CONT "-"
-#define END "end"
-#define NUMEFFECTS 3
+#define DEFAULTCONTROL 0
 
 class Switch : public ProcessorList {
 public:
 
-    static const std::string mappings[NUMEFFECTS];
-
-    Switch() : ProcessorList::ProcessorList(), mCur(0) { }
+    Switch() : ProcessorList::ProcessorList() { 
+        mController = new Constant(0);    
+    }
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Switch(); }
 
     void process(const sample_t* in, sample_t* out, int num);
     void setEffect(int id, Effect *e) { mProcessors[id] = e; }
-    void keyInput(char c);
 
 protected:
 
     static Class cls;
-    int mCur;
+    Processor *mController;
+
+    virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
+    virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
 };
 
 #endif

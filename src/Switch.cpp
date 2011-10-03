@@ -18,24 +18,33 @@
 #include "Switch.h"
 
 using namespace std;
+using namespace rapidxml;
 
 Class Switch::cls(string("Switch"), newInstance);
-const string Switch::mappings[NUMEFFECTS] = {
- "123\tqwaszx",
- "45678ertyuidfghjcvbn",
- "90-=op[]\\kl;'\nm,./"};
 
 void Switch::process(const sample_t* in, sample_t* out, int num) {
     
-    mProcessors[mCur]->process(in, out, num);
+    sample_t cur[num];
+    mController->process(in, cur, num);
+
+    int val = cur[num - 1] >= mProcessors.size() ? 
+     mProcessors.size() - 1 : cur[num - 1];
+
+    mProcessors[val]->process(in, out, num);
     postProcess(in, out, num);
 }
 
-void Switch::keyInput(char c) {
+xml_node<> &Switch::read(xml_node<> &inode) {
 
-    for (int i = 0; i < NUMEFFECTS; i++) {
-        if (mappings[i].find(c) != string::npos)
-            mCur = i;
-    }
+    ProcessorList::read(inode);
+    delete mController;
+    mController = Processor::tryReadProcessor(inode, "control", DEFAULTCONTROL);
+
+    return inode;
+}
+
+xml_node<> &Switch::write(xml_node<> &onode) const {
+
+    return onode;
 }
 

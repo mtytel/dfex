@@ -1,7 +1,7 @@
 
 CC=g++
 EXEC=dfex
-CFLAGS=-o $(EXEC) -g -Wall -O3 -lncurses `pkg-config --cflags --libs jack` -I "lib/rapidxml-1.13/"
+CFLAGS=-o $(EXEC) -g -Wall -O3 -lncurses -lboost_thread `pkg-config --cflags --libs jack` -I "lib/rapidxml-1.13/"
 COMPILE=$(CC) $(CFLAGS) -c
 LDFLAGS=
 
@@ -11,8 +11,8 @@ all: dfex
 
 dfex: $(OBJS)
 	@echo 'Building Executable: $@'
-	@echo $(CC) $(CFLAGS) $(OBJS) 
-	@$(CC) $(CFLAGS) $(OBJS)
+	@echo $(CC) $(OBJS) $(CFLAGS)
+	@$(CC) $(OBJS) $(CFLAGS)
 	@echo 'Complete'
 	@echo ' '
 

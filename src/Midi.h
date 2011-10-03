@@ -60,7 +60,6 @@ public:
 
 protected:
 
-    static MidiStream stream;
     static boost::thread midiThread;
 
     sample_t mVal;
@@ -117,8 +116,6 @@ protected:
     uint mScale;
     sample_t mCurVal;
     Processor *mMax, *mMin, *mDecay;
-
-    float mapVal(float midiVal);
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;

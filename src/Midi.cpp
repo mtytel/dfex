@@ -24,7 +24,6 @@ int MidiStream::seqfd;
 vector<MidiControl *> MidiStream::controllers; 
 boost::shared_mutex MidiStream::mutex;
 
-MidiStream MidiControl::stream; 
 boost::thread MidiControl::midiThread(MidiStream::stream);
 
 Class MidiStomp::cls(std::string("MidiStomp"), MidiStomp::newInstance);
@@ -43,6 +42,7 @@ void MidiStream::readMidi() {
     int status = read(MidiStream::seqfd, &inbytes, sizeof(inbytes));
 
     if (status < 0) {
+        //TODO Some sort of error checking
     }
 
     boost::shared_lock<boost::shared_mutex> lock(MidiStream::mutex);
@@ -54,13 +54,14 @@ void MidiStream::readMidi() {
 void MidiStream::stream() {
     
     MidiStream::seqfd = open(MIDI_DEVICE, O_RDONLY);
+    //TODO Some sort of error checking
 
     while (1) 
         readMidi();
 }
 
 MidiControl::MidiControl() : Processor::Processor(), mVal(0), mMatches(0) {
-    MidiControl::stream.addController(this);
+    MidiStream::addController(this);
 }
 
 void MidiControl::process(const sample_t* in, sample_t* out, int num) {
