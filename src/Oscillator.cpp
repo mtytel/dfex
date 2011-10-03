@@ -43,7 +43,8 @@ void Oscillator::setFPC(float fpc) {
 }
 
 xml_node<> &Oscillator::read(xml_node<> &inode) {
-    mWaveFunc = WaveMaker::getFunction(inode.first_attribute("wave")->value());
+    mWaveFunc = 
+     WaveFunctions::getFunction(inode.first_attribute("wave")->value());
 
     free(mFPC);
     mFPC = tryReadProcessor(inode, "fpc", DEFAULTFPC);

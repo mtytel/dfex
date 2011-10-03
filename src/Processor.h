@@ -40,8 +40,6 @@ public:
     virtual void process(const sample_t* in, sample_t* out, int num);
     virtual void postProcess(const sample_t* in, sample_t* out, int num) { }
 
-    virtual void keyInput(char c) { }
-
     friend rapidxml::xml_node<> &operator<<(rapidxml::xml_node<> &onode, 
      const Processor &p) { return p.write(onode); }
     friend rapidxml::xml_node<> &operator>>(rapidxml::xml_node<> &inode, 

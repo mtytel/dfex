@@ -15,8 +15,8 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef WAVEMAKER_H
-#define WAVEMAKER_H
+#ifndef WAVEFUNCTIONS_H
+#define WAVEFUNCTIONS_H
 
 #include <math.h>
 #include <stdlib.h>
@@ -27,12 +27,11 @@
 
 typedef double(*waveFunction)(double);
 
-class WaveMaker {
+class WaveFunctions {
 public:
 
     enum {kOn, kOff, kSine, kCos, kSquare, kSawRise, kSawFall};
 
-    static sample_t* createWave(int, int, float, float, int offset = 0);
     static waveFunction getFunction(int type);
     static waveFunction getFunction(const std::string &name);
 

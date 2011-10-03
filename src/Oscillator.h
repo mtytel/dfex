@@ -19,7 +19,7 @@
 #define OSCILLATOR_H
 
 #include <stdlib.h>
-#include "WaveMaker.h"
+#include "WaveFunctions.h"
 #include "Processor.h"
 #include "Constant.h"
 

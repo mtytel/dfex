@@ -22,7 +22,6 @@
 #include <stdlib.h>
 #include <sstream>
 
-#include "WaveMaker.h"
 #include "Effect.h"
 
 #define CONT "-"

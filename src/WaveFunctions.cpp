@@ -15,31 +15,31 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "WaveMaker.h"
+#include "WaveFunctions.h"
 
 using namespace std;
 
-double WaveMaker::sine(double val) {
+double WaveFunctions::sine(double val) {
     return sin(val * 2 * PI) / 2 + 0.5;
 }
 
-double WaveMaker::cosine(double val) {
+double WaveFunctions::cosine(double val) {
     return cos(val * 2 * PI) / 2 + 0.5;
 }
 
-double WaveMaker::square(double val) {
+double WaveFunctions::square(double val) {
     return (val - floor(val)) < 0.5 ? 1 : 0;
 }
 
-double WaveMaker::sawRise(double val) {
+double WaveFunctions::sawRise(double val) {
     return val - floor(val);
 }
 
-double WaveMaker::sawFall(double val) {
+double WaveFunctions::sawFall(double val) {
     return 1 - sawRise(val);
 }
 
-waveFunction WaveMaker::getFunction(int type) {
+waveFunction WaveFunctions::getFunction(int type) {
     if (type == kOn)
         return on;
     if (type == kOff)
@@ -55,7 +55,7 @@ waveFunction WaveMaker::getFunction(int type) {
     return sawFall;
 }
 
-waveFunction WaveMaker::getFunction(const string &name) {
+waveFunction WaveFunctions::getFunction(const string &name) {
     if (name.substr(0, 2).compare("on") == 0)
         return on;
     if (name.substr(0, 3).compare("off") == 0)
@@ -71,15 +71,3 @@ waveFunction WaveMaker::getFunction(const string &name) {
     return sawFall;
 }
 
-sample_t* WaveMaker::createWave(int type, int frames, float min, 
- float max, int offset) {
-
-    sample_t* wave = (sample_t*)malloc(frames * sizeof(sample_t));
-    waveFunction waveFunc = getFunction(type);
-    float a = max - min;
-
-    for (int i = offset; i < frames + offset; i++)
-        wave[i] = a * waveFunc(1.0 * i / frames) + min;
-
-    return wave;
-}
