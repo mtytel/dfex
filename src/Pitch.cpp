@@ -50,6 +50,8 @@ void Pitch::process(const sample_t* in, sample_t* out, int num) {
     fftw_execute(mBackward);
     for (int i = 0; i < num; i++)
         out[i] = mInvResult[i] / BUFFERSIZE;
+
+    postProcess(in, out, num);
 }
 
 xml_node<> &Pitch::read(xml_node<> &inode) {
