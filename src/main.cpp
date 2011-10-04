@@ -153,9 +153,7 @@ int main (int argc, char *argv[]){
     noecho();
     cbreak();
 
-    while(1) {
-        p->keyInput(getch());
-    }
+    while(1) { }
 
     jack_client_close (client);
 
