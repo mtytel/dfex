@@ -15,8 +15,8 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef STUTTER_H
-#define STUTTER_H
+#ifndef DELAY_H
+#define DELAY_H
 
 #include <stdlib.h>
 #include <math.h>
