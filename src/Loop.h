@@ -39,9 +39,9 @@ public:
     Loop() : Parallel::Parallel(), mMaxLength(1), mRec(0), 
      mStopId(DEFAULTSTOPID), mIndRecId(DEFAULTINDID), 
      mQuantRecId(DEFAULTQUANTID), mOverDubRecId(DEFAULTOVERDUBID) { 
-        addProcessor(new Processor());    
         mSpeed = new Constant(DEFAULTSPEED);
         mMode = new Constant(DEFAULTMODE);
+        addProcessor(new Processor());    
     }
 
     const Class *getClass() const { return &cls; }

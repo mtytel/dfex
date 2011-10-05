@@ -113,6 +113,7 @@ void Loop::startOverDubRec() {
 
 void Loop::process(const sample_t* in, sample_t* out, int num) {
 
+    ProcessorList::process(in, out, num);
     sample_t mode[num];
     mMode->process(in, mode, num);
 

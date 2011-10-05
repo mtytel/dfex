@@ -25,6 +25,7 @@
 #include <fstream>
 
 #include "Processor.h"
+#include "Keyboard.h"
 #include "rapidxml.hpp"
 
 using namespace std;
@@ -153,7 +154,7 @@ int main (int argc, char *argv[]){
     noecho();
     cbreak();
 
-    while(1) { }
+    KeyboardStream::stream();
 
     jack_client_close (client);
 
