@@ -17,16 +17,117 @@
 
 #include "Loop.h"
 
+using namespace std;
 using namespace rapidxml;
 
 Class Loop::cls(std::string("Loop"), newInstance);
 
-void Loop::process(const sample_t* in, sample_t* out, int num) {
+void Loop::LoopTrack::process(const sample_t* in, sample_t* out, int num) {
 
-    postProcess(in, out, num);
+    if (mRecording)
+        record(in, num);
+    else {
+        for (int i = 0; i < num; i++) {
+            mOffset %= mRecLength;
+            out[i] = mMemory[mOffset++];
+        }
+    }
+}
+
+void Loop::LoopTrack::resize() {
+
+    mMemSize *= 2;
+    mMemory = (sample_t*)realloc(mMemory, mMemSize * sizeof(sample_t));
+}
+
+void Loop::IndependentTrack::record(const sample_t *in, int num) {
+
+    mRecLength = mOffset = mOffset + num;
+    while (mRecLength >= mMemSize)
+        resize();
+
+    memcpy(mMemory + mOffset, in, num * sizeof(sample_t));
+}
+
+void Loop::QuantizedTrack::record(const sample_t *in, int num) {
+
+    while (mOffset + num >= mRecLength)
+        mRecLength += mQuant;
+
+    while (mRecLength >= mMemSize)
+        resize();
+
+    memcpy(mMemory + mOffset, in, num * sizeof(sample_t));
+    mOffset += num;
+}
+
+void Loop::OverDubTrack::record(const sample_t *in, int num) {
+
+    for (int i = 0; i < num; i++) {
+        mOffset %= mRecLength;
+        mMemory[mOffset++] += in[i];
+    }
+}
+
+void Loop::stopRec() {
+
+    if (mRec) {
+        uint recLength = mRec->getRecLength();
+        mMaxLength = mMaxLength < recLength ? recLength : mMaxLength;
+        mRec = 0;
+    }
+}
+
+void Loop::startIndependentRec() {
+
+    if (mRec) {
+        stopRec();
+        return;
+    }
+
+    mRec = new IndependentTrack();
+    addProcessor(mRec);
+}
+
+void Loop::startQuantizedRec() {
+
+    if (mRec) {
+        stopRec();
+        return;
+    }
+
+    mRec = new QuantizedTrack(mMaxLength);
+    addProcessor(mRec);
+}
+
+void Loop::startOverDubRec() {
+
+    if (mRec) {
+        stopRec();
+        return;
+    }
+
+    mRec = new OverDubTrack(mMaxLength);
+    addProcessor(mRec);
 }
 
 xml_node<> &Loop::read(xml_node<> &inode) {
+
+    xml_node<> *val = inode.first_node("indrec");
+    if (val)
+        mIndRecId = atoi(val->value());
+
+    xml_node<> *val = inode.first_node("quantrec");
+    if (val)
+        mQuantRecId = atoi(val->value());
+
+    xml_node<> *val = inode.first_node("overdubrec");
+    if (val)
+        mOverDubRecId = atoi(val->value());
+
+    xml_node<> *val = inode.first_node("stop");
+    if (val)
+        mStopId = atoi(val->value());
 
     return inode;
 }
@@ -35,3 +136,4 @@ xml_node<> &Loop::write(xml_node<> &onode) const {
 
     return onode;
 }
+

@@ -20,7 +20,7 @@
 
 #include "ProcessorList.h"
 
-class Parallel : public ProcessorList {
+class Parallel : virtual public ProcessorList {
 public:
 
     const Class *getClass() const { return &cls; }

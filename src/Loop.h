@@ -21,51 +21,95 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "Effect.h"
+#include "Parallel.h"
 
 #define DEFAULTSIZE 4800000
 
-class SingleLoop {
+class Loop : virtual public Parallel, virtual public MidiControl {
 public:
 
-    SingleLoop() : mOffset(0), mSize(DEFAULTSIZE), mSpeed(1) { 
-        mMemory = (sample_t*)malloc(DEFAULTSIZE * sizeof(sample_t));
+    Loop() : Parallel::Parallel(), mSpeed(1), mMaxLength(1), mRec(0) { 
+        addProcessor(new Processor());    
     }
-
-    ~SingleLoop() { 
-        free(mMemory);
-    }
-
-    sample_t operator[](int i) { return mMemory[i % mSize]; }
-    void appen
-
-protected:
-
-    long mOffset;
-    long mSize;
-    float mSpeed;
-
-    sample_t *mMemory;
-};
-
-class Loop : public Effect {
-public:
-
-    Loop() : mSpeed(1) { }
-
-    ~Loop() { }
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Loop(); }
 
-    void process(const sample_t* in, sample_t* out, int num);
-    void setOffset(int offset) { mOffset = offset % MEMORYSIZE; }
+    void stopRec();
+    void startRec(int mode);
+    void startIndependentRec();
+    void startQuantizedRec();
+    void startOverDubRec();
 
 protected:
+
+    class LoopTrack : public Processor {
+    public:
+
+        LoopTrack() : mOffset(0), mMemSize(DEFAULTSIZE), mRecLength(0),
+         mRecording(1) { }
+
+        virtual void record(const sample_t *in, int size) = 0;
+        void process(const sample_t* in, sample_t* out, int num);
+        void resize();
+        void stop() { mRecording = 0; }
+        int getRecLength() { return mRecLength; }
+
+    protected:
+
+        int mOffset, mMemSize, mRecLength, mRecording;
+        float mSpeed;
+
+        sample_t *mMemory;
+    };
+
+
+    class IndependentTrack : public LoopTrack {
+    public:
+
+        IndependentTrack() : LoopTrack::LoopTrack() {
+            mMemory = (sample_t*)calloc(mMemSize, sizeof(sample_t));
+        }
+        ~IndependentTrack() { free(mMemory); }
+
+        void record(const sample_t* in, int size);
+    };
+
+
+    class QuantizedTrack : public LoopTrack {
+    public:
+
+        QuantizedTrack(int quant = 1) : LoopTrack::LoopTrack() {
+            mRecLength = mQuant = quant;
+            mMemory = (sample_t*)calloc(mMemSize, sizeof(sample_t));
+        }
+        ~QuantizedTrack() { free(mMemory); }
+
+        void record(const sample_t* in, int size);
+
+    protected:
+        
+        int mQuant;
+    };
+
+
+    class OverDubTrack : public LoopTrack {
+    public:
+
+        OverDubTrack(int length) : LoopTrack::LoopTrack() {
+            mMemSize = mRecLength = length;
+            mMemory = (sample_t*)calloc(mMemSize, sizeof(sample_t));
+        }
+        ~OverDubTrack() { free(mMemory); }
+
+        void record(const sample_t* in, int size);
+    };
 
     static Class cls;
 
     float mSpeed;
+    uint mMaxLength;
+    LoopTrack *mRec;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
