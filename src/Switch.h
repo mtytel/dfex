@@ -19,6 +19,7 @@
 #define SWITCH_H
 
 #include <string>
+#include <algorithm>
 #include "ProcessorList.h"
 #include "Constant.h"
 

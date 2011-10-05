@@ -23,14 +23,23 @@ using namespace rapidxml;
 Class Switch::cls(string("Switch"), newInstance);
 
 void Switch::process(const sample_t* in, sample_t* out, int num) {
-    
+
+    sample_t silent[num], buffer[num];
+    memset(silent, 0, num * sizeof(sample_t));
+
     sample_t cur[num];
     mController->process(in, cur, num);
 
-    int val = cur[num - 1] >= mProcessors.size() ? 
-     mProcessors.size() - 1 : cur[num - 1];
-
+    uint val = fmin(cur[num - 1], mProcessors.size() - 1);
     mProcessors[val]->process(in, out, num);
+
+    for (uint p = 0; p < mProcessors.size(); p++) {
+        if (p != val) {
+            mProcessors[p]->process(silent, buffer, num);
+            Process::combine(buffer, out, num);
+        }
+    }
+
     postProcess(in, out, num);
 }
 
