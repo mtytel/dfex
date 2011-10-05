@@ -22,11 +22,13 @@ using namespace rapidxml;
 Class Effect::cls(std::string("Effect"), newInstance);
 
 void Effect::process(const sample_t* in, sample_t* out, int num) {
+
     Processor::process(in, out, num);
     postProcess(in, out, num);
 }
 
 void Effect::postProcess(const sample_t* in, sample_t* out, int num) {
+
     sample_t wet[num];
     mWet->process(in, wet, num);
 

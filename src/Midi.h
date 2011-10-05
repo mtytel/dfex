@@ -48,7 +48,7 @@ protected:
     static std::vector<MidiControl*> controllers;
 };
 
-class MidiControl : virtual public Processor {
+class MidiControl : public Processor {
 public:
 
     MidiControl();

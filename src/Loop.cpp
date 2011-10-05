@@ -111,23 +111,35 @@ void Loop::startOverDubRec() {
     addProcessor(mRec);
 }
 
+void Loop::process(const sample_t* in, sample_t* out, int num) {
+
+    sample_t mode[num];
+    mMode->process(in, mode, num);
+
+    if (mode[num - 1] == mStopId && mRec)
+        stopRec();
+    
+    postProcess(in, out, num);
+}
+
 xml_node<> &Loop::read(xml_node<> &inode) {
 
     xml_node<> *val = inode.first_node("indrec");
-    if (val)
-        mIndRecId = atoi(val->value());
+    mIndRecId = val ? atoi(val->value()) : DEFAULTINDID;
 
-    xml_node<> *val = inode.first_node("quantrec");
-    if (val)
-        mQuantRecId = atoi(val->value());
+    val = inode.first_node("quantrec");
+    mQuantRecId = val ? atoi(val->value()) : DEFAULTQUANTID;
 
-    xml_node<> *val = inode.first_node("overdubrec");
-    if (val)
-        mOverDubRecId = atoi(val->value());
+    val = inode.first_node("overdubrec");
+    mOverDubRecId = val ? atoi(val->value()) : DEFAULTOVERDUBID;
 
-    xml_node<> *val = inode.first_node("stop");
-    if (val)
-        mStopId = atoi(val->value());
+    val = inode.first_node("stop");
+    mStopId = val ? atoi(val->value()) : DEFAULTSTOPID;
+
+    delete mMode;
+    mMode = Processor::tryReadProcessor(inode, "reccontrol", DEFAULTMODE);
+    delete mSpeed;
+    mSpeed = Processor::tryReadProcessor(inode, "speedcontrol", DEFAULTSPEED);
 
     return inode;
 }

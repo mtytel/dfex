@@ -22,14 +22,26 @@
 #include <math.h>
 
 #include "Parallel.h"
+#include "Constant.h"
 
 #define DEFAULTSIZE 4800000
+#define DEFAULTSPEED 1
+#define DEFAULTMODE 0
 
-class Loop : virtual public Parallel, virtual public MidiControl {
+#define DEFAULTSTOPID 1
+#define DEFAULTINDID 2
+#define DEFAULTQUANTID 3
+#define DEFAULTOVERDUBID 4
+
+class Loop : public Parallel {
 public:
 
-    Loop() : Parallel::Parallel(), mSpeed(1), mMaxLength(1), mRec(0) { 
+    Loop() : Parallel::Parallel(), mMaxLength(1), mRec(0), 
+     mStopId(DEFAULTSTOPID), mIndRecId(DEFAULTINDID), 
+     mQuantRecId(DEFAULTQUANTID), mOverDubRecId(DEFAULTOVERDUBID) { 
         addProcessor(new Processor());    
+        mSpeed = new Constant(DEFAULTSPEED);
+        mMode = new Constant(DEFAULTMODE);
     }
 
     const Class *getClass() const { return &cls; }
@@ -40,6 +52,8 @@ public:
     void startIndependentRec();
     void startQuantizedRec();
     void startOverDubRec();
+
+    void process(const sample_t* in, sample_t* out, int num);
 
 protected:
 
@@ -107,9 +121,10 @@ protected:
 
     static Class cls;
 
-    float mSpeed;
+    Processor *mSpeed, *mMode;
     uint mMaxLength;
     LoopTrack *mRec;
+    int mStopId, mIndRecId, mQuantRecId, mOverDubRecId;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;

@@ -25,7 +25,7 @@
 #define MEMORYSIZE 4800000
 #define DEFAULTFPC 5000
 
-class Delay : virtual public ProcessorList {
+class Delay : public ProcessorList {
 public:
 
     Delay(float fpc = 5000) : mSingle(0), mOffset(0), mCycleOffset(0),
