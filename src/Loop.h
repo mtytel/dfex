@@ -24,7 +24,7 @@
 #include "Parallel.h"
 #include "Constant.h"
 
-#define DEFAULTSIZE 4800000
+#define DEFAULTSIZE 480000
 #define DEFAULTSPEED 1
 #define DEFAULTMODE 0
 
@@ -39,6 +39,7 @@ public:
     Loop() : Parallel::Parallel(), mMaxLength(1), mRec(0), 
      mStopId(DEFAULTSTOPID), mIndRecId(DEFAULTINDID), 
      mQuantRecId(DEFAULTQUANTID), mOverDubRecId(DEFAULTOVERDUBID) { 
+        mLastId = mStopId;
         mSpeed = new Constant(DEFAULTSPEED);
         mMode = new Constant(DEFAULTMODE);
         addProcessor(new Processor());    
@@ -60,18 +61,16 @@ protected:
     class LoopTrack : public Processor {
     public:
 
-        LoopTrack() : mOffset(0), mMemSize(DEFAULTSIZE), mRecLength(0),
-         mRecording(1) { }
+        LoopTrack() : mOffset(0), mMemSize(DEFAULTSIZE), mRecLength(0) { }
 
         virtual void record(const sample_t *in, int size) = 0;
         void process(const sample_t* in, sample_t* out, int num);
         void resize();
-        void stop() { mRecording = 0; }
         int getRecLength() { return mRecLength; }
 
     protected:
 
-        int mOffset, mMemSize, mRecLength, mRecording;
+        int mOffset, mMemSize, mRecLength;
         float mSpeed;
 
         sample_t *mMemory;
@@ -124,7 +123,7 @@ protected:
     Processor *mSpeed, *mMode;
     uint mMaxLength;
     LoopTrack *mRec;
-    int mStopId, mIndRecId, mQuantRecId, mOverDubRecId;
+    int mStopId, mIndRecId, mQuantRecId, mOverDubRecId, mLastId;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;

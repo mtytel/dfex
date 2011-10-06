@@ -23,31 +23,35 @@
 #include <boost/thread.hpp>
 #include "Processor.h"
 
-class KeyboardControl;
+class KeyboardStomp;
 
 class KeyboardStream { 
 public:
     
     static void stream();
-    static void addController(KeyboardControl*);
+    static void addController(KeyboardStomp*);
 
 protected:
 
     static boost::shared_mutex mutex;
-    static std::vector<KeyboardControl*> controllers;
+    static std::vector<KeyboardStomp*> controllers;
 
     static void readKey();
 };
 
-class KeyboardControl : public Processor {
+class KeyboardStomp : public Processor {
 public:
 
-    KeyboardControl() : mCur(0) { 
+    KeyboardStomp() : mCur(0) { 
         KeyboardStream::addController(this); 
+
+        mMapping.push_back("123\tqwaszx");
+        mMapping.push_back("45678ertyuidfghjcvbn");
+        mMapping.push_back("90-=op[]\\kl;'\nm,./");
     }
 
     const Class *getClass() const { return &cls; }
-    static Object *newInstance() { return new KeyboardControl(); }
+    static Object *newInstance() { return new KeyboardStomp(); }
 
     void process(const sample_t* in, sample_t* out, int num);
     void keyInput(char c);
@@ -57,7 +61,7 @@ protected:
     static Class cls;
     int mCur;
 
-    const std::vector<std::string> mMappings;
+    std::vector<std::string> mMapping;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;

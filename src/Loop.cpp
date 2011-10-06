@@ -24,13 +24,9 @@ Class Loop::cls(std::string("Loop"), newInstance);
 
 void Loop::LoopTrack::process(const sample_t* in, sample_t* out, int num) {
 
-    if (mRecording)
-        record(in, num);
-    else {
-        for (int i = 0; i < num; i++) {
-            mOffset %= mRecLength;
-            out[i] = mMemory[mOffset++];
-        }
+    for (int i = 0; i < num; i++) {
+        mOffset %= mRecLength;
+        out[i] = mMemory[mOffset++];
     }
 }
 
@@ -70,8 +66,9 @@ void Loop::OverDubTrack::record(const sample_t *in, int num) {
 }
 
 void Loop::stopRec() {
-
+    
     if (mRec) {
+        addProcessor(mRec);
         uint recLength = mRec->getRecLength();
         mMaxLength = mMaxLength < recLength ? recLength : mMaxLength;
         mRec = 0;
@@ -86,7 +83,6 @@ void Loop::startIndependentRec() {
     }
 
     mRec = new IndependentTrack();
-    addProcessor(mRec);
 }
 
 void Loop::startQuantizedRec() {
@@ -97,7 +93,6 @@ void Loop::startQuantizedRec() {
     }
 
     mRec = new QuantizedTrack(mMaxLength);
-    addProcessor(mRec);
 }
 
 void Loop::startOverDubRec() {
@@ -108,17 +103,29 @@ void Loop::startOverDubRec() {
     }
 
     mRec = new OverDubTrack(mMaxLength);
-    addProcessor(mRec);
 }
 
 void Loop::process(const sample_t* in, sample_t* out, int num) {
 
-    ProcessorList::process(in, out, num);
     sample_t mode[num];
     mMode->process(in, mode, num);
 
-    if (mode[num - 1] == mStopId && mRec)
-        stopRec();
+    if (mRec) {
+        if (mode[num - 1] == mStopId)
+            stopRec();
+        else
+            mRec->record(in, num);
+    }
+    else {
+        if (mode[num - 1] == mIndRecId)
+            startIndependentRec();
+        else if (mode[num - 1] == mQuantRecId)
+            startQuantizedRec();
+        else if (mode[num - 1] == mOverDubRecId)
+            startOverDubRec();
+    }
+
+    Parallel::process(in, out, num);
     
     postProcess(in, out, num);
 }

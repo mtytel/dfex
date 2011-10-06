@@ -21,14 +21,9 @@ using namespace std;
 using namespace rapidxml;
 
 boost::shared_mutex KeyboardStream::mutex;
-vector<KeyboardControl*> KeyboardStream::controllers;
+vector<KeyboardStomp*> KeyboardStream::controllers;
 
-Class KeyboardControl::cls(string("Keyboard"), newInstance);
-/*const string KeyboardControl::mappings[3] = {
- "123\tqwaszx",
- "45678ertyuidfghjcvbn",
- "90-=op[]\\kl;'\nm,./"};
-*/
+Class KeyboardStomp::cls(string("KeyboardStomp"), newInstance);
 
 void KeyboardStream::readKey() {
 
@@ -45,32 +40,32 @@ void KeyboardStream::stream() {
         readKey();
 }
 
-void KeyboardStream::addController(KeyboardControl *controller) {
+void KeyboardStream::addController(KeyboardStomp *controller) {
 
     boost::unique_lock<boost::shared_mutex> lock(KeyboardStream::mutex);
     KeyboardStream::controllers.push_back(controller);
 }
 
-void KeyboardControl::process(const sample_t* in, sample_t* out, int num) {
+void KeyboardStomp::process(const sample_t* in, sample_t* out, int num) {
     
     for (int i = 0; i < num; i++)
         out[i] = mCur;
 }
 
-void KeyboardControl::keyInput(char c) {
+void KeyboardStomp::keyInput(char c) {
 
     for (int i = 0; i < 3; i++) {
-        if (mMappings[i].find(c) != string::npos)
+        if (mMapping[i].find(c) != string::npos) 
             mCur = i;
     }
 }
 
-xml_node<> &KeyboardControl::read(xml_node<> &inode) {
+xml_node<> &KeyboardStomp::read(xml_node<> &inode) {
 
     return inode;
 }
 
-xml_node<> &KeyboardControl::write(xml_node<> &onode) const {
+xml_node<> &KeyboardStomp::write(xml_node<> &onode) const {
 
     return onode;
 }
