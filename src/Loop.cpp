@@ -38,7 +38,7 @@ void Loop::LoopTrack::resize() {
 
 void Loop::IndependentTrack::record(const sample_t *in, int num) {
 
-    mRecLength = mOffset = mOffset + num;
+    mRecLength = mOffset + num;
     while (mRecLength >= mMemSize)
         resize();
 
@@ -54,21 +54,20 @@ void Loop::QuantizedTrack::record(const sample_t *in, int num) {
         resize();
 
     memcpy(mMemory + mOffset, in, num * sizeof(sample_t));
-    mOffset += num;
 }
 
 void Loop::OverDubTrack::record(const sample_t *in, int num) {
 
+    int pos;
     for (int i = 0; i < num; i++) {
-        mOffset %= mRecLength;
-        mMemory[mOffset++] += in[i];
+        pos  = (mOffset + i) % mRecLength;
+        mMemory[pos] += in[i];
     }
 }
 
 void Loop::stopRec() {
     
     if (mRec) {
-        addProcessor(mRec);
         uint recLength = mRec->getRecLength();
         mMaxLength = mMaxLength < recLength ? recLength : mMaxLength;
         mRec = 0;
@@ -83,6 +82,7 @@ void Loop::startIndependentRec() {
     }
 
     mRec = new IndependentTrack();
+    addProcessor(mRec);
 }
 
 void Loop::startQuantizedRec() {
@@ -93,6 +93,7 @@ void Loop::startQuantizedRec() {
     }
 
     mRec = new QuantizedTrack(mMaxLength);
+    addProcessor(mRec);
 }
 
 void Loop::startOverDubRec() {
@@ -103,6 +104,7 @@ void Loop::startOverDubRec() {
     }
 
     mRec = new OverDubTrack(mMaxLength);
+    addProcessor(mRec);
 }
 
 void Loop::process(const sample_t* in, sample_t* out, int num) {
@@ -110,13 +112,7 @@ void Loop::process(const sample_t* in, sample_t* out, int num) {
     sample_t mode[num];
     mMode->process(in, mode, num);
 
-    if (mRec) {
-        if (mode[num - 1] == mStopId)
-            stopRec();
-        else
-            mRec->record(in, num);
-    }
-    else {
+    if (!mRec) {
         if (mode[num - 1] == mIndRecId)
             startIndependentRec();
         else if (mode[num - 1] == mQuantRecId)
@@ -124,8 +120,19 @@ void Loop::process(const sample_t* in, sample_t* out, int num) {
         else if (mode[num - 1] == mOverDubRecId)
             startOverDubRec();
     }
+    if (mRec) {
+        if (mode[num - 1] == mStopId)
+            stopRec();
+        else
+            mRec->record(in, num);
+        
+        Parallel::process(in, out, num);
+    }
+    else {
+        Parallel::process(in, out, num);
+        Process::combine(in, out, num);
+    }
 
-    Parallel::process(in, out, num);
     
     postProcess(in, out, num);
 }

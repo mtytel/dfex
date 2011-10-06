@@ -42,7 +42,6 @@ public:
         mLastId = mStopId;
         mSpeed = new Constant(DEFAULTSPEED);
         mMode = new Constant(DEFAULTMODE);
-        addProcessor(new Processor());    
     }
 
     const Class *getClass() const { return &cls; }
