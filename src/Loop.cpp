@@ -25,7 +25,6 @@ Class Loop::cls(std::string("Loop"), newInstance);
 Loop::Loop() : Parallel::Parallel(), mMaxLength(1), mRec(0), 
  mStopId(DEFAULTSTOPID), mIndRecId(DEFAULTINDID), 
  mQuantRecId(DEFAULTQUANTID), mOverDubRecId(DEFAULTOVERDUBID) { 
-    mSpeed = new Constant(DEFAULTSPEED);
     mMode = new Constant(DEFAULTMODE);
     mRec = new LoopTrack();
     addProcessor(mRec);
@@ -125,8 +124,6 @@ xml_node<> &Loop::read(xml_node<> &inode) {
 
     delete mMode;
     mMode = Processor::tryReadProcessor(inode, "reccontrol", DEFAULTMODE);
-    delete mSpeed;
-    mSpeed = Processor::tryReadProcessor(inode, "speedcontrol", DEFAULTSPEED);
 
     return inode;
 }

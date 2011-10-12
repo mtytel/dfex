@@ -49,7 +49,7 @@ protected:
     class LoopTrack : public Processor {
     public:
 
-        LoopTrack() : mOffset(0), mMemSize(DEFAULTSIZE), mRecLength(0) { 
+        LoopTrack() : mMemSize(DEFAULTSIZE), mRecLength(0), mOffset(0) { 
             mMemory = (sample_t*)calloc(mMemSize, sizeof(sample_t));
         }
 
@@ -59,22 +59,20 @@ protected:
 
         void process(const sample_t* in, sample_t* out, int num);
         void resize();
-        void stop() { mSpeed = 0; }
 
         int isEmpty() { return mRecLength == 0; }
         int getRecLength() { return mRecLength; }
 
     protected:
-
-        int mOffset, mMemSize, mRecLength;
-        float mSpeed;
+    
+        int mMemSize, mRecLength, mOffset;
 
         sample_t *mMemory;
     };
 
     static Class cls;
 
-    Processor *mSpeed, *mMode;
+    Processor *mMode;
     uint mMaxLength;
     LoopTrack *mRec;
     int mStopId, mIndRecId, mQuantRecId, mOverDubRecId;
