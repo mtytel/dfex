@@ -22,88 +22,72 @@ using namespace rapidxml;
 
 Class Loop::cls(std::string("Loop"), newInstance);
 
+Loop::Loop() : Parallel::Parallel(), mMaxLength(1), mRec(0), 
+ mStopId(DEFAULTSTOPID), mIndRecId(DEFAULTINDID), 
+ mQuantRecId(DEFAULTQUANTID), mOverDubRecId(DEFAULTOVERDUBID) { 
+    mSpeed = new Constant(DEFAULTSPEED);
+    mMode = new Constant(DEFAULTMODE);
+    mRec = new LoopTrack();
+    addProcessor(mRec);
+}
+
 void Loop::LoopTrack::process(const sample_t* in, sample_t* out, int num) {
 
-    for (int i = 0; i < num; i++) {
-        mOffset %= mRecLength;
-        out[i] = mMemory[mOffset++];
+    if (isEmpty())
+        memcpy(out, in, num * sizeof(sample_t));
+    else {
+        for (int i = 0; i < num; i++) {
+            mOffset %= mRecLength;
+            out[i] = mMemory[mOffset++];
+        }
     }
 }
 
 void Loop::LoopTrack::resize() {
 
-    mMemSize *= 2;
-    mMemory = (sample_t*)realloc(mMemory, mMemSize * sizeof(sample_t));
+    if (mMemSize < mRecLength) {
+
+        mMemSize *= (mRecLength / mMemSize + 1);
+        mMemory = (sample_t*)realloc(mMemory, mMemSize * sizeof(sample_t));
+    }
 }
 
-void Loop::IndependentTrack::record(const sample_t *in, int num) {
+void Loop::LoopTrack::independentRecord(const sample_t *in, int num) {
 
     mRecLength = mOffset + num;
-    while (mRecLength >= mMemSize)
-        resize();
+    resize();
 
     memcpy(mMemory + mOffset, in, num * sizeof(sample_t));
 }
 
-void Loop::QuantizedTrack::record(const sample_t *in, int num) {
+void Loop::LoopTrack::quantizedRecord(const sample_t *in, int num, int quant) {
 
-    while (mOffset + num >= mRecLength)
-        mRecLength += mQuant;
-
-    while (mRecLength >= mMemSize)
-        resize();
+    mRecLength = quant * ((mOffset + num) / quant + 1);
+    resize();
 
     memcpy(mMemory + mOffset, in, num * sizeof(sample_t));
 }
 
-void Loop::OverDubTrack::record(const sample_t *in, int num) {
+void Loop::LoopTrack::overDubRecord(const sample_t *in, int num, int length) {
 
-    int pos;
+    mRecLength = length;
+    resize();
+
     for (int i = 0; i < num; i++) {
-        pos  = (mOffset + i) % mRecLength;
+        int pos = (mOffset + i) % mRecLength;
         mMemory[pos] += in[i];
     }
 }
 
 void Loop::stopRec() {
     
-    if (mRec) {
-        uint recLength = mRec->getRecLength();
-        mMaxLength = mMaxLength < recLength ? recLength : mMaxLength;
-        mRec = 0;
-    }
-}
-
-void Loop::startIndependentRec() {
-
-    if (mRec) {
-        stopRec();
+    if (mRec->isEmpty())
         return;
-    }
 
-    mRec = new IndependentTrack();
-    addProcessor(mRec);
-}
+    uint recLength = mRec->getRecLength();
+    mMaxLength = mMaxLength < recLength ? recLength : mMaxLength;
 
-void Loop::startQuantizedRec() {
-
-    if (mRec) {
-        stopRec();
-        return;
-    }
-
-    mRec = new QuantizedTrack(mMaxLength);
-    addProcessor(mRec);
-}
-
-void Loop::startOverDubRec() {
-
-    if (mRec) {
-        stopRec();
-        return;
-    }
-
-    mRec = new OverDubTrack(mMaxLength);
+    mRec = new LoopTrack();
     addProcessor(mRec);
 }
 
@@ -112,28 +96,16 @@ void Loop::process(const sample_t* in, sample_t* out, int num) {
     sample_t mode[num];
     mMode->process(in, mode, num);
 
-    if (!mRec) {
-        if (mode[num - 1] == mIndRecId)
-            startIndependentRec();
-        else if (mode[num - 1] == mQuantRecId)
-            startQuantizedRec();
-        else if (mode[num - 1] == mOverDubRecId)
-            startOverDubRec();
-    }
-    if (mRec) {
-        if (mode[num - 1] == mStopId)
-            stopRec();
-        else
-            mRec->record(in, num);
-        
-        Parallel::process(in, out, num);
-    }
-    else {
-        Parallel::process(in, out, num);
-        Process::combine(in, out, num);
-    }
+    if (mode[num - 1] == mIndRecId) 
+        mRec->independentRecord(in, num);
+    else if (mode[num - 1] == mQuantRecId) 
+        mRec->quantizedRecord(in, num, mMaxLength);
+    else if (mode[num - 1] == mOverDubRecId) 
+        mRec->overDubRecord(in, num, mMaxLength);
+    else if (mode[num - 1] == mStopId)
+        stopRec();
 
-    
+    Parallel::process(in, out, num);
     postProcess(in, out, num);
 }
 
