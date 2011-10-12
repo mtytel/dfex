@@ -56,7 +56,6 @@ public:
 
     virtual void process(const sample_t* in, sample_t* out, int num);
     void midiInput(char val);
-    void setSignal(char *signal, int size);
 
 protected:
 

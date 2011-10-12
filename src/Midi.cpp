@@ -70,14 +70,6 @@ void MidiControl::process(const sample_t* in, sample_t* out, int num) {
         out[i] = mVal;
 }
 
-void MidiControl::setSignal(char *signal, int size) {
-
-    mSignal.clear();
-    
-    for (int i = 0; i < size; i++)
-        mSignal.push_back(signal[i]);
-}
-
 void MidiControl::midiInput(char val) {
 
     if (mMatches >= mSignal.size()) {
@@ -90,6 +82,7 @@ void MidiControl::midiInput(char val) {
 xml_node<> &MidiControl::read(xml_node<> &inode) {
 
     char *tok = strtok(inode.first_attribute("id")->value(), ", ");
+    mSignal.clear();
     while (tok != NULL) {
         mSignal.push_back(atoi(tok));
         tok = strtok(NULL, ", ");
