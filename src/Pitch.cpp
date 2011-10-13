@@ -22,7 +22,7 @@ using namespace std;
 
 Class Pitch::cls(string("Pitch"), newInstance);
 
-Pitch::Pitch() : Effect::Effect() { 
+Pitch::Pitch() : Effect::Effect(), mTransformOffset(0) { 
     mInput = (double*)fftw_malloc(sizeof(double) * BUFFERSIZE); 
     mResult = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * BUFFERSIZE); 
     mInvResult = (double*)fftw_malloc(sizeof(double) * BUFFERSIZE); 
@@ -32,24 +32,36 @@ Pitch::Pitch() : Effect::Effect() {
      FFTW_MEASURE);
 }
 
+Pitch::~Pitch() { 
+    fftw_free(mInput); 
+    fftw_free(mResult); 
+    fftw_free(mInvResult); 
+
+    fftw_free(mForward);
+    fftw_free(mBackward);
+}
+
 void Pitch::process(const sample_t* in, sample_t* out, int num) {
 
-    for (int i = 0; i < num; i++) {
-        mInput[i] = in[i] * (2 - cos(3.1415 * 2 * i / num) / 2);
-    }
+    memmove(mMemory, mMemory + num, (TRANSFORMSIZE - num) * sizeof(sample_t));
+    for (int i = 0; i < num; i++)
+        mMemory[TRANSFORMSIZE - num + i] = in[i];
+
+    for (int i = 0; i < TRANSFORMSIZE; i++)
+        mInput[i] = mMemory[i] * sin(PI * i / TRANSFORMSIZE);
 
     fftw_execute(mForward);
 
-    for (int i = num / 2; i >= 0; i--) {
+    for (int i = TRANSFORMSIZE / 2 - 1; i >= 0; i--) {
         mResult[i * 2][0] = mResult[i][0];
         mResult[i * 2][1] = mResult[i][1];
-        mResult[i][0] = 0;
-        mResult[i][1] = 0;
+        mResult[i * 2 + 1][0] = 0;
+        mResult[i * 2 + 1][1] = 0;
     }
 
     fftw_execute(mBackward);
     for (int i = 0; i < num; i++)
-        out[i] = mInvResult[i] / BUFFERSIZE;
+        out[num - i - 1] = mInvResult[TRANSFORMSIZE - i - 1] / TRANSFORMSIZE;
 
     postProcess(in, out, num);
 }
