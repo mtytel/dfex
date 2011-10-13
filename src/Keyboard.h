@@ -27,7 +27,7 @@ class KeyboardStomp;
 
 class KeyboardStream { 
 public:
-    
+
     static void stream();
     static void addController(KeyboardStomp*);
 
@@ -41,8 +41,9 @@ protected:
 
 class KeyboardStomp : public Processor {
 public:
+    enum { kOff = -1 };
 
-    KeyboardStomp() : mCur(0) { 
+    KeyboardStomp() : mCur(0), mToggle(0) { 
         KeyboardStream::addController(this); 
 
         mMapping.push_back("123\tqwaszx");
@@ -59,7 +60,7 @@ public:
 protected:
 
     static Class cls;
-    int mCur;
+    int mCur, mToggle;
 
     std::vector<std::string> mMapping;
 

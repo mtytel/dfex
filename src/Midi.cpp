@@ -24,7 +24,7 @@ int MidiStream::seqfd;
 vector<MidiControl *> MidiStream::controllers; 
 boost::shared_mutex MidiStream::mutex;
 
-boost::thread MidiControl::midiThread(MidiStream::stream);
+boost::thread MidiStream::midiThread(MidiStream::stream);
 
 Class MidiStomp::cls(std::string("MidiStomp"), MidiStomp::newInstance);
 Class MidiExpression::cls(std::string("MidiExpression"), 
@@ -60,7 +60,8 @@ void MidiStream::stream() {
         readMidi();
 }
 
-MidiControl::MidiControl() : Processor::Processor(), mVal(0), mMatches(0) {
+MidiControl::MidiControl() : Processor::Processor(), mVal(0), mMatches(0),
+ mLowBound(0), mUpBound(-1) {
     MidiStream::addController(this);
 }
 
@@ -70,10 +71,10 @@ void MidiControl::process(const sample_t* in, sample_t* out, int num) {
         out[i] = mVal;
 }
 
-void MidiControl::midiInput(char val) {
+void MidiControl::midiInput(unsigned char val) {
 
-    if (mMatches >= mSignal.size()) {
-        mVal = val;
+    if (mMatches >= mSignal.size() && val >= mLowBound && val <= mUpBound) {
+        matchedValue(val);
         mMatches = 0;
     }
     mMatches = val == mSignal[mMatches] ? mMatches + 1 : 0;
@@ -88,10 +89,42 @@ xml_node<> &MidiControl::read(xml_node<> &inode) {
         tok = strtok(NULL, ", ");
     }
 
+    xml_node<> *val = inode.first_node("range");
+    if (val) {
+        char *tok = strtok(inode.first_node("range")->value(), "-, ");
+        mLowBound = atoi(tok);
+
+        tok = strtok(NULL, "-, ");
+        mUpBound = atoi(tok);
+    }
+    else {
+        mLowBound = 0;
+        mUpBound = -1;
+    }
+
     return inode;
 }
 
 xml_node<> &MidiControl::write(xml_node<> &onode) const {
+
+    return onode;
+}
+
+void MidiStomp::matchedValue(char val) {
+    
+    mVal = (mToggle && val == mVal) ? kOff : val;
+}
+
+xml_node<> &MidiStomp::read(xml_node<> &inode) {
+
+    MidiControl::read(inode);
+
+    mToggle = inode.first_node("toggle") ? 1 : 0;
+
+    return inode;
+}
+
+xml_node<> &MidiStomp::write(xml_node<> &onode) const {
 
     return onode;
 }

@@ -56,12 +56,13 @@ void KeyboardStomp::keyInput(char c) {
 
     for (int i = 0; i < 3; i++) {
         if (mMapping[i].find(c) != string::npos) 
-            mCur = i;
+            mCur = (mToggle && mCur == i) ? kOff : i;
     }
 }
 
 xml_node<> &KeyboardStomp::read(xml_node<> &inode) {
 
+    mToggle = inode.first_node("toggle") ? 1 : 0;
     return inode;
 }
 

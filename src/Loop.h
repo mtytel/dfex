@@ -20,62 +20,67 @@
 
 #include <stdlib.h>
 #include <math.h>
+#include <map>
 
 #include "Parallel.h"
 #include "Constant.h"
 
 #define DEFAULTSIZE 480000
-#define DEFAULTSPEED 1
-#define DEFAULTMODE 1
-
-#define DEFAULTSTOPID 1
-#define DEFAULTINDID 2
-#define DEFAULTQUANTID 4
-#define DEFAULTOVERDUBID 3
+#define DEFAULTSILENT 0
+#define DEFAULTREVERSE 9
 
 class Loop : public Parallel {
 public:
-
     Loop(); 
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Loop(); }
 
-    void stopRec();
     void process(const sample_t* in, sample_t* out, int num);
+    void controlResponse(char val);
+
+    int anyPlaying();
+    int getMaxLength();
+    void silenceAll();
+    void playAll();
 
 protected:
 
     class LoopTrack : public Processor {
     public:
+        enum { kRecording, kPlaying, kSilence };
 
-        LoopTrack() : mMemSize(DEFAULTSIZE), mRecLength(0), mOffset(0) { 
+        LoopTrack(int quant = 1) : mMemSize(DEFAULTSIZE), mRecLength(0), 
+         mOffset(0), mState(kRecording), mQuant(quant) { 
+
             mMemory = (sample_t*)calloc(mMemSize, sizeof(sample_t));
         }
 
-        void independentRecord(const sample_t *in, int size);
-        void quantizedRecord(const sample_t *in, int size, int quant);
-        void overDubRecord(const sample_t *in, int size, int length);
-
         void process(const sample_t* in, sample_t* out, int num);
-        void resize();
+        void toggle();
+        void silence() { mState = kSilence; }
+        void play() { mState = kPlaying; }
 
-        int isEmpty() { return mRecLength == 0; }
+        int isPlaying() { return mState == kPlaying; }
         int getRecLength() { return mRecLength; }
 
     protected:
     
-        int mMemSize, mRecLength, mOffset;
+        void record(const sample_t *in, int num);
+        void stopRecording();
+        void play(sample_t *out, int num);
+        void resize();
 
+        int mMemSize, mRecLength, mOffset, mState, mQuant;
         sample_t *mMemory;
     };
 
     static Class cls;
 
-    Processor *mMode;
-    uint mMaxLength;
-    LoopTrack *mRec;
-    int mStopId, mIndRecId, mQuantRecId, mOverDubRecId;
+    Processor *mControl;
+    int mSilent, mReverse;
+    std::map<int, LoopTrack*> mTrackMap;
+    char mLastVal;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;

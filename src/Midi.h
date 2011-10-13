@@ -44,26 +44,28 @@ public:
 protected:
     
     static boost::shared_mutex mutex;
+    static boost::thread midiThread;
     static int seqfd;
     static std::vector<MidiControl*> controllers;
 };
 
 class MidiControl : public Processor {
 public:
+    enum { kOff = -1 };
 
     MidiControl();
     virtual ~MidiControl() { }
 
     virtual void process(const sample_t* in, sample_t* out, int num);
-    void midiInput(char val);
+    void midiInput(unsigned char val);
+    virtual void matchedValue(char val) { mVal = val; }
 
 protected:
-
-    static boost::thread midiThread;
 
     sample_t mVal;
     uint mMatches;
     std::vector<char> mSignal;
+    uint mLowBound, mUpBound;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
@@ -73,14 +75,19 @@ protected:
 class MidiStomp : public MidiControl {
 public:
 
-    MidiStomp() : MidiControl() { }
+    MidiStomp() : MidiControl(), mToggle(0) { }
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new MidiStomp(); }
+    void matchedValue(char val);
 
 protected:
 
     static Class cls;
+    int mToggle;
+
+    virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
+    virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
 };
 
 

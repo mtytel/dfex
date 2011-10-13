@@ -22,23 +22,46 @@ using namespace rapidxml;
 
 Class Loop::cls(std::string("Loop"), newInstance);
 
-Loop::Loop() : Parallel::Parallel(), mMaxLength(1), mRec(0), 
- mStopId(DEFAULTSTOPID), mIndRecId(DEFAULTINDID), 
- mQuantRecId(DEFAULTQUANTID), mOverDubRecId(DEFAULTOVERDUBID) { 
-    mMode = new Constant(DEFAULTMODE);
-    mRec = new LoopTrack();
-    addProcessor(mRec);
+Loop::Loop() : Parallel::Parallel(), mLastVal(DEFAULTSILENT) {
+
+    mControl = new Constant(DEFAULTSILENT);
+    addProcessor(new Processor());
 }
 
 void Loop::LoopTrack::process(const sample_t* in, sample_t* out, int num) {
 
-    if (isEmpty())
-        memcpy(out, in, num * sizeof(sample_t));
-    else {
-        for (int i = 0; i < num; i++) {
-            mOffset %= mRecLength;
-            out[i] = mMemory[mOffset++];
-        }
+    memset(out, 0, num * sizeof(size_t));
+
+    if (mState == kRecording)
+        record(in, num);
+    else if (mState == kPlaying)
+        play(out, num);
+    else if (mState == kSilence)
+        mOffset = (mOffset + num) % mRecLength;
+}
+
+void Loop::LoopTrack::record(const sample_t *in, int num) {
+
+    mRecLength = mOffset + num;
+    resize();
+
+    memcpy(mMemory + mOffset, in, num * sizeof(sample_t));
+    mOffset += num;
+}
+
+void Loop::LoopTrack::stopRecording() {
+
+    mState = kPlaying;
+    mRecLength = (mOffset / mQuant + 1) * mQuant;
+    cout << mRecLength << endl;
+    resize();
+}
+
+void Loop::LoopTrack::play(sample_t *out, int num) {
+
+    for (int i = 0; i < num; i++) {
+        out[i] = mMemory[mOffset];
+        mOffset = (mOffset + 1) %mRecLength;
     }
 }
 
@@ -51,79 +74,108 @@ void Loop::LoopTrack::resize() {
     }
 }
 
-void Loop::LoopTrack::independentRecord(const sample_t *in, int num) {
+void Loop::LoopTrack::toggle() {
 
-    mRecLength = mOffset + num;
-    resize();
-
-    memcpy(mMemory + mOffset, in, num * sizeof(sample_t));
-}
-
-void Loop::LoopTrack::quantizedRecord(const sample_t *in, int num, int quant) {
-
-    mRecLength = quant * ((mOffset + num) / quant + 1);
-    resize();
-
-    memcpy(mMemory + mOffset, in, num * sizeof(sample_t));
-}
-
-void Loop::LoopTrack::overDubRecord(const sample_t *in, int num, int length) {
-
-    mRecLength = length;
-    resize();
-
-    for (int i = 0; i < num; i++) {
-        int pos = (mOffset + i) % mRecLength;
-        mMemory[pos] += in[i];
-    }
-}
-
-void Loop::stopRec() {
-    
-    if (mRec->isEmpty())
-        return;
-
-    uint recLength = mRec->getRecLength();
-    mMaxLength = mMaxLength < recLength ? recLength : mMaxLength;
-
-    mRec = new LoopTrack();
-    addProcessor(mRec);
+    if (mState == kRecording)
+        stopRecording();
+    else if (mState == kPlaying)
+        mState = kSilence;
+    else if (mState == kSilence)
+        mState = kPlaying;
 }
 
 void Loop::process(const sample_t* in, sample_t* out, int num) {
 
-    sample_t mode[num];
-    mMode->process(in, mode, num);
-
-    if (mode[num - 1] == mIndRecId) 
-        mRec->independentRecord(in, num);
-    else if (mode[num - 1] == mQuantRecId) 
-        mRec->quantizedRecord(in, num, mMaxLength);
-    else if (mode[num - 1] == mOverDubRecId) 
-        mRec->overDubRecord(in, num, mMaxLength);
-    else if (mode[num - 1] == mStopId)
-        stopRec();
+    sample_t control[num];
+    mControl->process(in, control, num);
+    controlResponse(control[num - 1]);
 
     Parallel::process(in, out, num);
     postProcess(in, out, num);
 }
 
+void Loop::controlResponse(char val) {
+    
+    if (val == mLastVal)
+        return;
+
+    map<int, LoopTrack*>::const_iterator found = mTrackMap.find(mLastVal);
+    if (found != mTrackMap.end())
+        found->second->toggle();
+        
+    if (val == mSilent || (val < 0 && mLastVal == mSilent)) {
+        if (anyPlaying())
+            silenceAll();
+        else
+            playAll();
+    }
+    else if (val == mReverse && mLastVal) {
+
+    }
+    else if (val >= 0) {
+        map<int, LoopTrack*>::const_iterator found = mTrackMap.find(val);
+        
+        if (found == mTrackMap.end()) {
+            LoopTrack *newLoop = new LoopTrack(getMaxLength());
+            mTrackMap[val] = newLoop;
+            addProcessor(newLoop);
+        }
+        else
+            mTrackMap[val]->toggle();
+    }
+    
+    mLastVal = val;
+}
+
+int Loop::anyPlaying() {
+
+    map<int, LoopTrack*>::const_iterator it, end = mTrackMap.end();
+    for (it = mTrackMap.begin(); it != end; it++) 
+        if (it->second->isPlaying())
+            return 1;
+
+    return 0;
+}
+
+int Loop::getMaxLength() {
+
+    map<int, LoopTrack*>::const_iterator it, end = mTrackMap.end();
+    int maxLength = 1;
+
+    for (it = mTrackMap.begin(); it != end; it++) { 
+        if (it->second->isPlaying()) {
+            int length = it->second->getRecLength();
+            maxLength = length > maxLength ? length : maxLength;
+        }
+    }
+
+    return maxLength;
+}
+
+void Loop::silenceAll() {
+
+    map<int, LoopTrack*>::const_iterator it, end = mTrackMap.end();
+    for (it = mTrackMap.begin(); it != end; it++) 
+        it->second->silence();
+}
+
+void Loop::playAll() {
+
+    map<int, LoopTrack*>::const_iterator it, end = mTrackMap.end();
+    for (it = mTrackMap.begin(); it != end; it++) 
+        it->second->play();
+}
+
 xml_node<> &Loop::read(xml_node<> &inode) {
 
-    xml_node<> *val = inode.first_node("indrec");
-    mIndRecId = val ? atoi(val->value()) : DEFAULTINDID;
+    xml_node<> *val = inode.first_node("silent");
+    mSilent = val ? atoi(val->value()) : DEFAULTSILENT;
 
-    val = inode.first_node("quantrec");
-    mQuantRecId = val ? atoi(val->value()) : DEFAULTQUANTID;
+    val = inode.first_node("reverse");
+    mReverse = val ? atoi(val->value()) : DEFAULTREVERSE;
 
-    val = inode.first_node("overdubrec");
-    mOverDubRecId = val ? atoi(val->value()) : DEFAULTOVERDUBID;
-
-    val = inode.first_node("stop");
-    mStopId = val ? atoi(val->value()) : DEFAULTSTOPID;
-
-    delete mMode;
-    mMode = Processor::tryReadProcessor(inode, "reccontrol", DEFAULTMODE);
+    delete mControl;
+    mControl = Processor::tryReadProcessor(inode, "control", DEFAULTSILENT);
 
     return inode;
 }
