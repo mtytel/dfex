@@ -38,6 +38,7 @@ public:
 
     void process(const sample_t* in, sample_t* out, int num);
     void controlResponse(char val);
+    void buttonPushed(char button);
 
     int anyPlaying();
     int getMaxLength();
@@ -62,6 +63,7 @@ protected:
         void play() { mState = kPlaying; }
 
         int isPlaying() { return mState == kPlaying; }
+        int isRecording() { return mState == kRecording; }
         int getRecLength() { return mRecLength; }
 
     protected:
@@ -80,7 +82,7 @@ protected:
     Processor *mControl;
     int mSilent, mReverse;
     std::map<int, LoopTrack*> mTrackMap;
-    char mLastVal;
+    char mLastVal, mLastButton;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;

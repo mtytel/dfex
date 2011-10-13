@@ -22,7 +22,8 @@ using namespace rapidxml;
 
 Class Loop::cls(std::string("Loop"), newInstance);
 
-Loop::Loop() : Parallel::Parallel(), mLastVal(DEFAULTSILENT) {
+Loop::Loop() : Parallel::Parallel(), mLastVal(DEFAULTSILENT),
+ mLastButton(DEFAULTSILENT) {
 
     mControl = new Constant(DEFAULTSILENT);
     addProcessor(new Processor());
@@ -53,7 +54,6 @@ void Loop::LoopTrack::stopRecording() {
 
     mState = kPlaying;
     mRecLength = (mOffset / mQuant + 1) * mQuant;
-    cout << mRecLength << endl;
     resize();
 }
 
@@ -96,35 +96,44 @@ void Loop::process(const sample_t* in, sample_t* out, int num) {
 
 void Loop::controlResponse(char val) {
     
-    if (val == mLastVal)
-        return;
+    if (val != mLastVal)
+        buttonPushed(val >= 0 ? val : mLastVal);
 
-    map<int, LoopTrack*>::const_iterator found = mTrackMap.find(mLastVal);
-    if (found != mTrackMap.end())
-        found->second->toggle();
-        
-    if (val == mSilent || (val < 0 && mLastVal == mSilent)) {
+    mLastVal = val;
+}
+
+void Loop::buttonPushed(char but) {
+    
+
+    if (but == mSilent) {
         if (anyPlaying())
             silenceAll();
         else
             playAll();
     }
-    else if (val == mReverse && mLastVal) {
+    else if (but == mReverse) {
 
     }
-    else if (val >= 0) {
-        map<int, LoopTrack*>::const_iterator found = mTrackMap.find(val);
+    else if (but == mLastButton) {
+        mTrackMap[but]->toggle();
+    }
+    else {
+        map<int, LoopTrack*>::const_iterator found = mTrackMap.find(but);
         
         if (found == mTrackMap.end()) {
             LoopTrack *newLoop = new LoopTrack(getMaxLength());
-            mTrackMap[val] = newLoop;
+            mTrackMap[but] = newLoop;
             addProcessor(newLoop);
         }
         else
-            mTrackMap[val]->toggle();
+            mTrackMap[but]->toggle();
     }
-    
-    mLastVal = val;
+
+    map<int, LoopTrack*>::const_iterator found = mTrackMap.find(mLastButton);
+    if (found != mTrackMap.end() && found->second->isRecording())
+        found->second->play();
+
+    mLastButton = but;
 }
 
 int Loop::anyPlaying() {
