@@ -23,10 +23,13 @@
 #include <fftw3.h>
 #include "Effect.h"
 
+#define TRANSFORMSIZE 2048
+
 class Pitch : public Effect {
 public:
 
     Pitch(); 
+    ~Pitch();
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Pitch(); }
@@ -37,6 +40,8 @@ protected:
 
     static Class cls;
 
+    int mTransformOffset;
+    sample_t mMemory[TRANSFORMSIZE];
     double *mInput, *mInvResult;
     fftw_complex *mResult;
     fftw_plan mForward, mBackward;

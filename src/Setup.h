@@ -21,7 +21,7 @@
 #include <jack/jack.h>
 #define MAXBUFFER 2048
 #define BUFFERSIZE 2048
-#define TRANSFORMSIZE 128
+#define PI 3.141529
 
 typedef jack_default_audio_sample_t sample_t;
 
