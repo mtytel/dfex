@@ -64,7 +64,7 @@ protected:
 
     sample_t mVal;
     uint mMatches;
-    std::vector<char> mSignal;
+    std::vector<unsigned char> mSignal;
     uint mLowBound, mUpBound;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
