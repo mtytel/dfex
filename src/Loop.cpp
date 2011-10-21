@@ -22,8 +22,8 @@ using namespace rapidxml;
 
 Class Loop::cls(std::string("Loop"), newInstance);
 
-Loop::Loop() : Parallel::Parallel(), mLastVal(DEFAULTSILENT),
- mLastButton(DEFAULTSILENT) {
+Loop::Loop() : Parallel::Parallel(), mSilentId(DEFAULTSILENT), 
+ mReverseId(DEFAULTREVERSE), mTrackQuant(1), mLastVal(0), mLastButton(0) {
 
     mControl = new Constant(DEFAULTSILENT);
     addProcessor(new Processor());
@@ -105,23 +105,20 @@ void Loop::controlResponse(char val) {
 void Loop::buttonPushed(char but) {
     
 
-    if (but == mSilent) {
+    if (but == mSilentId) {
         if (anyPlaying())
             silenceAll();
         else
             playAll();
     }
-    else if (but == mReverse) {
+    else if (but == mReverseId) {
 
-    }
-    else if (but == mLastButton) {
-        mTrackMap[but]->toggle();
     }
     else {
         map<int, LoopTrack*>::const_iterator found = mTrackMap.find(but);
         
         if (found == mTrackMap.end()) {
-            LoopTrack *newLoop = new LoopTrack(getMaxLength());
+            LoopTrack *newLoop = new LoopTrack(getMinQuant());
             mTrackMap[but] = newLoop;
             addProcessor(newLoop);
         }
@@ -130,8 +127,11 @@ void Loop::buttonPushed(char but) {
     }
 
     map<int, LoopTrack*>::const_iterator found = mTrackMap.find(mLastButton);
-    if (found != mTrackMap.end() && found->second->isRecording())
+    if (found != mTrackMap.end() && found->second->isRecording()) {
         found->second->play();
+        int length = found->second->getRecLength();
+        mTrackQuant = mTrackQuant < length ? length : mTrackQuant;
+    }
 
     mLastButton = but;
 }
@@ -144,21 +144,6 @@ int Loop::anyPlaying() {
             return 1;
 
     return 0;
-}
-
-int Loop::getMaxLength() {
-
-    map<int, LoopTrack*>::const_iterator it, end = mTrackMap.end();
-    int maxLength = 1;
-
-    for (it = mTrackMap.begin(); it != end; it++) { 
-        if (it->second->isPlaying()) {
-            int length = it->second->getRecLength();
-            maxLength = length > maxLength ? length : maxLength;
-        }
-    }
-
-    return maxLength;
 }
 
 void Loop::silenceAll() {
@@ -178,10 +163,13 @@ void Loop::playAll() {
 xml_node<> &Loop::read(xml_node<> &inode) {
 
     xml_node<> *val = inode.first_node("silent");
-    mSilent = val ? atoi(val->value()) : DEFAULTSILENT;
+    mSilentId = val ? atoi(val->value()) : DEFAULTSILENT;
 
     val = inode.first_node("reverse");
-    mReverse = val ? atoi(val->value()) : DEFAULTREVERSE;
+    mReverseId = val ? atoi(val->value()) : DEFAULTREVERSE;
+
+    val = inode.first_node("quant");
+    mTrackQuant = val ? atoi(val->value()) : 1;
 
     delete mControl;
     mControl = Processor::tryReadProcessor(inode, "control", DEFAULTSILENT);

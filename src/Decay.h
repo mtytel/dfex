@@ -15,39 +15,37 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ALIASER_H
-#define ALIASER_H
+#ifndef DECAY_H
+#define DECAY_H
 
-#include <stdlib.h>
-#include <math.h>
-#include "Effect.h"
+#include <iostream>
+#include "Processor.h"
+#include "Constant.h"
 
-#define DEFAULTFPC 2.0
+#define DEFAULTDECAY 1
 
-class Aliaser : public Effect {
+class Decay : public Processor {
 public:
 
-    Aliaser(float fpc = DEFAULTFPC) : Effect::Effect(), mOffset(0), 
-     mCurSamp(0) { 
-        mFPC = new Constant(fpc);
+    Decay() : mCurVal(0) {
+        mDecay = new Constant(DEFAULTDECAY);
     }
 
-    ~Aliaser() {
-        delete mFPC;
+    ~Decay() {
+        delete mDecay;
     }
 
     const Class *getClass() const { return &cls; }
-    static Object *newInstance() { return new Aliaser(); }
+    static Object *newInstance() { return new Decay(); }
 
-    void process(const sample_t* in, sample_t* out, int num);
+    virtual void process(const sample_t* in, sample_t* out, int num);
 
 protected:
 
     static Class cls;
 
-    Processor *mFPC;
-    float mOffset;
-    sample_t mCurSamp;
+    sample_t mCurVal;
+    Processor *mDecay;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
