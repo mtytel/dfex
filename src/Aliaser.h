@@ -32,7 +32,7 @@ public:
         mFPC = new Constant(fpc);
     }
 
-    ~Aliaser() {
+    virtual ~Aliaser() {
         delete mFPC;
     }
 

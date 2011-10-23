@@ -32,6 +32,7 @@
 class Loop : public Parallel {
 public:
     Loop(); 
+    virtual ~Loop();
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Loop(); }

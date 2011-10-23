@@ -28,7 +28,11 @@ class Harmonizer : public Effect {
 public:
 
     Harmonizer() : Effect::Effect() { 
-        mRoot =  new Constant(DEFAULTROOT);
+        mRoot = new Constant(DEFAULTROOT);
+    }
+
+    virtual ~Harmonizer() {
+        delete mRoot;
     }
 
     const Class *getClass() const { return &cls; }

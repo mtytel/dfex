@@ -35,7 +35,7 @@ public:
         mFPC = new Constant(fpc);
     }
 
-    ~Delay() {
+    virtual ~Delay() {
         delete mFPC;
     }
 

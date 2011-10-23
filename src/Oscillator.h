@@ -37,7 +37,7 @@ public:
         mFPC = new Constant(fpc);
     }
 
-    ~Oscillator() {
+    virtual ~Oscillator() {
         delete mMin;
         delete mMax;
         delete mFPC;

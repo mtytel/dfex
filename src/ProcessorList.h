@@ -34,6 +34,9 @@ class Oscillator;
 class ProcessorList : public Effect {
 public:
 
+    ProcessorList() { }
+    virtual ~ProcessorList() { }
+
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new ProcessorList(); }
 

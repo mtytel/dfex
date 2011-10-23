@@ -32,7 +32,7 @@ public:
         mBits = new Constant(bits);
     }
 
-    ~BitCrush() {
+    virtual ~BitCrush() {
         delete mBits;
     }
 

@@ -29,6 +29,11 @@ Loop::Loop() : Parallel::Parallel(), mSilentId(DEFAULTSILENT),
     addProcessor(new Processor());
 }
 
+Loop::~Loop() {
+
+    delete mControl;
+}
+
 void Loop::LoopTrack::process(const sample_t* in, sample_t* out, int num) {
 
     memset(out, 0, num * sizeof(size_t));

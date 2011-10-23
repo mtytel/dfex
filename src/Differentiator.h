@@ -26,6 +26,7 @@ class Differentiator : public Effect {
 public:
 
     Differentiator() : Effect::Effect(), mLastSamp(0) { }
+    virtual ~Differentiator() { }
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Differentiator(); }

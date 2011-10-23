@@ -75,6 +75,7 @@ class MidiStomp : public MidiControl {
 public:
 
     MidiStomp() : MidiControl(), mToggle(0) { }
+    virtual ~MidiStomp() { }
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new MidiStomp(); }

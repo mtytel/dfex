@@ -31,7 +31,7 @@ public:
         mVol = new Constant(vol);
     }
 
-    ~Volume() {
+    virtual ~Volume() {
         delete mVol;
     }
 

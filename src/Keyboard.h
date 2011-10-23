@@ -51,6 +51,8 @@ public:
         mMapping.push_back("90-=op[]\\kl;'\nm,./");
     }
 
+    virtual ~KeyboardStomp() { }
+
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new KeyboardStomp(); }
 

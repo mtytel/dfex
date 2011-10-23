@@ -31,7 +31,7 @@ public:
         mDecay = new Constant(DEFAULTDECAY);
     }
 
-    ~Decay() {
+    virtual ~Decay() {
         delete mDecay;
     }
 
