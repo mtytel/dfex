@@ -27,7 +27,7 @@ void Parallel::process(const sample_t* in, sample_t* out, int num) {
 
     for (uint i = 0; i < mProcessors.size(); i++) {
         mProcessors[i]->process(in, mBuffer, num);
-        Process::combine(mBuffer, out, num);
+        Process::combine(mBuffer, out, out, num);
     }
 
     postProcess(in, out, num);

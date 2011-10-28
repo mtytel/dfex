@@ -28,11 +28,11 @@ typedef jack_default_audio_sample_t sample_t;
 class Process {
 public:
 
-    static sample_t linearInterpolate(sample_t left, sample_t right, float val);
-    static void combine(const sample_t* one, sample_t* two, int num);
-    static void fit(const sample_t* from, sample_t* to, int numFrom, int numTo);
-    static void power(const sample_t* from, sample_t* to, float exp, int num);
-    static void invert(const sample_t* from, sample_t* to, int num);
+    static sample_t linearInterpolate(sample_t, sample_t, float);
+    static void combine(const sample_t*, const sample_t*, sample_t*, int);
+    static void fit(const sample_t*, sample_t*, int, int);
+    static void power(const sample_t*, sample_t*, float, int);
+    static void invert(const sample_t*, sample_t*, int);
 };
 
 #endif

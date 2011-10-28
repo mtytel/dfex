@@ -39,6 +39,10 @@ double WaveFunctions::sawFall(double val) {
     return 1 - sawRise(val);
 }
 
+double WaveFunctions::cosWindow(double val) {
+    return 1 - cosine(val);
+}
+
 waveFunction WaveFunctions::getFunction(int type) {
     if (type == kOn)
         return on;

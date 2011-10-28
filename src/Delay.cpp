@@ -49,7 +49,7 @@ void Delay::process(const sample_t* in, sample_t* out, int num) {
          num + st * (periodPrev - mCurPeriod), num);
 
         mProcessors[st]->process(fit, mBuffer, num);
-        Process::combine(mBuffer, out, num);
+        Process::combine(mBuffer, out, out, num);
     }
 
     postProcess(in, out, num);
