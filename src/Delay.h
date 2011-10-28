@@ -43,7 +43,6 @@ public:
     static Object *newInstance() { return new Delay(); }
 
     void process(const sample_t* in, sample_t* out, int num);
-    void setOffset(int offset) { mOffset = offset % MEMORYSIZE; }
 
 protected:
 
