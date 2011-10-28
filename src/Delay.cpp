@@ -34,7 +34,7 @@ sample_t Delay::getVal(sample_t curSamp) {
 
 void Delay::process(const sample_t* in, sample_t* out, int num) {
 
-    int curOffset = mOffset, periodPrev = round(mCurPeriod);
+    int curOffset = mOffset, prevPeriod = round(mCurPeriod);
     float periods[num];
 
     mPeriod->process(in, periods, num);
@@ -50,11 +50,11 @@ void Delay::process(const sample_t* in, sample_t* out, int num) {
     memset(out, 0, num * sizeof(sample_t));
 
     for (uint st = 0; st < mProcessors.size(); st++) {
-        int stIndex = (MEMORYSIZE + curOffset - st * periodPrev) % MEMORYSIZE;
+        int stIndex = (MEMORYSIZE + curOffset - st * prevPeriod) % MEMORYSIZE;
 
         sample_t fit[num];
         Process::fit(&mMemory[stIndex], fit, 
-         num + st * (periodPrev - mCurPeriod), num);
+         num + st * (prevPeriod - mCurPeriod), num);
 
         mProcessors[st]->process(fit, mBuffer, num);
         Process::combine(mBuffer, out, out, num);
