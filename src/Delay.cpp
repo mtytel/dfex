@@ -21,6 +21,17 @@ using namespace rapidxml;
 
 Class Delay::cls(std::string("Delay"), newInstance);
 
+sample_t Delay::getVal(sample_t curSamp) {
+
+    if (!mSingle)
+        return curSamp;
+
+    if (++mCycleOffset >= mCurPeriod * mProcessors.size())
+        mCycleOffset = 0;
+
+    return mCycleOffset >= mCurPeriod ? 0 : curSamp;
+}
+
 void Delay::process(const sample_t* in, sample_t* out, int num) {
 
     int curOffset = mOffset, periodPrev = round(mCurPeriod);
@@ -29,14 +40,11 @@ void Delay::process(const sample_t* in, sample_t* out, int num) {
     mPeriod->process(in, periods, num);
     mCurPeriod = round(periods[num - 1]);
     
-    for (int i = 0; i < num; i++) {
-        sample_t val = (mCycleOffset >= mCurPeriod && mSingle) ? 0 : in[i];
-        mMemory[mOffset] = mMemory[mOffset + MEMORYSIZE] = val;
+    for (int i = 0; i < num; i++) { 
+        mMemory[mOffset] = mMemory[mOffset + MEMORYSIZE] = getVal(in[i]);
 
         if (++mOffset >= MEMORYSIZE)
             mOffset = 0;
-        if (++mCycleOffset >= mCurPeriod * mProcessors.size())
-            mCycleOffset = 0;
     }
 
     memset(out, 0, num * sizeof(sample_t));

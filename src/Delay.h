@@ -42,6 +42,7 @@ public:
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Delay(); }
 
+    sample_t getVal(sample_t curSamp);
     void process(const sample_t* in, sample_t* out, int num);
 
 protected:
