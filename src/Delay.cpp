@@ -23,29 +23,30 @@ Class Delay::cls(std::string("Delay"), newInstance);
 
 void Delay::process(const sample_t* in, sample_t* out, int num) {
 
-    int curOffset = mOffset, fpcPrev = round(mCurFPC);
-    float fpcs[num];
+    int curOffset = mOffset, periodPrev = round(mCurPeriod);
+    float periods[num];
 
-    mFPC->process(in, fpcs, num);
-    mCurFPC = round(fpcs[num - 1]);
+    mPeriod->process(in, periods, num);
+    mCurPeriod = round(periods[num - 1]);
     
     for (int i = 0; i < num; i++) {
-        sample_t val = (mCycleOffset >= mCurFPC && mSingle) ? 0 : in[i];
+        sample_t val = (mCycleOffset >= mCurPeriod && mSingle) ? 0 : in[i];
         mMemory[mOffset] = mMemory[mOffset + MEMORYSIZE] = val;
 
         if (++mOffset >= MEMORYSIZE)
             mOffset = 0;
-        if (++mCycleOffset >= mCurFPC * mProcessors.size())
+        if (++mCycleOffset >= mCurPeriod * mProcessors.size())
             mCycleOffset = 0;
     }
 
     memset(out, 0, num * sizeof(sample_t));
 
     for (uint st = 0; st < mProcessors.size(); st++) {
-        int stIndex = (MEMORYSIZE + curOffset - st * fpcPrev) % MEMORYSIZE;
+        int stIndex = (MEMORYSIZE + curOffset - st * periodPrev) % MEMORYSIZE;
 
         sample_t fit[num];
-        Process::fit(&mMemory[stIndex], fit, num + st * (fpcPrev - mCurFPC), num);
+        Process::fit(&mMemory[stIndex], fit, 
+         num + st * (periodPrev - mCurPeriod), num);
 
         mProcessors[st]->process(fit, mBuffer, num);
         Process::combine(mBuffer, out, num);
@@ -58,8 +59,8 @@ xml_node<> &Delay::read(xml_node<> &inode) {
 
     ProcessorList::read(inode);
 
-    free(mFPC);
-    mFPC = Processor::tryReadProcessor(inode, "fpc", DEFAULTFPC);
+    free(mPeriod);
+    mPeriod = Processor::tryReadProcessor(inode, "period", DEFAULTPERIOD);
     
     xml_node<> *singNode = inode.first_node("single");
     mSingle = singNode ? 1 : 0;

@@ -22,18 +22,18 @@
 #include <math.h>
 #include "Effect.h"
 
-#define DEFAULTFPC 2.0
+#define DEFAULTPERIOD 2.0
 
 class Aliaser : public Effect {
 public:
 
-    Aliaser(float fpc = DEFAULTFPC) : Effect::Effect(), mOffset(0), 
+    Aliaser(float period = DEFAULTPERIOD) : Effect::Effect(), mOffset(0), 
      mCurSamp(0) { 
-        mFPC = new Constant(fpc);
+        mPeriod = new Constant(period);
     }
 
     virtual ~Aliaser() {
-        delete mFPC;
+        delete mPeriod;
     }
 
     const Class *getClass() const { return &cls; }
@@ -45,7 +45,7 @@ protected:
 
     static Class cls;
 
-    Processor *mFPC;
+    Processor *mPeriod;
     float mOffset;
     sample_t mCurSamp;
 
@@ -54,3 +54,4 @@ protected:
 };
 
 #endif
+

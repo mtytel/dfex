@@ -2,7 +2,7 @@
 <Volume>
     <volume>
         <Oscillator wave="cos">
-            <fpc>100</fpc>
+            <period>100</period>
             <max>1.0</max>
             <min>-1.0</min>
         </Oscillator>

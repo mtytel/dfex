@@ -24,14 +24,14 @@ Class Aliaser::cls(string("Aliaser"), newInstance);
 
 void Aliaser::process(const sample_t* in, sample_t* out, int num) {
 
-    float fpc[num];
-    mFPC->process(in, fpc, num);
+    sample_t period[num];
+    mPeriod->process(in, period, num);
 
     for (int i = 0; i < num; i++) {
 
-        if (++mOffset > fpc[i]) { 
+        if (++mOffset >= period[i]) { 
             mCurSamp = in[i];
-            mOffset -= fpc[i];
+            mOffset = 0;
         }
         out[i] = mCurSamp;
     }
@@ -43,8 +43,8 @@ xml_node<> &Aliaser::read(xml_node<> &inode) {
     
     Effect::read(inode);
 
-    free(mFPC);
-    mFPC = Processor::tryReadProcessor(inode, "fpc", DEFAULTFPC);
+    free(mPeriod);
+    mPeriod = Processor::tryReadProcessor(inode, "period", DEFAULTPERIOD);
 
     return inode;
 }

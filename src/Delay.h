@@ -23,20 +23,20 @@
 #include "ProcessorList.h"
 
 #define MEMORYSIZE 4800000
-#define DEFAULTFPC 5000
+#define DEFAULTPERIOD 5000
 
 class Delay : public ProcessorList {
 public:
 
-    Delay(float fpc = 5000) : mSingle(0), mOffset(0), mCycleOffset(0),
-     mCurFPC(0) {
+    Delay(float period = 5000) : mSingle(0), mOffset(0), mCycleOffset(0),
+     mCurPeriod(0) {
         memset(mMemory, 0, MEMORYSIZE * 2 * sizeof(sample_t));
         memset(mBuffer, 0, MAXBUFFER * sizeof(sample_t));
-        mFPC = new Constant(fpc);
+        mPeriod = new Constant(period);
     }
 
     virtual ~Delay() {
-        delete mFPC;
+        delete mPeriod;
     }
 
     const Class *getClass() const { return &cls; }
@@ -53,8 +53,8 @@ protected:
     sample_t mBuffer[MAXBUFFER];
     int mSingle;
     long mOffset, mCycleOffset;
-    Processor *mFPC;
-    sample_t mCurFPC;
+    Processor *mPeriod;
+    sample_t mCurPeriod;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
