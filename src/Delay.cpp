@@ -35,7 +35,7 @@ sample_t Delay::getVal(sample_t curSamp) {
 void Delay::process(const sample_t* in, sample_t* out, int num) {
 
     int curOffset = mOffset, prevPeriod = round(mCurPeriod);
-    float periods[num];
+    sample_t periods[num];
 
     mPeriod->process(in, periods, num);
     mCurPeriod = round(periods[num - 1]);
