@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Delay>
+    <period>5000</period>
+    <num>10</num>
+</Delay>
+
