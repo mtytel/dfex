@@ -51,11 +51,10 @@ void Delay::process(const sample_t* in, sample_t* out, int num) {
 
     for (uint st = 0; st < mProcessors.size(); st++) {
         int stIndex = (MEMORYSIZE + curOffset - st * prevPeriod) % MEMORYSIZE;
-
+        int procSize = num + st * (prevPeriod - mCurPeriod);
         sample_t fit[num];
-        Process::fit(&mMemory[stIndex], fit, 
-         num + st * (prevPeriod - mCurPeriod), num);
 
+        Process::fit(&mMemory[stIndex], fit, procSize, num);
         mProcessors[st]->process(fit, mBuffer, num);
         Process::combine(mBuffer, out, out, num);
     }
