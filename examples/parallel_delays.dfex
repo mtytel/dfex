@@ -4,17 +4,17 @@
         <Delay>
             <period>5333</period>
             <num>3</num>
-            <single />
+            <granular />
         </Delay>
         <Delay>
             <period>1920</period>
             <num>5</num>
-            <single />
+            <granular />
         </Delay>
         <Delay>
             <period>480</period>
             <num>10</num>
-            <single />
+            <granular />
         </Delay>
     </processors>
 </Parallel>

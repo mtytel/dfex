@@ -16,23 +16,22 @@
  */
 
 #ifndef ROTATEDELAY_H
-#define ROTEDELAY_H
+#define ROTATEDELAY_H
 
 #include <stdlib.h>
 #include <math.h>
+
 #include "ProcessorList.h"
+#include "Memoizer.h"
 
-#define MEMORYSIZE 4800000
 #define DEFAULTPERIOD 5000
-#define DEFAULTSPEED -2
+#define DEFAULTSPEED -1
 
-class RotateDelay : public ProcessorList {
+class RotateDelay : public ProcessorList, public Memoizer {
 public:
 
-    RotateDelay(float period = DEFAULTPERIOD, float speed = DEFAULTSPEED) :
-     mOffset(0), mRotation(0), mCurPeriod(0) {
-        memset(mMemory, 0, MEMORYSIZE * 2 * sizeof(sample_t));
-        memset(mBuffer, 0, MAXBUFFER * sizeof(sample_t));
+    RotateDelay(float period = DEFAULTPERIOD, float speed = DEFAULTSPEED) : 
+     mRotation(0) {
         mPeriod = new Constant(period);
         mSpeed = new Constant(speed);
     }
@@ -51,12 +50,8 @@ protected:
 
     static Class cls;
 
-    sample_t mMemory[MEMORYSIZE * 2];
-    sample_t mBuffer[MAXBUFFER];
-    long mOffset;
-    float mRotation
+    float mRotation;
     Processor *mPeriod, *mSpeed;
-    sample_t mCurPeriod;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;

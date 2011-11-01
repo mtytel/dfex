@@ -18,40 +18,42 @@
 #include "RotateDelay.h"
 
 using namespace rapidxml;
+using namespace std;
 
 Class RotateDelay::cls(std::string("RotateDelay"), newInstance);
 
 void RotateDelay::process(const sample_t* in, sample_t* out, int num) {
 
-    int curOffset = mOffset, prevPeriod = round(mCurPeriod);
+    sample_t periods[num], speeds[num], fit[num], buffer[num];
+    mSpeed->process(in, speeds, num);
+    sample_t curSpeed = speeds[num - 1];
 
-    sample_t periods[num], speed[num];
     mPeriod->process(in, periods, num);
-    mSpeed->process(in, speed, num);
-
-    sample_t curSpeed = speed[num - 1];
-    mCurPeriod = round(periods[num - 1]);
+    uint prevPeriod = round(periods[0]);
+    uint curPeriod = round(periods[num - 1]);
     
-    for (int i = 0; i < num; i++) {
-        mMemory[mOffset] = mMemory[mOffset + MEMORYSIZE] = in[i];
-        
-        if (++mOffset >= MEMORYSIZE)
-            mOffset = 0;
-    }
-
+    storeSamples(in, num);
     memset(out, 0, num * sizeof(sample_t));
 
     for (uint st = 0; st < mProcessors.size(); st++) {
-        int stIndex = (MEMORYSIZE + curOffset - st * prevPeriod) % MEMORYSIZE;
+        int startOffset = (int)round(mRotation + st * prevPeriod) % 
+         (prevPeriod * mProcessors.size());
+        int endOffset = ((int)round(mRotation + st * curPeriod) % 
+         (curPeriod * mProcessors.size())) - curSpeed * num;
+        int procSize = startOffset - endOffset;
+        cout << procSize << endl;
 
-        sample_t fit[num];
-        Process::fit(&mMemory[stIndex], fit, 
-         num + st * (prevPeriod - mCurPeriod), num);
-
-        mProcessors[st]->process(fit, mBuffer, num);
-        Process::combine(mBuffer, out, out, num);
+        Process::fit(getPastSamples(startOffset), fit, procSize, num);
+        mProcessors[st]->process(fit, buffer, num);
+        Process::combine(buffer, out, out, num);
     }
-    mRotation += curSpeed
+
+    mRotation *= 1.0 * curPeriod / prevPeriod;
+    mRotation += num - curSpeed * num;
+    if (mRotation >= curPeriod * mProcessors.size())
+        mRotation -= curPeriod * mProcessors.size();
+    else if (mRotation < 0)
+        mRotation += curPeriod * mProcessors.size();
 
     postProcess(in, out, num);
 }
