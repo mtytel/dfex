@@ -41,7 +41,6 @@ void RotateDelay::process(const sample_t* in, sample_t* out, int num) {
         int endOffset = ((int)round(mRotation + st * curPeriod) % 
          (curPeriod * mProcessors.size())) - curSpeed * num;
         int procSize = startOffset - endOffset;
-        cout << procSize << endl;
 
         Process::fit(getPastSamples(startOffset), fit, procSize, num);
         mProcessors[st]->process(fit, buffer, num);
