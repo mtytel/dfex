@@ -21,17 +21,14 @@
 #include <stdlib.h>
 #include <math.h>
 #include "ProcessorList.h"
+#include "Memoizer.h"
 
-#define MEMORYSIZE 4800000
 #define DEFAULTPERIOD 5000
 
-class Delay : public ProcessorList {
+class Delay : public ProcessorList, public Memoizer {
 public:
 
-    Delay(float period = 5000) : mSingle(0), mOffset(0), mCycleOffset(0),
-     mCurPeriod(0) {
-        memset(mMemory, 0, MEMORYSIZE * 2 * sizeof(sample_t));
-        memset(mBuffer, 0, MAXBUFFER * sizeof(sample_t));
+    Delay(float period = DEFAULTPERIOD) : mGranular(0), mGranularOffset(0) {
         mPeriod = new Constant(period);
     }
 
@@ -42,19 +39,15 @@ public:
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Delay(); }
 
-    sample_t getVal(sample_t curSamp);
+    void granulate(const sample_t *in, sample_t *out, uint per, int num);
     void process(const sample_t* in, sample_t* out, int num);
 
 protected:
 
     static Class cls;
 
-    sample_t mMemory[MEMORYSIZE * 2];
-    sample_t mBuffer[MAXBUFFER];
-    int mSingle;
-    long mOffset, mCycleOffset;
+    uint mGranular, mGranularOffset;
     Processor *mPeriod;
-    sample_t mCurPeriod;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;

@@ -15,24 +15,19 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PROCESS_H
-#define PROCESS_H
+#include "Memoizer.h"
 
-#include <math.h>
-#include <jack/jack.h>
-#include <string.h>
-#include <stdlib.h>
+void Memoizer::storeSamples(const sample_t *in, int num) {
 
-#include "Setup.h"
+    for (int i = 0; i < num; i++) {
+        mMemory[mOffset] = mMemory[mOffset + MAXMEMORY] =
+         mMemory[mOffset + MAXMEMORY * 2] = in[i];
+        mOffset = (mOffset + 1) % MAXMEMORY;
+    }
+}
 
-class Process {
-public:
-
-    static sample_t linearInterpolate(sample_t, sample_t, float);
-    static void combine(const sample_t*, const sample_t*, sample_t*, int);
-    static void fit(const sample_t*, sample_t*, int, int);
-    static void power(const sample_t*, sample_t*, float, int);
-    static void invert(const sample_t*, sample_t*, int);
-};
-
-#endif
+const sample_t* Memoizer::getPastSamples(int num) {
+    
+    int index = (MAXMEMORY + mOffset - num) % MAXMEMORY;
+    return &mMemory[MAXMEMORY + index];
+}

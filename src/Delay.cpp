@@ -21,42 +21,40 @@ using namespace rapidxml;
 
 Class Delay::cls(std::string("Delay"), newInstance);
 
-sample_t Delay::getVal(sample_t curSamp) {
+void Delay::granulate(const sample_t *in, sample_t *out, uint per, int num) {
+    
+    for (int i = 0; i < num; i++) {
+        if (mGranularOffset >= per * mProcessors.size())
+            mGranularOffset = 0;
 
-    if (!mSingle)
-        return curSamp;
-
-    if (++mCycleOffset >= mCurPeriod * mProcessors.size())
-        mCycleOffset = 0;
-
-    return mCycleOffset >= mCurPeriod ? 0 : curSamp;
+        out[i] = mGranularOffset++ >= per ? 0 : in[i];
+    }
 }
 
 void Delay::process(const sample_t* in, sample_t* out, int num) {
 
-    int curOffset = mOffset, prevPeriod = round(mCurPeriod);
-    sample_t periods[num];
-
+    sample_t periods[num], fit[num], buffer[num];
     mPeriod->process(in, periods, num);
-    mCurPeriod = round(periods[num - 1]);
-    
-    for (int i = 0; i < num; i++) { 
-        mMemory[mOffset] = mMemory[mOffset + MEMORYSIZE] = getVal(in[i]);
+    uint prevPeriod = round(periods[0]);
+    uint curPeriod = round(periods[num - 1]);
 
-        if (++mOffset >= MEMORYSIZE)
-            mOffset = 0;
+    if (mGranular) {
+        sample_t granulated[num];
+        granulate(in, granulated, curPeriod, num);
+        storeSamples(granulated, num);
     }
+    else 
+        storeSamples(in, num);
 
     memset(out, 0, num * sizeof(sample_t));
 
     for (uint st = 0; st < mProcessors.size(); st++) {
-        int stIndex = (MEMORYSIZE + curOffset - st * prevPeriod) % MEMORYSIZE;
-        int procSize = num + st * (prevPeriod - mCurPeriod);
-        sample_t fit[num];
+        int offsetStart = st * prevPeriod + num;
+        int procNum = num + st * (prevPeriod - curPeriod);
 
-        Process::fit(&mMemory[stIndex], fit, procSize, num);
-        mProcessors[st]->process(fit, mBuffer, num);
-        Process::combine(mBuffer, out, out, num);
+        Process::fit(getPastSamples(offsetStart), fit, procNum, num);
+        mProcessors[st]->process(fit, buffer, num);
+        Process::combine(buffer, out, out, num);
     }
 
     postProcess(in, out, num);
@@ -69,8 +67,8 @@ xml_node<> &Delay::read(xml_node<> &inode) {
     free(mPeriod);
     mPeriod = Processor::tryReadProcessor(inode, "period", DEFAULTPERIOD);
     
-    xml_node<> *singNode = inode.first_node("single");
-    mSingle = singNode ? 1 : 0;
+    xml_node<> *granNode = inode.first_node("granular");
+    mGranular = granNode ? 1 : 0;
 
     return inode;
 }
