@@ -1,5 +1,5 @@
 /* 
- * Copyright 2011 Matthew Tytel
+ * Copyright 2011 Noura Howell
  *
  * dfex is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,9 @@ sample_t Delay::getVal(sample_t curSamp) {
 }
 
 void Feedback::process(const sample_t* in, sample_t* out, int num) {
+
+    // use rotating double array instead, more efficient and better for "fit"
+
     float decay = .5;
 
     // add input to feedback
@@ -49,12 +52,9 @@ void Feedback::process(const sample_t* in, sample_t* out, int num) {
 
 xml_node<> &Delay::read(xml_node<> &inode) {
 
-    ProcessorList::read(inode);
     free(mPeriod);
     mPeriod = Processor::tryReadProcessor(inode, "delay", DEFAULTDELAY);
-    
-    xml_node<> *singNode = inode.first_node("single");
-    mSingle = singNode ? 1 : 0;
+    //also look for decay and subprocess processes
 
     return inode;
 }
