@@ -28,7 +28,7 @@
 class Feedback : public Effect {
 public:
 
-    Feedback(float delay = 5000) : mDelay(delay), mCurSamp(0) {
+    Feedback(float delay = 5000) : mDelay(delay), mMemLen(0), mCurSamp(0) {
         memset(mBuffer, 0, MAXBUFFER * sizeof(sample_t));
     }
 
