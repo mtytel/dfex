@@ -1,5 +1,5 @@
 /* 
- * Copyright 2011 Matthew Tytel
+ * Copyright 2011 Noura Howell
  *
  * dfex is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,12 +21,12 @@
 #include <stdlib.h>
 #include <math.h>
 #include <queue>
-#include "ProcessorList.h"
+#include "Effect.h"
 
 #define MEMORYSIZE 4800000
 #define DEFAULTDELAY 5000
 
-class Feedback : public ProcessorList {
+class Feedback : public Effect {
 public:
 
     Feedback(float delay = 5000) : mDelay(delay), mMemLen(0), mCurSamp(0) {
