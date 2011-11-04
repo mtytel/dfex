@@ -41,11 +41,9 @@ void Feedback::process(const sample_t* in, sample_t* out, int num) {
 
     cout << endl << " mDecay->process " << endl;
 
-    mCurDecay = decays[num - 1];
-
     // add feedback to input
     for (i = mOffset; i < num; i++)
-        temp[i] = in[i] + mBuffer[i]*mCurDecay;
+        temp[i] = in[i] + mBuffer[i]*delays[i];
 
     cout << endl << " added feedback to input " << endl;
 

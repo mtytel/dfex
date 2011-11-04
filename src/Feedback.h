@@ -58,7 +58,6 @@ protected:
     int mOffset;
 
     Processor *mDelay;
-    int mCurDelay;
 
     Processor *mDecay;
     float mCurDecay;
