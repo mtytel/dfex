@@ -15,24 +15,31 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PROCESS_H
-#define PROCESS_H
+#ifndef MEMOIZER_H
+#define MEMOIZER_H
 
-#include <math.h>
-#include <jack/jack.h>
 #include <string.h>
-#include <stdlib.h>
 
 #include "Setup.h"
 
-class Process {
+#define MAXMEMORY 4800000
+
+class Memoizer {
 public:
 
-    static sample_t linearInterpolate(sample_t, sample_t, float);
-    static void combine(const sample_t*, const sample_t*, sample_t*, int);
-    static void fit(const sample_t*, sample_t*, int, int);
-    static void power(const sample_t*, sample_t*, float, int);
-    static void invert(const sample_t*, sample_t*, int);
+    Memoizer() : mOffset(0) {
+        memset(mMemory, 0, MAXMEMORY * 3 * sizeof(sample_t));
+    }
+
+    virtual ~Memoizer() { }
+
+    virtual void storeSamples(const sample_t *in, int num);
+    const sample_t* getPastSamples(int num);
+
+protected:
+
+    sample_t mMemory[MAXMEMORY * 3];
+    long mOffset;
 };
 
 #endif

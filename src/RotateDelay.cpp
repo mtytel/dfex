@@ -15,66 +15,62 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Delay.h"
+#include "RotateDelay.h"
 
 using namespace rapidxml;
+using namespace std;
 
-Class Delay::cls(std::string("Delay"), newInstance);
+Class RotateDelay::cls(std::string("RotateDelay"), newInstance);
 
-void Delay::granulate(const sample_t *in, sample_t *out, uint per, int num) {
-    
-    for (int i = 0; i < num; i++) {
-        if (mGranularOffset >= per * mProcessors.size())
-            mGranularOffset = 0;
+void RotateDelay::process(const sample_t* in, sample_t* out, int num) {
 
-        out[i] = mGranularOffset++ >= per ? 0 : in[i];
-    }
-}
+    sample_t periods[num], speeds[num], fit[num], buffer[num];
+    mSpeed->process(in, speeds, num);
+    sample_t curSpeed = speeds[num - 1];
 
-void Delay::process(const sample_t* in, sample_t* out, int num) {
-
-    sample_t periods[num], fit[num], buffer[num];
     mPeriod->process(in, periods, num);
     uint prevPeriod = round(periods[0]);
     uint curPeriod = round(periods[num - 1]);
-
-    if (mGranular) {
-        sample_t granulated[num];
-        granulate(in, granulated, curPeriod, num);
-        storeSamples(granulated, num);
-    }
-    else 
-        storeSamples(in, num);
-
+    
+    storeSamples(in, num);
     memset(out, 0, num * sizeof(sample_t));
 
     for (uint st = 0; st < mProcessors.size(); st++) {
-        int offsetStart = st * prevPeriod + num;
-        int offsetEnd = st * curPeriod;
-        int procNum = offsetStart - offsetEnd;
+        int startOffset = (int)round(mRotation + st * prevPeriod) % 
+         (prevPeriod * mProcessors.size());
+        int endOffset = ((int)round(mRotation + st * curPeriod) % 
+         (curPeriod * mProcessors.size())) - curSpeed * num;
+        int procSize = startOffset - endOffset;
 
-        Process::fit(getPastSamples(offsetStart), fit, procNum, num);
+        Process::fit(getPastSamples(startOffset), fit, procSize, num);
         mProcessors[st]->process(fit, buffer, num);
         Process::combine(buffer, out, out, num);
     }
 
+    mRotation *= 1.0 * curPeriod / prevPeriod;
+    mRotation += num - curSpeed * num;
+    if (mRotation >= curPeriod * mProcessors.size())
+        mRotation -= curPeriod * mProcessors.size();
+    else if (mRotation < 0)
+        mRotation += curPeriod * mProcessors.size();
+
     postProcess(in, out, num);
 }
 
-xml_node<> &Delay::read(xml_node<> &inode) {
+xml_node<> &RotateDelay::read(xml_node<> &inode) {
 
     ProcessorList::read(inode);
 
     free(mPeriod);
     mPeriod = Processor::tryReadProcessor(inode, "period", DEFAULTPERIOD);
-    
-    xml_node<> *granNode = inode.first_node("granular");
-    mGranular = granNode ? 1 : 0;
 
+    free(mSpeed);
+    mSpeed = Processor::tryReadProcessor(inode, "speed", DEFAULTSPEED);
+    
     return inode;
 }
 
-xml_node<> &Delay::write(xml_node<> &onode) const {
+xml_node<> &RotateDelay::write(xml_node<> &onode) const {
 
     return onode;
 }

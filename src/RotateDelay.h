@@ -15,39 +15,43 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DELAY_H
-#define DELAY_H
+#ifndef ROTATEDELAY_H
+#define ROTATEDELAY_H
 
 #include <stdlib.h>
 #include <math.h>
+
 #include "ProcessorList.h"
 #include "Memoizer.h"
 
 #define DEFAULTPERIOD 5000
+#define DEFAULTSPEED -1
 
-class Delay : public ProcessorList, public Memoizer {
+class RotateDelay : public ProcessorList, public Memoizer {
 public:
 
-    Delay(float period = DEFAULTPERIOD) : mGranular(0), mGranularOffset(0) {
+    RotateDelay(float period = DEFAULTPERIOD, float speed = DEFAULTSPEED) : 
+     mRotation(0) {
         mPeriod = new Constant(period);
+        mSpeed = new Constant(speed);
     }
 
-    virtual ~Delay() {
+    virtual ~RotateDelay() {
         delete mPeriod;
+        delete mSpeed;
     }
 
     const Class *getClass() const { return &cls; }
-    static Object *newInstance() { return new Delay(); }
+    static Object *newInstance() { return new RotateDelay(); }
 
-    void granulate(const sample_t *in, sample_t *out, uint per, int num);
     void process(const sample_t* in, sample_t* out, int num);
 
 protected:
 
     static Class cls;
 
-    uint mGranular, mGranularOffset;
-    Processor *mPeriod;
+    float mRotation;
+    Processor *mPeriod, *mSpeed;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
