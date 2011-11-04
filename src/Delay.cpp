@@ -50,7 +50,8 @@ void Delay::process(const sample_t* in, sample_t* out, int num) {
 
     for (uint st = 0; st < mProcessors.size(); st++) {
         int offsetStart = st * prevPeriod + num;
-        int procNum = num + st * (prevPeriod - curPeriod);
+        int offsetEnd = st * curPeriod;
+        int procNum = offsetStart - offsetEnd;
 
         Process::fit(getPastSamples(offsetStart), fit, procNum, num);
         mProcessors[st]->process(fit, buffer, num);
