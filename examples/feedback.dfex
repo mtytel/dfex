@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Feedback>
     <delay>5000</delay>
+    <decay>0.5</decay>
+    <process>
+        <Volume>
+            <volume mod="true">
+                <Oscillator wave="sawfall">
+                    <min>0.0</min>
+                    <max>0.8</max>
+                </Oscillator>
+            </volume>
+        </Volume>
+    </process>
 </Feedback>
 

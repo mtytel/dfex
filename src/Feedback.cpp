@@ -21,45 +21,67 @@ using namespace rapidxml;
 
 Class Feedback::cls(std::string("Feedback"), newInstance);
 
-sample_t Delay::getVal(sample_t curSamp) {
-
-    if (!mSingle)
-        return curSamp;
-
-    if (++mCycleOffset >= mCurPeriod * mProcessors.size())
-        mCycleOffset = 0;
-
-    return mCycleOffset >= mCurPeriod ? 0 : curSamp;
-}
 
 void Feedback::process(const sample_t* in, sample_t* out, int num) {
 
-    // use rotating double array instead, more efficient and better for "fit"
+    cout << endl << " Feedback::process " << endl;
+    int i;
 
-    float decay = .5;
+    sample_t delays[num];
+    sample_t decays[num];
+    sample_t temp[num];
+    
+    mDelay->process(in, delays, num);
 
-    // add input to feedback
-    for (int i = 0; i < num; i++)
-        out[i] = in[i] + (mMemLen > delay ? pop()*decay : 0);
+    cout << endl << " mDelay->process " << endl;
 
-    // run through inner process - faking this for now
+    mCurDelay = round(delays[num - 1]);
+
+    mDecay->process(in, decays, num);
+
+    cout << endl << " mDecay->process " << endl;
+
+    mCurDecay = decays[num - 1];
+
+    // add feedback to input
+    for (i = mOffset; i < num; i++)
+        temp[i] = in[i] + mBuffer[i]*mCurDecay;
+
+    cout << endl << " added feedback to input " << endl;
+
+    // run through inner process
+    mProcess->process(temp, out, num);
+
+    cout << endl << " mProcess->process " << endl;
 
     // copy output into feedback for future feedback
-    for (int i = 0; i < num, i++)
-        push(out[i]);
+    for (i = mOffset; i < num; i++) {
+        mBuffer[mOffset + i] = mBuffer[mOffset + i + MAXBUFFER] = out[i];
+    }
+
+    cout << endl << " copy output into buff " << endl;
+
+    mOffset = i;
+    if (mOffset >= MAXBUFFER)
+        mOffset = mOffset - MAXBUFFER;
 }
 
 
-xml_node<> &Delay::read(xml_node<> &inode) {
+xml_node<> &Feedback::read(xml_node<> &inode) {
 
-    free(mPeriod);
-    mPeriod = Processor::tryReadProcessor(inode, "delay", DEFAULTDELAY);
-    //also look for decay and subprocess processes
+    free(mDelay);
+    mDelay = Processor::tryReadProcessor(inode, "delay", DEFAULTDELAY); 
+    
+    free(mDecay);
+    mDecay = Processor::tryReadProcessor(inode, "decay", DEFAULTDECAY);
+
+    free(mProcess);
+    mProcess = Processor::tryReadProcessor(inode, "process", DEFAULTPROCESS);
 
     return inode;
 }
 
-xml_node<> &Delay::write(xml_node<> &onode) const {
+xml_node<> &Feedback::write(xml_node<> &onode) const {
 
     return onode;
 }

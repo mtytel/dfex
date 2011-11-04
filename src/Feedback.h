@@ -21,18 +21,28 @@
 #include <stdlib.h>
 #include <math.h>
 #include "Effect.h"
+#include <iostream>
 
 #define MEMORYSIZE 4800000
 #define DEFAULTDELAY 5000
+#define DEFAULTDECAY 0.5
+#define DEFAULTPROCESS 1
+
+using namespace std;
 
 class Feedback : public Effect {
 public:
 
-    Feedback(float delay = 5000) : mDelay(delay), mMemLen(0), mCurSamp(0) {
-        memset(mBuffer, 0, MAXBUFFER * sizeof(sample_t));
+    Feedback() : mOffset(0) {
+        cout << endl << " Feedback() " << endl;
+        memset(mBuffer, 0, MAXBUFFER * sizeof(sample_t) * 2);
+        cout << endl << " memset buffer " << endl;
     }
 
     virtual ~Feedback() {
+        delete mDelay;
+        delete mDecay;
+        delete mProcess;
     }
 
     const Class *getClass() const { return &cls; }
@@ -40,27 +50,22 @@ public:
 
     void process(const sample_t* in, sample_t* out, int num);
 
-    void push(sample_t s) {
-        mMemory.push(s);
-        mMemLen++;
-    }
-
-    sample_t pop() {
-        mMemLen--;
-        return mMemory.pop();
-    }
 
 protected:
 
     static Class cls;
 
-    queue<sample_t> mMemory; // store output to feed back in to input
-    int mMemLen;             // self-managed length of mMemory
-    int mDelay;              // the delay before feeding mMemory back in
+    int mOffset;
 
-    sample_t mCurSamp;       // current sample we're working with
+    Processor *mDelay;
+    int mCurDelay;
 
-    sample_t* mBuffer[MAXBUFFER]; // temp storage while computing output
+    Processor *mDecay;
+    float mCurDecay;
+
+    Processor *mProcess;
+
+    sample_t mBuffer[MAXBUFFER * 2];
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
