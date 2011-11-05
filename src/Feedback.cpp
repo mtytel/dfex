@@ -24,44 +24,44 @@ Class Feedback::cls(std::string("Feedback"), newInstance);
 
 void Feedback::process(const sample_t* in, sample_t* out, int num) {
 
-    cout << endl << " Feedback::process " << endl;
+//    cout << endl << " Feedback::process " << endl;
     int i;
 
     sample_t delays[num];
     sample_t decays[num];
+    const sample_t *memory;
     sample_t temp[num];
     
     mDelay->process(in, delays, num);
 
-    cout << endl << " mDelay->process " << endl;
+//    cout << endl << " mDelay->process " << endl;
 
     mCurDelay = round(delays[num - 1]);
 
     mDecay->process(in, decays, num);
 
-    cout << endl << " mDecay->process " << endl;
+//    cout << endl << " mDecay->process " << endl;
+
+    // pull up feedback from memory
+    memory = mMemory->getPastSamples(num);
+
+//    cout << endl << " getPastSamples(num) " << endl;
 
     // add feedback to input
-    for (i = mOffset; i < num; i++)
-        temp[i] = in[i] + mBuffer[i]*delays[i];
+    for (i = 0; i < num; i++)
+        temp[i] = in[i] + memory[i]*decays[i];
 
-    cout << endl << " added feedback to input " << endl;
+//    cout << endl << " added feedback to input " << endl;
 
-    // run through inner process
+    // run through inner process and send to output
     mProcess->process(temp, out, num);
 
-    cout << endl << " mProcess->process " << endl;
+//    cout << endl << " mProcess->process " << endl;
 
-    // copy output into feedback for future feedback
-    for (i = mOffset; i < num; i++) {
-        mBuffer[mOffset + i] = mBuffer[mOffset + i + MAXBUFFER] = out[i];
-    }
+    // save output to memory for use as future feedback
+    mMemory->storeSamples(out, num);
 
-    cout << endl << " copy output into buff " << endl;
-
-    mOffset = i;
-    if (mOffset >= MAXBUFFER)
-        mOffset = mOffset - MAXBUFFER;
+//    cout << endl << " storeSamples " << endl;
 }
 
 

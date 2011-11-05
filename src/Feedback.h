@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "Effect.h"
+#include "Memoizer.h"
 #include <iostream>
 
 #define MEMORYSIZE 4800000
@@ -33,16 +34,15 @@ using namespace std;
 class Feedback : public Effect {
 public:
 
-    Feedback() : mOffset(0) {
-        cout << endl << " Feedback() " << endl;
-        memset(mBuffer, 0, MAXBUFFER * sizeof(sample_t) * 2);
-        cout << endl << " memset buffer " << endl;
+    Feedback() {
+        mMemory = new Memoizer();
     }
 
     virtual ~Feedback() {
         delete mDelay;
         delete mDecay;
         delete mProcess;
+        delete mMemory;
     }
 
     const Class *getClass() const { return &cls; }
@@ -55,16 +55,12 @@ protected:
 
     static Class cls;
 
-    int mOffset;
-
     Processor *mDelay;
-
+    int mCurDelay;
     Processor *mDecay;
-    float mCurDecay;
-
     Processor *mProcess;
 
-    sample_t mBuffer[MAXBUFFER * 2];
+    Memoizer *mMemory;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;

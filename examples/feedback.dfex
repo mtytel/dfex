@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Feedback>
     <delay>5000</delay>
-    <decay>0.5</decay>
+    <decay>0.99</decay>
     <process>
         <Volume>
             <volume mod="true">
