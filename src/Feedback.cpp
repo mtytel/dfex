@@ -21,10 +21,46 @@ using namespace rapidxml;
 
 Class Feedback::cls(std::string("Feedback"), newInstance);
 
+/* in progress 
+Feedback::process(const sample_t* in, sample_t* out, int num) {
+ 
+    sample_t delays[num];
+    sample_t decays[num];
+    sample_t sum[num];
+    const sample_t *mem;
+
+    mDelay->process(in, delays, num);
+    uint mPrevDelay = round(delays[0]);
+    uint mCurDelay = round(delays[num-1]);
+    
+    mDecay->process(in, decays, num);
+
+    mem = mMemory->getPastSamples(num - mCurDelay????? think about this more);
+    
+
+}*/
 
 void Feedback::process(const sample_t* in, sample_t* out, int num) {
 
-//    cout << endl << " Feedback::process " << endl;
+    sample_t delays[num];
+    sample_t decays[num];
+    sample_t sum[1];
+    const sample_t *mem;
+
+    mDelay->process(in, delays, num);
+    mDecay->process(in, decays, num);
+
+    for (int i = 0; i < num; i++) {
+        mem = mMemory->getPastSamples(delays[i]);
+        sum[0] = in[i] + (mem[0])*decays[i];
+        mProcess->process(sum, &(out[i]), 1);
+    }
+    mMemory->storeSamples(out, num);
+}
+
+/*
+void Feedback::process(const sample_t* in, sample_t* out, int num) {
+
     int i;
 
     sample_t delays[num];
@@ -34,35 +70,24 @@ void Feedback::process(const sample_t* in, sample_t* out, int num) {
     
     mDelay->process(in, delays, num);
 
-//    cout << endl << " mDelay->process " << endl;
-
     mCurDelay = round(delays[num - 1]);
 
     mDecay->process(in, decays, num);
 
-//    cout << endl << " mDecay->process " << endl;
-
     // pull up feedback from memory
     memory = mMemory->getPastSamples(num);
-
-//    cout << endl << " getPastSamples(num) " << endl;
 
     // add feedback to input
     for (i = 0; i < num; i++)
         temp[i] = in[i] + memory[i]*decays[i];
 
-//    cout << endl << " added feedback to input " << endl;
-
     // run through inner process and send to output
     mProcess->process(temp, out, num);
-
-//    cout << endl << " mProcess->process " << endl;
 
     // save output to memory for use as future feedback
     mMemory->storeSamples(out, num);
 
-//    cout << endl << " storeSamples " << endl;
-}
+}*/
 
 
 xml_node<> &Feedback::read(xml_node<> &inode) {

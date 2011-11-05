@@ -56,7 +56,6 @@ protected:
     static Class cls;
 
     Processor *mDelay;
-    int mCurDelay;
     Processor *mDecay;
     Processor *mProcess;
 
