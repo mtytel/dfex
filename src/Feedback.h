@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "Effect.h"
-#include "Memoizer.h"
+#include "Memory.h"
 #include <iostream>
 
 #define MEMORYSIZE 4800000
@@ -35,7 +35,7 @@ class Feedback : public Effect {
 public:
 
     Feedback() {
-        mMemory = new Memoizer();
+        mMemory = new Memory();
     }
 
     virtual ~Feedback() {
@@ -59,7 +59,7 @@ protected:
     Processor *mDecay;
     Processor *mProcess;
 
-    Memoizer *mMemory;
+    Memory *mMemory;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
