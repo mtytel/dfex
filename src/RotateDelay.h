@@ -22,23 +22,25 @@
 #include <math.h>
 
 #include "ProcessorList.h"
-#include "Memoizer.h"
+#include "Memory.h"
 
 #define DEFAULTPERIOD 5000
 #define DEFAULTSPEED -1
 
-class RotateDelay : public ProcessorList, public Memoizer {
+class RotateDelay : public ProcessorList {
 public:
 
     RotateDelay(float period = DEFAULTPERIOD, float speed = DEFAULTSPEED) : 
      mRotation(0) {
         mPeriod = new Constant(period);
         mSpeed = new Constant(speed);
+        mMemory = new Memory();
     }
 
     virtual ~RotateDelay() {
         delete mPeriod;
         delete mSpeed;
+        delete mMemory;
     }
 
     const Class *getClass() const { return &cls; }
@@ -52,6 +54,7 @@ protected:
 
     float mRotation;
     Processor *mPeriod, *mSpeed;
+    Memory *mMemory;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;

@@ -21,19 +21,21 @@
 #include <stdlib.h>
 #include <math.h>
 #include "ProcessorList.h"
-#include "Memoizer.h"
+#include "Memory.h"
 
 #define DEFAULTPERIOD 5000
 
-class Delay : public ProcessorList, public Memoizer {
+class Delay : public ProcessorList {
 public:
 
     Delay(float period = DEFAULTPERIOD) : mGranular(0), mGranularOffset(0) {
         mPeriod = new Constant(period);
+        mMemory = new Memory();
     }
 
     virtual ~Delay() {
         delete mPeriod;
+        delete mMemory;
     }
 
     const Class *getClass() const { return &cls; }
@@ -48,6 +50,7 @@ protected:
 
     uint mGranular, mGranularOffset;
     Processor *mPeriod;
+    Memory *mMemory;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
