@@ -65,7 +65,7 @@ xml_node<> &Delay::read(xml_node<> &inode) {
 
     ProcessorList::read(inode);
 
-    free(mPeriod);
+    delete mPeriod;
     mPeriod = Processor::tryReadProcessor(inode, "period", DEFAULTPERIOD);
     
     xml_node<> *granNode = inode.first_node("granular");

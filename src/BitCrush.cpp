@@ -39,7 +39,7 @@ xml_node<> &BitCrush::read(xml_node<> &inode) {
     
     Effect::read(inode);
 
-    free(mBits);
+    delete mBits;
     mBits = Processor::tryReadProcessor(inode, "bits", DEFAULTBITS);
 
     return inode;

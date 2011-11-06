@@ -94,7 +94,7 @@ void ProcessorList::readModifier(xml_node<> &inode, vector<Series*> *procs) {
     }
 
     for (uint i = 0; i < mods.size(); i++)
-        free(mods[i].second);
+        delete mods[i].second;
 }
 
 xml_node<> &ProcessorList::read(xml_node<> &inode) {
