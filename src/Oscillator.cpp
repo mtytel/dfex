@@ -38,7 +38,8 @@ void Oscillator::process(const sample_t* in, sample_t* out, int num) {
 }
 
 void Oscillator::setPeriod(float period) { 
-    free(mPeriod);
+
+    delete mPeriod;
     mPeriod = new Constant(period); 
 }
 
@@ -46,11 +47,11 @@ xml_node<> &Oscillator::read(xml_node<> &inode) {
     mWaveFunc = 
      WaveFunctions::getFunction(inode.first_attribute("wave")->value());
 
-    free(mPeriod);
+    delete mPeriod;
     mPeriod = tryReadProcessor(inode, "period", DEFAULTPERIOD);
-    free(mMin);
+    delete mMin;
     mMin = tryReadProcessor(inode, "min", DEFAULTMIN);
-    free(mMax);
+    delete mMax;
     mMax = tryReadProcessor(inode, "max", DEFAULTMAX);
 
     return inode;

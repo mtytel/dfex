@@ -37,7 +37,7 @@ xml_node<> &Volume::read(xml_node<> &inode) {
     
     Effect::read(inode);
 
-    free(mVol);
+    delete mVol;
     mVol = Processor::tryReadProcessor(inode, "volume", DEFAULTVOLUME);
 
     return inode;

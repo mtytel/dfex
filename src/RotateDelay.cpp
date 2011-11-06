@@ -61,10 +61,10 @@ xml_node<> &RotateDelay::read(xml_node<> &inode) {
 
     ProcessorList::read(inode);
 
-    free(mPeriod);
+    delete mPeriod;
     mPeriod = Processor::tryReadProcessor(inode, "period", DEFAULTPERIOD);
 
-    free(mSpeed);
+    delete mSpeed;
     mSpeed = Processor::tryReadProcessor(inode, "speed", DEFAULTSPEED);
     
     return inode;
