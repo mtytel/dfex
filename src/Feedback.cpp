@@ -20,26 +20,31 @@
 using namespace rapidxml;
 
 Class Feedback::cls(std::string("Feedback"), newInstance);
-
-/* in progress 
-Feedback::process(const sample_t* in, sample_t* out, int num) {
  
-    sample_t delays[num];
-    sample_t decays[num];
-    sample_t sum[num];
-    const sample_t *mem;
+void Feedback::process(const sample_t* in, sample_t* out, int num) {
+ 
+    sample_t delays[num], decays[num], sum[num], mem[num];
 
     mDelay->process(in, delays, num);
-    uint mPrevDelay = round(delays[0]);
-    uint mCurDelay = round(delays[num-1]);
-    
+    uint prevDelay = round(delays[0]);
+    uint curDelay = round(delays[num-1]);
+    int offsetStart = prevDelay + num;
+    int offsetEnd = curDelay;
+    int procNum = offsetStart - offsetEnd;
+
+    Process::fit(mMemory->getPastSamples(offsetStart), mem, procNum, num);
+
     mDecay->process(in, decays, num);
 
-    mem = mMemory->getPastSamples(num - mCurDelay????? think about this more);
+    for (int i = 0; i < num; i++)
+        sum[0] = in[i] + mem[i]*decays[i];
     
+    mProcess->process(sum, out, num);
 
-}*/
+    mMemory->storeSamples(out, num);
+}
 
+/*
 void Feedback::process(const sample_t* in, sample_t* out, int num) {
 
     sample_t delays[num];
@@ -56,7 +61,7 @@ void Feedback::process(const sample_t* in, sample_t* out, int num) {
         mProcess->process(sum, &(out[i]), 1);
     }
     mMemory->storeSamples(out, num);
-}
+}*/
 
 /*
 void Feedback::process(const sample_t* in, sample_t* out, int num) {
