@@ -41,10 +41,10 @@ void Delay::process(const sample_t* in, sample_t* out, int num) {
     if (mGranular) {
         sample_t granulated[num];
         granulate(in, granulated, curPeriod, num);
-        storeSamples(granulated, num);
+        mMemory->storeSamples(granulated, num);
     }
     else 
-        storeSamples(in, num);
+        mMemory->storeSamples(in, num);
 
     memset(out, 0, num * sizeof(sample_t));
 
@@ -53,7 +53,8 @@ void Delay::process(const sample_t* in, sample_t* out, int num) {
         int offsetEnd = st * curPeriod;
         int procNum = offsetStart - offsetEnd;
 
-        Process::fit(getPastSamples(offsetStart), fit, procNum, num);
+        const sample_t *sampStart = mMemory->getPastSamples(offsetStart);
+        Process::fit(sampStart, fit, procNum, num);
         mProcessors[st]->process(fit, buffer, num);
         Process::combine(buffer, out, out, num);
     }

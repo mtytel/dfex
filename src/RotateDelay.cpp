@@ -32,7 +32,7 @@ void RotateDelay::process(const sample_t* in, sample_t* out, int num) {
     uint prevPeriod = round(periods[0]);
     uint curPeriod = round(periods[num - 1]);
     
-    storeSamples(in, num);
+    mMemory->storeSamples(in, num);
     memset(out, 0, num * sizeof(sample_t));
 
     for (uint st = 0; st < mProcessors.size(); st++) {
@@ -41,8 +41,9 @@ void RotateDelay::process(const sample_t* in, sample_t* out, int num) {
         int endOffset = ((int)round(mRotation + st * curPeriod) % 
          (curPeriod * mProcessors.size())) - curSpeed * num;
         int procSize = startOffset - endOffset;
+        const sample_t *sampStart = mMemory->getPastSamples(startOffset);
 
-        Process::fit(getPastSamples(startOffset), fit, procSize, num);
+        Process::fit(sampStart, fit, procSize, num);
         mProcessors[st]->process(fit, buffer, num);
         Process::combine(buffer, out, out, num);
     }
