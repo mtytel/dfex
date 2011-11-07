@@ -22,7 +22,7 @@
 #include <math.h>
 #include "Effect.h"
 #include "Memory.h"
-#include <iostream>
+#include "Constant.h"
 
 #define MEMORYSIZE 4800000
 #define DEFAULTDELAY 5000
@@ -34,7 +34,11 @@ using namespace std;
 class Feedback : public Effect {
 public:
 
-    Feedback() {
+    Feedback(float delay = DEFAULTDELAY, float decay = DEFAULTDECAY) {
+        mDelay = new Constant(delay);
+        mDecay = new Constant(decay);
+        mProcess = new Processor();
+
         mMemory = new Memory();
     }
 

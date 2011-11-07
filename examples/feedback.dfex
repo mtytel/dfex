@@ -3,14 +3,7 @@
     <delay>5000</delay>
     <decay>0.5</decay>
     <process>
-        <Volume>
-            <volume mod="true">
-                <Oscillator wave="sawfall">
-                    <min>0.0</min>
-                    <max>0.8</max>
-                </Oscillator>
-            </volume>
-        </Volume>
+        <Processor />
     </process>
 </Feedback>
 

@@ -26,18 +26,18 @@ void Feedback::process(const sample_t* in, sample_t* out, int num) {
     sample_t delays[num], decays[num], sum[num], mem[num];
 
     mDelay->process(in, delays, num);
+    mDecay->process(in, decays, num);
+    
     uint prevDelay = round(delays[0]);
     uint curDelay = round(delays[num-1]);
-    int offsetStart = prevDelay + num;
-    int offsetEnd = curDelay;
-    int procNum = offsetStart - offsetEnd;
+    int memStart = prevDelay + num;
+    int memEnd = curDelay;
+    int memNum = memStart - memEnd;
 
-    Process::fit(mMemory->getPastSamples(offsetStart), mem, procNum, num);
-
-    mDecay->process(in, decays, num);
+    Process::fit(mMemory->getPastSamples(memStart), mem, memNum, num);
 
     for (int i = 0; i < num; i++)
-        sum[0] = in[i] + mem[i]*decays[i];
+        sum[i] = in[i] + mem[i] * decays[i];
     
     mProcess->process(sum, out, num);
 
@@ -75,7 +75,7 @@ void Feedback::process(const sample_t* in, sample_t* out, int num) {
     
     mDelay->process(in, delays, num);
 
-    mCurDelay = round(delays[num - 1]);
+    int mCurDelay = round(delays[num - 1]);
 
     mDecay->process(in, decays, num);
 
