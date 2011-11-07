@@ -103,8 +103,11 @@ xml_node<> &Feedback::read(xml_node<> &inode) {
     delete mDecay;
     mDecay = Processor::tryReadProcessor(inode, "decay", DEFAULTDECAY);
 
-    delete mProcess;
-    mProcess = Processor::tryReadProcessor(inode, "process", DEFAULTPROCESS);
+    xml_node<> *procNode = inode.first_node("process");
+    if (procNode)
+        mProcess = Processor::readProcessor(inode);
+    else
+        mProcess = new Processor();
 
     return inode;
 }
