@@ -105,7 +105,7 @@ xml_node<> &Feedback::read(xml_node<> &inode) {
 
     xml_node<> *procNode = inode.first_node("process");
     if (procNode)
-        mProcess = Processor::readProcessor(inode);
+        mProcess = Processor::readProcessor(*(procNode->first_node()));
     else
         mProcess = new Processor();
 

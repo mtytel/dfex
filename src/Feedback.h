@@ -34,7 +34,7 @@ using namespace std;
 class Feedback : public Effect {
 public:
 
-    Feedback(float delay = DEFAULTDELAY, float decay = DEFAULTDECAY) {
+    Feedback(float delay = DEFAULTDELAY, float decay = DEFAULTDECAY) : Effect::Effect() {
         mDelay = new Constant(delay);
         mDecay = new Constant(decay);
         mProcess = new Processor();
