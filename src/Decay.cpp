@@ -38,7 +38,7 @@ xml_node<> &Decay::read(xml_node<> &inode) {
     Processor::read(inode);
 
     delete mDecay;
-    mDecay = tryReadProcessor(inode, "decay", DEFAULTDECAY);
+    mDecay = readParameter(inode, "decay", DEFAULTDECAY);
 
     return inode;
 }

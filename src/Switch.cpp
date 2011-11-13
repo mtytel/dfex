@@ -47,7 +47,7 @@ xml_node<> &Switch::read(xml_node<> &inode) {
 
     ProcessorList::read(inode);
     delete mController;
-    mController = Processor::tryReadProcessor(inode, "control", DEFAULTCONTROL);
+    mController = Processor::readParameter(inode, "control", DEFAULTCONTROL);
 
     return inode;
 }

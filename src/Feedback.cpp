@@ -98,10 +98,10 @@ void Feedback::process(const sample_t* in, sample_t* out, int num) {
 xml_node<> &Feedback::read(xml_node<> &inode) {
 
     delete mDelay;
-    mDelay = Processor::tryReadProcessor(inode, "delay", DEFAULTDELAY); 
+    mDelay = Processor::readParameter(inode, "delay", DEFAULTDELAY); 
     
     delete mDecay;
-    mDecay = Processor::tryReadProcessor(inode, "decay", DEFAULTDECAY);
+    mDecay = Processor::readParameter(inode, "decay", DEFAULTDECAY);
 
     xml_node<> *procNode = inode.first_node("process");
     if (procNode)

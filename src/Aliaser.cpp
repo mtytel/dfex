@@ -44,7 +44,7 @@ xml_node<> &Aliaser::read(xml_node<> &inode) {
     Effect::read(inode);
 
     delete mPeriod;
-    mPeriod = Processor::tryReadProcessor(inode, "period", DEFAULTPERIOD);
+    mPeriod = Processor::readParameter(inode, "period", DEFAULTPERIOD);
 
     return inode;
 }

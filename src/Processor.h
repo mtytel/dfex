@@ -34,7 +34,7 @@ public:
     static Object *newInstance() { return new Processor(); }
 
     static Processor *readProcessor(rapidxml::xml_node<> &);
-    static Processor *tryReadProcessor(rapidxml::xml_node<> &, 
+    static Processor *readParameter(rapidxml::xml_node<> &, 
      const char *, float);
     static Processor *createConstant(const char *);
 

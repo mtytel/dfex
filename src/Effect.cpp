@@ -38,7 +38,7 @@ void Effect::postProcess(const sample_t* in, sample_t* out, int num) {
 
 xml_node<> &Effect::read(xml_node<> &inode) {
     
-    mWet = Processor::tryReadProcessor(inode, "wet", DEFAULTWET);
+    mWet = Processor::readParameter(inode, "wet", DEFAULTWET);
     return inode;
 }
 

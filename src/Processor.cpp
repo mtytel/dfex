@@ -57,7 +57,7 @@ Processor* Processor::readProcessor(xml_node<> &inode) {
     return p;
 }
 
-Processor *Processor::tryReadProcessor(rapidxml::xml_node<> &node, 
+Processor *Processor::readParameter(rapidxml::xml_node<> &node, 
  const char *tag, float defaultVal) {
 
     xml_node<> *found_node = node.first_node(tag);

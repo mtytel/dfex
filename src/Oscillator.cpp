@@ -48,11 +48,11 @@ xml_node<> &Oscillator::read(xml_node<> &inode) {
      WaveFunctions::getFunction(inode.first_attribute("wave")->value());
 
     delete mPeriod;
-    mPeriod = tryReadProcessor(inode, "period", DEFAULTPERIOD);
+    mPeriod = readParameter(inode, "period", DEFAULTPERIOD);
     delete mMin;
-    mMin = tryReadProcessor(inode, "min", DEFAULTMIN);
+    mMin = readParameter(inode, "min", DEFAULTMIN);
     delete mMax;
-    mMax = tryReadProcessor(inode, "max", DEFAULTMAX);
+    mMax = readParameter(inode, "max", DEFAULTMAX);
 
     return inode;
 }
