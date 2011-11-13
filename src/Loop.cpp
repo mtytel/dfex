@@ -177,7 +177,7 @@ xml_node<> &Loop::read(xml_node<> &inode) {
     mTrackQuant = val ? atoi(val->value()) : 1;
 
     delete mControl;
-    mControl = Processor::tryReadProcessor(inode, "control", DEFAULTSILENT);
+    mControl = Processor::readParameter(inode, "control", DEFAULTSILENT);
 
     return inode;
 }

@@ -38,7 +38,7 @@ xml_node<> &Harmonizer::read(xml_node<> &inode) {
     Effect::read(inode);
 
     delete mRoot;
-    mRoot = Processor::tryReadProcessor(inode, "root", DEFAULTROOT);
+    mRoot = Processor::readParameter(inode, "root", DEFAULTROOT);
 
     return inode;
 }

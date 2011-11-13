@@ -165,9 +165,9 @@ xml_node<> &MidiExpression::read(xml_node<> &inode) {
     mMidiMax = atoi(inode.first_attribute("midimax")->value());
 
     delete mMin;
-    mMin = tryReadProcessor(inode, "min", DEFAULTMIN);
+    mMin = readParameter(inode, "min", DEFAULTMIN);
     delete mMax;
-    mMax = tryReadProcessor(inode, "max", DEFAULTMAX);
+    mMax = readParameter(inode, "max", DEFAULTMAX);
 
     return inode;
 }
