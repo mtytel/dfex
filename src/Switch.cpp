@@ -36,7 +36,7 @@ void Switch::process(const sample_t* in, sample_t* out, int num) {
     for (uint p = 0; p < mProcessors.size(); p++) {
         if (p != val) {
             mProcessors[p]->process(silent, buffer, num);
-            Process::combine(buffer, out, num);
+            Process::combine(buffer, out, out, num);
         }
     }
 
@@ -47,7 +47,7 @@ xml_node<> &Switch::read(xml_node<> &inode) {
 
     ProcessorList::read(inode);
     delete mController;
-    mController = Processor::tryReadProcessor(inode, "control", DEFAULTCONTROL);
+    mController = Processor::readParameter(inode, "control", DEFAULTCONTROL);
 
     return inode;
 }

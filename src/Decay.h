@@ -15,37 +15,37 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef BITCRUSH_H
-#define BITCRUSH_H
+#ifndef DECAY_H
+#define DECAY_H
 
-#include <stdlib.h>
-#include <math.h>
+#include <iostream>
+#include "Processor.h"
+#include "Constant.h"
 
-#include "Effect.h"
+#define DEFAULTDECAY 1
 
-#define DEFAULTBITS 2.0
-
-class BitCrush : public Effect {
+class Decay : public Processor {
 public:
 
-    BitCrush(float bits = DEFAULTBITS) : Effect::Effect() {
-        mBits = new Constant(bits);
+    Decay() : mCurVal(0) {
+        mDecay = new Constant(DEFAULTDECAY);
     }
 
-    virtual ~BitCrush() {
-        delete mBits;
+    virtual ~Decay() {
+        delete mDecay;
     }
 
     const Class *getClass() const { return &cls; }
-    static Object *newInstance() { return new BitCrush(); }
+    static Object *newInstance() { return new Decay(); }
 
-    void process(const sample_t* in, sample_t* out, int num);
+    virtual void process(const sample_t* in, sample_t* out, int num);
 
 protected:
 
     static Class cls;
 
-    Processor *mBits;
+    sample_t mCurVal;
+    Processor *mDecay;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;

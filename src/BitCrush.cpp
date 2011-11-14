@@ -23,13 +23,13 @@ Class BitCrush::cls(std::string("BitCrush"), newInstance);
 
 void BitCrush::process(const sample_t* in, sample_t* out, int num) {
 
-    float bits[num];
+    sample_t bits[num];
     mBits->process(in, bits, num);
 
     for (int i = 0; i < num; i++) {
-        float mult = bits[i] / 2;
-        float temp = round(mult * in[i]);
-        out[i] = temp / mult;
+        float mult = pow(2, bits[i] / 2);
+        float disc = round(mult * in[i]);
+        out[i] = disc / mult;
     }
 
     postProcess(in, out, num);
@@ -39,8 +39,8 @@ xml_node<> &BitCrush::read(xml_node<> &inode) {
     
     Effect::read(inode);
 
-    free(mBits);
-    mBits = Processor::tryReadProcessor(inode, "bits", DEFAULTBITS);
+    delete mBits;
+    mBits = Processor::readParameter(inode, "bits", DEFAULTBITS);
 
     return inode;
 }

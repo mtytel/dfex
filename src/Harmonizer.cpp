@@ -15,41 +15,36 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Aliaser.h"
+#include "Harmonizer.h"
 
 using namespace rapidxml;
 using namespace std;
 
-Class Aliaser::cls(string("Aliaser"), newInstance);
+Class Harmonizer::cls(string("Harmonizer"), newInstance);
 
-void Aliaser::process(const sample_t* in, sample_t* out, int num) {
+void Harmonizer::process(const sample_t* in, sample_t* out, int num) {
 
-    sample_t period[num];
-    mPeriod->process(in, period, num);
+    sample_t root[num];
+    mRoot->process(in, root, num);
 
-    for (int i = 0; i < num; i++) {
-
-        if (++mOffset >= period[i]) { 
-            mCurSamp = in[i];
-            mOffset = 0;
-        }
-        out[i] = mCurSamp;
-    }
+    for (int i = 0; i < num; i++)
+        out[i] = root[i] / round(in[i]);
 
     postProcess(in, out, num);
 }
 
-xml_node<> &Aliaser::read(xml_node<> &inode) {
+xml_node<> &Harmonizer::read(xml_node<> &inode) {
     
     Effect::read(inode);
 
-    delete mPeriod;
-    mPeriod = Processor::readParameter(inode, "period", DEFAULTPERIOD);
+    delete mRoot;
+    mRoot = Processor::readParameter(inode, "root", DEFAULTROOT);
 
     return inode;
 }
 
-xml_node<> &Aliaser::write(xml_node<> &onode) const {
+xml_node<> &Harmonizer::write(xml_node<> &onode) const {
     
     return onode;
 }
+

@@ -21,40 +21,36 @@
 #include <stdlib.h>
 #include <math.h>
 #include "ProcessorList.h"
+#include "Memory.h"
 
-#define MEMORYSIZE 4800000
-#define DEFAULTFPC 5000
+#define DEFAULTPERIOD 5000
 
 class Delay : public ProcessorList {
 public:
 
-    Delay(float fpc = 5000) : mSingle(0), mOffset(0), mCycleOffset(0),
-     mCurFPC(0) {
-        memset(mMemory, 0, MEMORYSIZE * 2 * sizeof(sample_t));
-        memset(mBuffer, 0, MAXBUFFER * sizeof(sample_t));
-        mFPC = new Constant(fpc);
+    Delay(float period = DEFAULTPERIOD) : mGranular(0), mGranularOffset(0) {
+        mPeriod = new Constant(period);
+        mMemory = new Memory();
     }
 
-    ~Delay() {
-        delete mFPC;
+    virtual ~Delay() {
+        delete mPeriod;
+        delete mMemory;
     }
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Delay(); }
 
+    void granulate(const sample_t *in, sample_t *out, uint per, int num);
     void process(const sample_t* in, sample_t* out, int num);
-    void setOffset(int offset) { mOffset = offset % MEMORYSIZE; }
 
 protected:
 
     static Class cls;
 
-    sample_t mMemory[MEMORYSIZE * 2];
-    sample_t mBuffer[MAXBUFFER];
-    int mSingle;
-    long mOffset, mCycleOffset;
-    Processor *mFPC;
-    sample_t mCurFPC;
+    uint mGranular, mGranularOffset;
+    Processor *mPeriod;
+    Memory *mMemory;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;

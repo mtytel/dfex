@@ -32,9 +32,10 @@ public:
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Processor(); }
+
     static Processor *readProcessor(rapidxml::xml_node<> &);
-    static Processor *tryReadProcessor(rapidxml::xml_node<> &, const char *, 
-     float);
+    static Processor *readParameter(rapidxml::xml_node<> &, 
+     const char *, float);
     static Processor *createConstant(const char *);
 
     virtual void process(const sample_t* in, sample_t* out, int num);

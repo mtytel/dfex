@@ -15,40 +15,31 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef BITCRUSH_H
-#define BITCRUSH_H
+#ifndef MEMORY_H
+#define MEMORY_H
 
-#include <stdlib.h>
-#include <math.h>
+#include <string.h>
 
-#include "Effect.h"
+#include "Setup.h"
 
-#define DEFAULTBITS 2.0
+#define MAXMEMORY 4800000
 
-class BitCrush : public Effect {
+class Memory {
 public:
 
-    BitCrush(float bits = DEFAULTBITS) : Effect::Effect() {
-        mBits = new Constant(bits);
+    Memory() : mOffset(0) {
+        memset(mMemory, 0, MAXMEMORY * 3 * sizeof(sample_t));
     }
 
-    virtual ~BitCrush() {
-        delete mBits;
-    }
+    virtual ~Memory() { }
 
-    const Class *getClass() const { return &cls; }
-    static Object *newInstance() { return new BitCrush(); }
-
-    void process(const sample_t* in, sample_t* out, int num);
+    virtual void storeSamples(const sample_t *in, int num);
+    const sample_t* getPastSamples(int num);
 
 protected:
 
-    static Class cls;
-
-    Processor *mBits;
-
-    virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
-    virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
+    sample_t mMemory[MAXMEMORY * 3];
+    long mOffset;
 };
 
 #endif

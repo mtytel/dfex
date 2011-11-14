@@ -131,14 +131,12 @@ xml_node<> &MidiStomp::write(xml_node<> &onode) const {
 
 void MidiExpression::process(const sample_t* in, sample_t* out, int num) {
 
-    sample_t min[num], max[num], decay[num];
+    sample_t min[num], max[num];
     mMin->process(in, min, num);
     mMax->process(in, max, num);
-    mDecay->process(in, decay, num);
     
     for (int i = 0; i < num; i++) {    
-        mCurVal = mVal * decay[i] + mCurVal * (1 - decay[i]);
-        float perc = (mCurVal - mMidiMin) / (mMidiMax - mMidiMin);
+        float perc = (mVal - mMidiMin) / (mMidiMax - mMidiMin);
 
         if (mScale == kLin)
             out[i] = perc * max[i] + (1 - perc) * min[i];
@@ -167,11 +165,9 @@ xml_node<> &MidiExpression::read(xml_node<> &inode) {
     mMidiMax = atoi(inode.first_attribute("midimax")->value());
 
     delete mMin;
-    mMin = tryReadProcessor(inode, "min", DEFAULTMIN);
+    mMin = readParameter(inode, "min", DEFAULTMIN);
     delete mMax;
-    mMax = tryReadProcessor(inode, "max", DEFAULTMAX);
-    delete mDecay;
-    mDecay = tryReadProcessor(inode, "decay", DEFAULTDECAY);
+    mMax = readParameter(inode, "max", DEFAULTMAX);
 
     return inode;
 }

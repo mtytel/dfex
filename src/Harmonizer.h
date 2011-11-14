@@ -15,37 +15,35 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef BITCRUSH_H
-#define BITCRUSH_H
+#ifndef HARMONIZER_H
+#define HARMONIZER_H
 
 #include <stdlib.h>
 #include <math.h>
-
 #include "Effect.h"
 
-#define DEFAULTBITS 2.0
+#define DEFAULTROOT 10000
 
-class BitCrush : public Effect {
+class Harmonizer : public Effect {
 public:
 
-    BitCrush(float bits = DEFAULTBITS) : Effect::Effect() {
-        mBits = new Constant(bits);
+    Harmonizer() : Effect::Effect() { 
+        mRoot = new Constant(DEFAULTROOT);
     }
 
-    virtual ~BitCrush() {
-        delete mBits;
+    virtual ~Harmonizer() {
+        delete mRoot;
     }
 
     const Class *getClass() const { return &cls; }
-    static Object *newInstance() { return new BitCrush(); }
+    static Object *newInstance() { return new Harmonizer(); }
 
     void process(const sample_t* in, sample_t* out, int num);
 
 protected:
 
     static Class cls;
-
-    Processor *mBits;
+    Processor *mRoot;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;

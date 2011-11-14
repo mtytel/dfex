@@ -4,7 +4,7 @@
         <Volume> <!-- Modulator -->
             <volume>
                 <Oscillator wave="cos">
-                    <fpc>100</fpc>
+                    <period>100</period>
                     <max>1.0</max>
                     <min>-1.0</min>
                 </Oscillator>
@@ -13,7 +13,7 @@
         <Volume> <!-- Tremolo -->
             <volume>
                 <Oscillator wave="cos">
-                    <fpc>100</fpc>
+                    <period>100</period>
                     <max>1.0</max>
                     <min>0.0</min>
                 </Oscillator>

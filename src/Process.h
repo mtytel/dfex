@@ -28,22 +28,16 @@
 
 #define PI 3.141529
 
-typedef jack_default_audio_sample_t sample_t;
+#include "Setup.h"
 
 class Process {
 public:
 
-    static sample_t linearInterpolate(sample_t left, sample_t right, float val);
-    static void combine(const sample_t* one, sample_t* two, int num);
-    static void fit(const sample_t* from, sample_t* to, int numFrom, int numTo);
-    static void power(const sample_t* from, sample_t* to, float exp, int num);
-    static void invert(const sample_t* from, sample_t* to, int num);
-    static std::complex<sample_t> euler(int idx);
-    static float* cosInit();
-    static float* sinInit();
-
-    static const float *cosLookup;
-    static const float *sinLookup;
+    static sample_t linearInterpolate(sample_t, sample_t, float);
+    static void combine(const sample_t*, const sample_t*, sample_t*, int);
+    static void fit(const sample_t*, sample_t*, int, int);
+    static void power(const sample_t*, sample_t*, float, int);
+    static void invert(const sample_t*, sample_t*, int);
 };
 
 #endif

@@ -23,35 +23,36 @@ using namespace std;
 Class Oscillator::cls(std::string("Oscillator"), newInstance);
 
 void Oscillator::process(const sample_t* in, sample_t* out, int num) {
-    sample_t fpc[num], max[num], min[num];
-    mFPC->process(in, fpc, num);
+    sample_t period[num], max[num], min[num];
+    mPeriod->process(in, period, num);
     mMax->process(in, max, num);
     mMin->process(in, min, num);
 
     for (int i = 0; i < num; i ++) {
-        float val = mWaveFunc(1.0 * mOffset++ / fpc[i]);
+        float val = mWaveFunc(1.0 * mOffset++ / period[i]);
         out[i] = val * max[i] + (1 - val) * min[i];
 
-        if (mOffset >= fpc[i])
-            mOffset -= fpc[i];
+        if (mOffset >= period[i])
+            mOffset -= period[i];
     }
 }
 
-void Oscillator::setFPC(float fpc) { 
-    free(mFPC);
-    mFPC = new Constant(fpc); 
+void Oscillator::setPeriod(float period) { 
+
+    delete mPeriod;
+    mPeriod = new Constant(period); 
 }
 
 xml_node<> &Oscillator::read(xml_node<> &inode) {
     mWaveFunc = 
      WaveFunctions::getFunction(inode.first_attribute("wave")->value());
 
-    free(mFPC);
-    mFPC = tryReadProcessor(inode, "fpc", DEFAULTFPC);
-    free(mMin);
-    mMin = tryReadProcessor(inode, "min", DEFAULTMIN);
-    free(mMax);
-    mMax = tryReadProcessor(inode, "max", DEFAULTMAX);
+    delete mPeriod;
+    mPeriod = readParameter(inode, "period", DEFAULTPERIOD);
+    delete mMin;
+    mMin = readParameter(inode, "min", DEFAULTMIN);
+    delete mMax;
+    mMax = readParameter(inode, "max", DEFAULTMAX);
 
     return inode;
 }

@@ -15,41 +15,19 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Aliaser.h"
+#include "Memory.h"
 
-using namespace rapidxml;
-using namespace std;
-
-Class Aliaser::cls(string("Aliaser"), newInstance);
-
-void Aliaser::process(const sample_t* in, sample_t* out, int num) {
-
-    sample_t period[num];
-    mPeriod->process(in, period, num);
+void Memory::storeSamples(const sample_t *in, int num) {
 
     for (int i = 0; i < num; i++) {
-
-        if (++mOffset >= period[i]) { 
-            mCurSamp = in[i];
-            mOffset = 0;
-        }
-        out[i] = mCurSamp;
+        mMemory[mOffset] = mMemory[mOffset + MAXMEMORY] =
+         mMemory[mOffset + MAXMEMORY * 2] = in[i];
+        mOffset = (mOffset + 1) % MAXMEMORY;
     }
-
-    postProcess(in, out, num);
 }
 
-xml_node<> &Aliaser::read(xml_node<> &inode) {
+const sample_t* Memory::getPastSamples(int num) {
     
-    Effect::read(inode);
-
-    delete mPeriod;
-    mPeriod = Processor::readParameter(inode, "period", DEFAULTPERIOD);
-
-    return inode;
-}
-
-xml_node<> &Aliaser::write(xml_node<> &onode) const {
-    
-    return onode;
+    int index = (MAXMEMORY + mOffset - num) % MAXMEMORY;
+    return &mMemory[MAXMEMORY + index];
 }

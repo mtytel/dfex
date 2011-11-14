@@ -15,41 +15,36 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Aliaser.h"
+#include "Decay.h"
 
 using namespace rapidxml;
 using namespace std;
 
-Class Aliaser::cls(string("Aliaser"), newInstance);
+Class Decay::cls(std::string("Decay"), Decay::newInstance);
 
-void Aliaser::process(const sample_t* in, sample_t* out, int num) {
+void Decay::process(const sample_t* in, sample_t* out, int num) {
 
-    sample_t period[num];
-    mPeriod->process(in, period, num);
-
-    for (int i = 0; i < num; i++) {
-
-        if (++mOffset >= period[i]) { 
-            mCurSamp = in[i];
-            mOffset = 0;
-        }
-        out[i] = mCurSamp;
+    sample_t decay[num];
+    mDecay->process(in, decay, num);
+    
+    for (int i = 0; i < num; i++) {    
+        mCurVal = in[i] * decay[i] + mCurVal * (1 - decay[i]);
+        out[i] = mCurVal;
     }
-
-    postProcess(in, out, num);
 }
 
-xml_node<> &Aliaser::read(xml_node<> &inode) {
-    
-    Effect::read(inode);
+xml_node<> &Decay::read(xml_node<> &inode) {
 
-    delete mPeriod;
-    mPeriod = Processor::readParameter(inode, "period", DEFAULTPERIOD);
+    Processor::read(inode);
+
+    delete mDecay;
+    mDecay = readParameter(inode, "decay", DEFAULTDECAY);
 
     return inode;
 }
 
-xml_node<> &Aliaser::write(xml_node<> &onode) const {
-    
+xml_node<> &Decay::write(xml_node<> &onode) const {
+
     return onode;
 }
+

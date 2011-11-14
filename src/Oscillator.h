@@ -25,35 +25,35 @@
 
 #define DEFAULTMIN 0.0
 #define DEFAULTMAX 1.0
-#define DEFAULTFPC 4000
+#define DEFAULTPERIOD 4000
 
 class Oscillator : public Processor {
 public:
 
-    Oscillator(int fpc = DEFAULTFPC, float min = DEFAULTMIN,
+    Oscillator(int period = DEFAULTPERIOD, float min = DEFAULTMIN,
      float max = DEFAULTMAX) : Processor::Processor(), mOffset(0) { 
         mMin = new Constant(min);
         mMax = new Constant(max);
-        mFPC = new Constant(fpc);
+        mPeriod = new Constant(period);
     }
 
-    ~Oscillator() {
+    virtual ~Oscillator() {
         delete mMin;
         delete mMax;
-        delete mFPC;
+        delete mPeriod;
     }
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Oscillator(); }
 
     virtual void process(const sample_t* in, sample_t* out, int num);
-    void setFPC(float fpc); 
+    void setPeriod(float period); 
 
 protected:
 
     static Class cls;
 
-    Processor *mMin, *mMax, *mFPC;
+    Processor *mMin, *mMax, *mPeriod;
     long mOffset;
     waveFunction mWaveFunc;
 

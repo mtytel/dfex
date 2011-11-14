@@ -2,7 +2,7 @@
 <Series>
     <processors>
         <Aliaser>
-            <ratio>10</ratio>
+            <period>10</period>
         </Aliaser>
         <BitCrush>
             <bits>3</bits>

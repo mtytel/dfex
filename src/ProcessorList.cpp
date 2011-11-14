@@ -62,7 +62,7 @@ void ProcessorList::loadAllModifications(xml_node<> &node, int length,
         if (chi->first_attribute("mod")) {
             Oscillator *o = new Oscillator();
             *chi->first_node() >> *o;
-            o->setFPC(length);
+            o->setPeriod(length);
             mods->push_back(pair<xml_node<>*, Oscillator*>(chi, o)); 
             chi->remove_all_nodes();
         }
@@ -94,7 +94,7 @@ void ProcessorList::readModifier(xml_node<> &inode, vector<Series*> *procs) {
     }
 
     for (uint i = 0; i < mods.size(); i++)
-        free(mods[i].second);
+        delete mods[i].second;
 }
 
 xml_node<> &ProcessorList::read(xml_node<> &inode) {

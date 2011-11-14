@@ -43,6 +43,8 @@ protected:
     static double square(double val);
     static double sawRise(double val);
     static double sawFall(double val);
+
+    static double cosWindow(double val);
 };
 
 #endif

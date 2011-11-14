@@ -32,6 +32,7 @@
 class Loop : public Parallel {
 public:
     Loop(); 
+    virtual ~Loop();
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Loop(); }
@@ -41,7 +42,7 @@ public:
     void buttonPushed(char button);
 
     int anyPlaying();
-    int getMaxLength();
+    int getMinQuant() { return mTrackQuant; }
     void silenceAll();
     void playAll();
 
@@ -80,7 +81,7 @@ protected:
     static Class cls;
 
     Processor *mControl;
-    int mSilent, mReverse;
+    int mSilentId, mReverseId, mTrackQuant;
     std::map<int, LoopTrack*> mTrackMap;
     char mLastVal, mLastButton;
 

@@ -22,18 +22,18 @@
 #include <math.h>
 #include "Effect.h"
 
-#define DEFAULTRATIO 2.0
+#define DEFAULTPERIOD 2.0
 
 class Aliaser : public Effect {
 public:
 
-    Aliaser(float ratio = DEFAULTRATIO) : Effect::Effect(), mOffset(0), 
+    Aliaser(float period = DEFAULTPERIOD) : Effect::Effect(), mOffset(0), 
      mCurSamp(0) { 
-        mRatio = new Constant(ratio);
+        mPeriod = new Constant(period);
     }
 
-    ~Aliaser() {
-        delete mRatio;
+    virtual ~Aliaser() {
+        delete mPeriod;
     }
 
     const Class *getClass() const { return &cls; }
@@ -45,7 +45,7 @@ protected:
 
     static Class cls;
 
-    Processor *mRatio;
+    Processor *mPeriod;
     float mOffset;
     sample_t mCurSamp;
 
@@ -54,3 +54,4 @@ protected:
 };
 
 #endif
+

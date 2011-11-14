@@ -2,19 +2,19 @@
 <Parallel>
     <processors>
         <Delay>
-            <fpc>10000</fpc>
+            <period>5333</period>
             <num>3</num>
-            <single />
+            <granular />
         </Delay>
         <Delay>
-            <fpc>1920</fpc>
+            <period>1920</period>
             <num>5</num>
-            <single />
+            <granular />
         </Delay>
         <Delay>
-            <fpc>3000</fpc>
+            <period>480</period>
             <num>10</num>
-            <single />
+            <granular />
         </Delay>
     </processors>
 </Parallel>

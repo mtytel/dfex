@@ -32,6 +32,10 @@ public:
         mController = new Constant(0);    
     }
 
+    virtual ~Switch() {
+        delete mController;
+    }
+
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Switch(); }
 

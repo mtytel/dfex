@@ -15,29 +15,36 @@
  * along with dfex.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef BITCRUSH_H
-#define BITCRUSH_H
+#ifndef ROTATEDELAY_H
+#define ROTATEDELAY_H
 
 #include <stdlib.h>
 #include <math.h>
 
-#include "Effect.h"
+#include "ProcessorList.h"
+#include "Memory.h"
 
-#define DEFAULTBITS 2.0
+#define DEFAULTPERIOD 5000
+#define DEFAULTSPEED -1
 
-class BitCrush : public Effect {
+class RotateDelay : public ProcessorList {
 public:
 
-    BitCrush(float bits = DEFAULTBITS) : Effect::Effect() {
-        mBits = new Constant(bits);
+    RotateDelay(float period = DEFAULTPERIOD, float speed = DEFAULTSPEED) : 
+     mRotation(0) {
+        mPeriod = new Constant(period);
+        mSpeed = new Constant(speed);
+        mMemory = new Memory();
     }
 
-    virtual ~BitCrush() {
-        delete mBits;
+    virtual ~RotateDelay() {
+        delete mPeriod;
+        delete mSpeed;
+        delete mMemory;
     }
 
     const Class *getClass() const { return &cls; }
-    static Object *newInstance() { return new BitCrush(); }
+    static Object *newInstance() { return new RotateDelay(); }
 
     void process(const sample_t* in, sample_t* out, int num);
 
@@ -45,7 +52,9 @@ protected:
 
     static Class cls;
 
-    Processor *mBits;
+    float mRotation;
+    Processor *mPeriod, *mSpeed;
+    Memory *mMemory;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;

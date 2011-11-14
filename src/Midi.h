@@ -28,9 +28,8 @@
 #include "Constant.h"
 
 #define MIDI_DEVICE "/dev/sequencer"
-#define DEFAULTMAX 1
+#define DEFAULTMAX 127
 #define DEFAULTMIN 0
-#define DEFAULTDECAY 1
 
 class MidiControl;
 
@@ -76,6 +75,7 @@ class MidiStomp : public MidiControl {
 public:
 
     MidiStomp() : MidiControl(), mToggle(0) { }
+    virtual ~MidiStomp() { }
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new MidiStomp(); }
@@ -96,17 +96,14 @@ public:
     
     enum { kExp, kLin };
 
-    MidiExpression() : MidiControl(), mMidiMax(0), mMidiMin(0), mScale(0), 
-     mCurVal(0) {
+    MidiExpression() : MidiControl(), mMidiMax(0), mMidiMin(0), mScale(0) {
         mMin = new Constant(DEFAULTMIN);
         mMax = new Constant(DEFAULTMAX);
-        mDecay = new Constant(DEFAULTDECAY);
     }
 
     ~MidiExpression() {
         delete mMin;
         delete mMax;
-        delete mDecay;
     }
 
     const Class *getClass() const { return &cls; }
@@ -120,8 +117,7 @@ protected:
 
     char mMidiMax, mMidiMin;
     uint mScale;
-    sample_t mCurVal;
-    Processor *mMax, *mMin, *mDecay;
+    Processor *mMax, *mMin;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
