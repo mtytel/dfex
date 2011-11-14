@@ -67,6 +67,11 @@ protected:
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
+
+
+protected:
+
+    void process_batch(const sample_t*, sample_t*, int, float*, int, int);
 };
 
 #endif

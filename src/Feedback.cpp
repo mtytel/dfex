@@ -23,7 +23,50 @@ Class Feedback::cls(std::string("Feedback"), newInstance);
 
 void Feedback::process(const sample_t* in, sample_t* out, int num) {
 
-    sample_t decays[num], delays[num];
+    float decays[num], delays[num];
+
+    mDecay->process(in, decays, num);
+    mDelay->process(in, delays, num);
+ 
+    uint prevDelay = round(delays[0]);
+    uint curDelay = round(delays[num-1]);
+    int memStart = prevDelay + num;
+    int memEnd = curDelay;
+    int memNum = memStart - memEnd;
+
+    if (-memStart + memNum <= 0) {
+        process_batch(in, out, num, decays, memStart, memNum);
+    } else {
+        
+        int b = memNum / memStart;
+        int numB = num / b;
+        int bStart;
+
+        for (int j = 0; j < b; j++)
+            process_batch(in+bStart, out+bStart, numB, decays+bStart, memStart, memStart); // here too maybe.. ok i'll check
+
+        bStart = b * numB;
+        int r = memNum % memStart;
+        int numR = num % b;
+
+        process_batch(in+bStart, out+bStart, numR, decays+bStart, memStart, r); // I think the numbers are off 
+    }
+}
+
+void Feedback::process_batch(const sample_t* in, sample_t* out, int num, float* decays, int memStart, int memNum) {
+
+    sample_t mem[num], sum[num];
+    Process::fit(mMemory->getPastSamples(memStart), mem, memNum, num);
+    for (int i = 0; i < num; i++)
+        sum[i] = in[i] + mem[i] * decays[i];
+    mProcess->process(sum, out, num);
+    mMemory->storeSamples(out, num);
+}
+
+/* handles small batches but should have separate sub function
+void Feedback::process(const sample_t* in, sample_t* out, int num) {
+
+    float decays[num], delays[num];
 
     mDecay->process(in, decays, num);
     mDelay->process(in, delays, num);
@@ -68,7 +111,7 @@ void Feedback::process(const sample_t* in, sample_t* out, int num) {
         mProcess->process(sum, out + inStart, numR);
         mMemory->storeSamples(out + inStart, numR);
     }
-}
+}*/
 
 /*
 void Feedback::process(const sample_t* in, sample_t* out, int num) {
