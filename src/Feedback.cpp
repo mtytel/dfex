@@ -20,7 +20,57 @@
 using namespace rapidxml;
 
 Class Feedback::cls(std::string("Feedback"), newInstance);
+
+void Feedback::process(const sample_t* in, sample_t* out, int num) {
+
+    sample_t decays[num], delays[num];
+
+    mDecay->process(in, decays, num);
+    mDelay->process(in, delays, num);
  
+    uint prevDelay = round(delays[0]);
+    uint curDelay = round(delays[num-1]);
+    int memStart = prevDelay + num;
+    int memEnd = curDelay;
+    int memNum = memStart - memEnd;
+
+    if (-memStart + memNum <= 0) {
+
+        sample_t mem[num], sum[num];
+
+        Process::fit(mMemory->getPastSamples(memStart), mem, memNum, num);
+        for (int i = 0; i < num; i++)
+            sum[i] = in[i] + mem[i] * decays[i];
+        mProcess->process(sum, out, num);
+        mMemory->storeSamples(out, num);
+    } else {
+        
+        int b = memNum / memStart;
+        int numB = num / b;
+        int inStart;
+        sample_t mem[numB], sum[numB];
+
+        for (int j = 0; j < b; j++) {
+            inStart = j * numB;
+            Process::fit(mMemory->getPastSamples(memStart), mem, memStart, numB);
+            for (int i = 0; i < numB; i++)
+                sum[i] = in[inStart + i] + mem[i] * decays[inStart + i];
+            mProcess->process(sum, out + inStart, numB);
+            mMemory->storeSamples(out + inStart, numB);
+        }
+
+        inStart = b * numB;
+        int r = memNum % memStart;
+        int numR = num % b;
+        Process::fit(mMemory->getPastSamples(memStart), mem, r, numR);
+        for (int i = 0; i < numR; i++)
+            sum[i] = in[inStart + i] + mem[i] * decays[inStart + i];
+        mProcess->process(sum, out + inStart, numR);
+        mMemory->storeSamples(out + inStart, numR);
+    }
+}
+
+/*
 void Feedback::process(const sample_t* in, sample_t* out, int num) {
  
     sample_t delays[num], decays[num], sum[num], mem[num];
@@ -42,7 +92,7 @@ void Feedback::process(const sample_t* in, sample_t* out, int num) {
     mProcess->process(sum, out, num);
 
     mMemory->storeSamples(out, num);
-}
+}*/
 
 /*
 void Feedback::process(const sample_t* in, sample_t* out, int num) {
@@ -98,10 +148,10 @@ void Feedback::process(const sample_t* in, sample_t* out, int num) {
 xml_node<> &Feedback::read(xml_node<> &inode) {
 
     delete mDelay;
-    mDelay = Processor::tryReadProcessor(inode, "delay", DEFAULTDELAY); 
+    mDelay = Processor::readParameter(inode, "delay", DEFAULTDELAY); 
     
     delete mDecay;
-    mDecay = Processor::tryReadProcessor(inode, "decay", DEFAULTDECAY);
+    mDecay = Processor::readParameter(inode, "decay", DEFAULTDECAY);
 
     xml_node<> *procNode = inode.first_node("process");
     if (procNode)
