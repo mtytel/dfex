@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Feedback>
-    <delay>500</delay>
-    <decay>0.5</decay>
+    <delay>50</delay>
+    <decay>0.99</decay>
     <process>
         <Volume>
             <volume>
                 <Oscillator wave="cos">
-                    <period>500</period>
-                    <max>1.0</max>
-                    <min>-1.0</min>
+                    <period>5000</period>
+                    <max>.9</max>
+                    <min>.1</min>
                 </Oscillator>
             </volume>
         </Volume>

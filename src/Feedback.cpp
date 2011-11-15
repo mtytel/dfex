@@ -21,6 +21,7 @@ using namespace rapidxml;
 
 Class Feedback::cls(std::string("Feedback"), newInstance);
 
+
 void Feedback::process(const sample_t* in, sample_t* out, int num) {
 
     float decays[num], delays[num];
@@ -34,23 +35,19 @@ void Feedback::process(const sample_t* in, sample_t* out, int num) {
     int memEnd = curDelay;
     int memNum = memStart - memEnd;
 
-    if (-memStart + memNum <= 0) {
-        process_batch(in, out, num, decays, memStart, memNum);
-    } else {
-        
-        int b = memNum / memStart;
-        int numB = num / b;
-        int bStart;
+    int memBatchSize = memEnd > 0 ? memNum : memStart;
+    int nBatches = memNum / memBatchSize;
+    int ioBatchSize = num / nBatches;
 
-        for (int j = 0; j < b; j++)
-            process_batch(in+bStart, out+bStart, numB, decays+bStart, memStart, memStart); // here too maybe.. ok i'll check
+    int ioStart = 0;
+    for (ioStart = 0; ioStart < num; ioStart += ioBatchSize)
+        process_batch(in+ioStart, out+ioStart, ioBatchSize, decays+ioStart, memStart, memBatchSize);
 
-        bStart = b * numB;
-        int r = memNum % memStart;
-        int numR = num % b;
-
-        process_batch(in+bStart, out+bStart, numR, decays+bStart, memStart, r); // I think the numbers are off 
-    }
+    //ioStart = nBatches * ioBatchSize; 
+    int RmemBatchSize = memNum % memBatchSize;
+    int RioBatchSize = num % nBatches;
+    
+    process_batch(in+ioStart, out+ioStart, RioBatchSize, decays+ioStart, memStart, RmemBatchSize); // I think the numbers are off 
 }
 
 void Feedback::process_batch(const sample_t* in, sample_t* out, int num, float* decays, int memStart, int memNum) {
@@ -62,6 +59,39 @@ void Feedback::process_batch(const sample_t* in, sample_t* out, int num, float* 
     mProcess->process(sum, out, num);
     mMemory->storeSamples(out, num);
 }
+
+/* has separate sub function, but could still be more elegant
+void Feedback::process(const sample_t* in, sample_t* out, int num) {
+
+    float decays[num], delays[num];
+
+    mDecay->process(in, decays, num);
+    mDelay->process(in, delays, num);
+ 
+    uint prevDelay = round(delays[0]);
+    uint curDelay = round(delays[num-1]);
+    int memStart = prevDelay + num;
+    int memEnd = curDelay;
+    int memNum = memStart - memEnd;
+
+    if (memEnd > 0) {
+        process_batch(in, out, num, decays, memStart, memNum);
+    } else {
+        
+        int b = memNum / memStart;
+        int numB = num / b;
+        int bStart = 0;
+
+        for (bStart = 0; bStart < num; bStart += numB)
+            process_batch(in+bStart, out+bStart, numB, decays+bStart, memStart, memStart); // here too maybe.. ok i'll check
+
+        bStart = b * numB;
+        int r = memNum % memStart;
+        int numR = num % b;
+
+        process_batch(in+bStart, out+bStart, numR, decays+bStart, memStart, r); // I think the numbers are off 
+    }
+}*/
 
 /* handles small batches but should have separate sub function
 void Feedback::process(const sample_t* in, sample_t* out, int num) {
