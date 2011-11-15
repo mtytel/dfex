@@ -23,7 +23,7 @@
 #include <string>
 #include "Setup.h"
 
-#define PI 3.141529
+#define PI 3.14159265
 
 typedef double(*waveFunction)(double);
 
