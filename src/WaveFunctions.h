@@ -22,7 +22,8 @@
 #include <stdlib.h>
 #include <string>
 #include "Setup.h"
-#include "Process.h"
+
+#define PI 3.14159265
 
 typedef double(*waveFunction)(double);
 
