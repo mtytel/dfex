@@ -23,12 +23,13 @@ using namespace std;
 Class Pitch::cls(string("Pitch"), newInstance);
 
 Pitch::Pitch() : Effect::Effect(), mTransformOffset(0) { 
-    mInput = (double*)fftw_malloc(sizeof(double) * BUFFERSIZE); 
-    mResult = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * BUFFERSIZE); 
-    mInvResult = (double*)fftw_malloc(sizeof(double) * BUFFERSIZE); 
+    mMemory = new Memory();
+    mInput = (double*)fftw_malloc(sizeof(double) * DEFAULTSIZE); 
+    mResult = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * DEFAULTSIZE); 
+    mInvResult = (double*)fftw_malloc(sizeof(double) * DEFAULTSIZE); 
 
-    mForward = fftw_plan_dft_r2c_1d(BUFFERSIZE, mInput, mResult, FFTW_MEASURE);
-    mBackward = fftw_plan_dft_c2r_1d(BUFFERSIZE, mResult, mInvResult,
+    mForward = fftw_plan_dft_r2c_1d(DEFAULTSIZE, mInput, mResult, FFTW_MEASURE);
+    mBackward = fftw_plan_dft_c2r_1d(DEFAULTSIZE, mResult, mInvResult,
      FFTW_MEASURE);
 }
 
@@ -43,16 +44,17 @@ Pitch::~Pitch() {
 
 void Pitch::process(const sample_t* in, sample_t* out, int num) {
 
-    memmove(mMemory, mMemory + num, (TRANSFORMSIZE - num) * sizeof(sample_t));
-    for (int i = 0; i < num; i++)
-        mMemory[TRANSFORMSIZE - num + i] = in[i];
+    memmove(mInput, mInput + num, num * sizeof(double));
 
-    for (int i = 0; i < TRANSFORMSIZE; i++)
-        mInput[i] = mMemory[i] * sin(PI * i / TRANSFORMSIZE);
+    for (int i = 0; i < num; i++) {
+        mInput[num + i] = in[i];
+        out[i] = (1 + cos(PI * i / num)) / 2 *  
+         mInvResult[num + i] / DEFAULTSIZE;
+    }
 
     fftw_execute(mForward);
 
-    for (int i = TRANSFORMSIZE / 2 - 1; i >= 0; i--) {
+    for (int i = DEFAULTSIZE / 2 - 1; i >= 0; i--) {
         mResult[i * 2][0] = mResult[i][0];
         mResult[i * 2][1] = mResult[i][1];
         mResult[i * 2 + 1][0] = 0;
@@ -60,8 +62,10 @@ void Pitch::process(const sample_t* in, sample_t* out, int num) {
     }
 
     fftw_execute(mBackward);
+
     for (int i = 0; i < num; i++)
-        out[num - i - 1] = mInvResult[TRANSFORMSIZE - i - 1] / TRANSFORMSIZE;
+        out[i] += (1 - cos(PI * i / num)) / 2 *
+         mInvResult[i] / DEFAULTSIZE;
 
     postProcess(in, out, num);
 }

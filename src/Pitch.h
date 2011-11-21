@@ -22,8 +22,10 @@
 #include <math.h>
 #include <fftw3.h>
 #include "Effect.h"
+#include "Memory.h"
 
-#define TRANSFORMSIZE 2048
+#define DEFAULTSIZE 2048
+#define DEFAULTOVERLAP 1024
 
 class Pitch : public Effect {
 public:
@@ -41,7 +43,7 @@ protected:
     static Class cls;
 
     int mTransformOffset;
-    sample_t mMemory[TRANSFORMSIZE];
+    Memory *mMemory;
     double *mInput, *mInvResult;
     fftw_complex *mResult;
     fftw_plan mForward, mBackward;
