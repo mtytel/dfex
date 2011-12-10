@@ -21,7 +21,35 @@ using namespace rapidxml;
 
 Class Feedback::cls(std::string("Feedback"), newInstance);
 
+void Feedback::process(const sample_t* in, sample_t* out, int num) {
 
+    float decays[num], delays[num];
+    sample_t fitmem[1], sum[1];
+    int prevDelay, curDelay, memNum;
+
+    mDecay->process(in, decays, num);
+    mDelay->process(in, delays, num);
+
+    /* delays should all be positive or 0 so we are reaching into the past for the delay
+       a negative delay would be reaching into the future which is impossible */
+    for (int i = 0; i < num; i++) {
+        if (delays[i] < 0)
+            delays[i] = 0;
+    }
+
+    prevDelay = round(delays[0]);
+    for (int i = 0; i < num; i++) {
+        curDelay = round(delays[i]);
+        memNum = abs(curDelay - prevDelay) + 1;
+        Process::fit(mMemory->getPastSamples(max(prevDelay, curDelay)), fitmem, memNum, 1);
+        sum[0] = in[i] + decays[i] * fitmem[0];
+        mProcess->process(sum, out + i, 1);
+        mMemory->storeSamples(out + i, 1);
+        prevDelay = curDelay;
+    }
+}
+
+/*
 void Feedback::process(const sample_t* in, sample_t* out, int num) {
 
     float decays[num], delays[num];
@@ -35,8 +63,8 @@ void Feedback::process(const sample_t* in, sample_t* out, int num) {
     int memEnd = curDelay - num;
     int memNum = memStart - memEnd;
 
-    //int memBatchSize = memEnd < 0 ? memNum : memStart;
-    //int nBatches = memNum / memBatchSize;
+    int memBatchSize = memEnd < 0 ? memNum : memStart;
+    int nBatches = memNum / memBatchSize;
     int ioBatchSize = num / nBatches;
     //make ioBatchSize <= the minimum delay
 
@@ -44,7 +72,7 @@ void Feedback::process(const sample_t* in, sample_t* out, int num) {
     for (ioStart = 0; ioStart < num; ioStart += ioBatchSize)
         process_batch(in+ioStart, out+ioStart, ioBatchSize, decays+ioStart, memStart, memBatchSize);
 
-    //ioStart = nBatches * ioBatchSize; 
+    ioStart = nBatches * ioBatchSize; 
     int RmemBatchSize = memNum % memBatchSize;
     int RioBatchSize = num % nBatches;
     
@@ -60,6 +88,7 @@ void Feedback::process_batch(const sample_t* in, sample_t* out, int num, float* 
     mProcess->process(sum, out, num);
     mMemory->storeSamples(out, num);
 }
+*/
 
 /* has separate sub function, but could still be more elegant
 void Feedback::process(const sample_t* in, sample_t* out, int num) {
