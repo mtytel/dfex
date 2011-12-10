@@ -31,13 +31,14 @@ void Feedback::process(const sample_t* in, sample_t* out, int num) {
  
     uint prevDelay = round(delays[0]);
     uint curDelay = round(delays[num-1]);
-    int memStart = prevDelay + num;
-    int memEnd = curDelay;
+    int memStart = prevDelay;
+    int memEnd = curDelay - num;
     int memNum = memStart - memEnd;
 
-    int memBatchSize = memEnd > 0 ? memNum : memStart;
-    int nBatches = memNum / memBatchSize;
+    //int memBatchSize = memEnd < 0 ? memNum : memStart;
+    //int nBatches = memNum / memBatchSize;
     int ioBatchSize = num / nBatches;
+    //make ioBatchSize <= the minimum delay
 
     int ioStart = 0;
     for (ioStart = 0; ioStart < num; ioStart += ioBatchSize)
