@@ -28,28 +28,16 @@
 #define DEFAULTSPEED -1
 
 class RotateDelay : public ProcessorList {
-public:
-
-    RotateDelay(float period = DEFAULTPERIOD, float speed = DEFAULTSPEED) : 
-     mRotation(0) {
-        mPeriod = new Constant(period);
-        mSpeed = new Constant(speed);
-        mMemory = new Memory();
-    }
-
-    virtual ~RotateDelay() {
-        delete mPeriod;
-        delete mSpeed;
-        delete mMemory;
-    }
+  public:
+    RotateDelay(float period = DEFAULTPERIOD, float speed = DEFAULTSPEED);
+    virtual ~RotateDelay();
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new RotateDelay(); }
 
     void process(const sample_t* in, sample_t* out, int num);
 
-protected:
-
+  protected:
     static Class cls;
 
     float mRotation;

@@ -25,23 +25,16 @@
 #define DEFAULTROOT 10000
 
 class Harmonizer : public Effect {
-public:
-
-    Harmonizer() : Effect::Effect() { 
-        mRoot = new Constant(DEFAULTROOT);
-    }
-
-    virtual ~Harmonizer() {
-        delete mRoot;
-    }
+  public:
+    Harmonizer();
+    virtual ~Harmonizer();
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Harmonizer(); }
 
     void process(const sample_t* in, sample_t* out, int num);
 
-protected:
-
+  protected:
     static Class cls;
     Processor *mRoot;
 

@@ -26,17 +26,9 @@
 #define DEFAULTPERIOD 5000
 
 class Delay : public ProcessorList {
-public:
-
-    Delay(float period = DEFAULTPERIOD) : mGranular(0), mGranularOffset(0) {
-        mPeriod = new Constant(period);
-        mMemory = new Memory();
-    }
-
-    virtual ~Delay() {
-        delete mPeriod;
-        delete mMemory;
-    }
+  public:
+    Delay(float period = DEFAULTPERIOD);
+    virtual ~Delay();
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Delay(); }
@@ -44,8 +36,7 @@ public:
     void granulate(const sample_t *in, sample_t *out, uint per, int num);
     void process(const sample_t* in, sample_t* out, int num);
 
-protected:
-
+  protected:
     static Class cls;
 
     uint mGranular, mGranularOffset;

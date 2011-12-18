@@ -26,15 +26,9 @@
 #define DEFAULTCONTROL 0
 
 class Switch : public ProcessorList {
-public:
-
-    Switch() : ProcessorList::ProcessorList() { 
-        mController = new Constant(0);    
-    }
-
-    virtual ~Switch() {
-        delete mController;
-    }
+  public:
+    Switch();
+    virtual ~Switch();
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Switch(); }
@@ -42,8 +36,7 @@ public:
     void process(const sample_t* in, sample_t* out, int num);
     void setEffect(int id, Effect *e) { mProcessors[id] = e; }
 
-protected:
-
+  protected:
     static Class cls;
     Processor *mController;
 

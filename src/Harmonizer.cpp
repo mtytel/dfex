@@ -22,29 +22,33 @@ using namespace std;
 
 Class Harmonizer::cls(string("Harmonizer"), newInstance);
 
+Harmonizer::Harmonizer() : Effect::Effect() { 
+  mRoot = new Constant(DEFAULTROOT);
+}
+
+Harmonizer::~Harmonizer() {
+  delete mRoot;
+}
+
 void Harmonizer::process(const sample_t* in, sample_t* out, int num) {
+  sample_t root[num];
+  mRoot->process(in, root, num);
 
-    sample_t root[num];
-    mRoot->process(in, root, num);
+  for (int i = 0; i < num; i++)
+    out[i] = root[i] / round(in[i]);
 
-    for (int i = 0; i < num; i++)
-        out[i] = root[i] / round(in[i]);
-
-    postProcess(in, out, num);
+  postProcess(in, out, num);
 }
 
 xml_node<> &Harmonizer::read(xml_node<> &inode) {
-    
-    Effect::read(inode);
+  Effect::read(inode);
 
-    delete mRoot;
-    mRoot = Processor::readParameter(inode, "root", DEFAULTROOT);
+  delete mRoot;
+  mRoot = Processor::readParameter(inode, "root", DEFAULTROOT);
 
-    return inode;
+  return inode;
 }
 
 xml_node<> &Harmonizer::write(xml_node<> &onode) const {
-    
-    return onode;
+  return onode;
 }
-

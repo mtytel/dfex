@@ -21,15 +21,13 @@
 #include "ProcessorList.h"
 
 class Series : public ProcessorList {
-public:
-
+  public:
     static Object *newInstance() { return new Series(); }
     const Class *getClass() const { return &cls; }
 
     void process(const sample_t* in, sample_t* out, int num);
 
-protected:
-
+  protected:
     static Class cls;
 
     sample_t mBuffer[MAXBUFFER];

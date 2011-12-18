@@ -24,15 +24,10 @@
 #define DEFAULTWET 1.0
 
 class Effect : public Processor {
-public:
+  public:
 
-    Effect(float wet = DEFAULTWET) : Processor::Processor() { 
-        mWet = new Constant(wet);
-    }
-
-    virtual ~Effect() {
-        delete mWet;    
-    }
+    Effect(float wet = DEFAULTWET);
+    virtual ~Effect();
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Effect(); }
@@ -40,8 +35,7 @@ public:
     virtual void process(const sample_t* in, sample_t* out, int num);
     virtual void postProcess(const sample_t* in, sample_t* out, int num);
 
-protected:
-
+  protected:
     static Class cls;
 
     Processor *mWet; 

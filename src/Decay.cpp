@@ -22,29 +22,34 @@ using namespace std;
 
 Class Decay::cls(std::string("Decay"), Decay::newInstance);
 
-void Decay::process(const sample_t* in, sample_t* out, int num) {
+Decay::Decay() : mCurVal(0) {
+  mDecay = new Constant(DEFAULTDECAY);
+}
 
-    sample_t decay[num];
-    mDecay->process(in, decay, num);
-    
-    for (int i = 0; i < num; i++) {    
-        mCurVal = in[i] * decay[i] + mCurVal * (1 - decay[i]);
-        out[i] = mCurVal;
-    }
+Decay::~Decay() {
+  delete mDecay;
+}
+
+void Decay::process(const sample_t* in, sample_t* out, int num) {
+  sample_t decay[num];
+  mDecay->process(in, decay, num);
+
+  for (int i = 0; i < num; i++) {    
+    mCurVal = in[i] * decay[i] + mCurVal * (1 - decay[i]);
+    out[i] = mCurVal;
+  }
 }
 
 xml_node<> &Decay::read(xml_node<> &inode) {
+  Processor::read(inode);
 
-    Processor::read(inode);
+  delete mDecay;
+  mDecay = readParameter(inode, "decay", DEFAULTDECAY);
 
-    delete mDecay;
-    mDecay = readParameter(inode, "decay", DEFAULTDECAY);
-
-    return inode;
+  return inode;
 }
 
 xml_node<> &Decay::write(xml_node<> &onode) const {
-
-    return onode;
+  return onode;
 }
 

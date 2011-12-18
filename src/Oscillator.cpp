@@ -22,43 +22,54 @@ using namespace std;
 
 Class Oscillator::cls(std::string("Oscillator"), newInstance);
 
+Oscillator::Oscillator(int period, float min, float max) : 
+                       Processor::Processor(), mOffset(0) { 
+  mMin = new Constant(min);
+  mMax = new Constant(max);
+  mPeriod = new Constant(period);
+}
+
+Oscillator::~Oscillator() {
+  delete mMin;
+  delete mMax;
+  delete mPeriod;
+}
+
 void Oscillator::process(const sample_t* in, sample_t* out, int num) {
-    sample_t period[num], max[num], min[num];
-    mPeriod->process(in, period, num);
-    mMax->process(in, max, num);
-    mMin->process(in, min, num);
+  sample_t period[num], max[num], min[num];
+  mPeriod->process(in, period, num);
+  mMax->process(in, max, num);
+  mMin->process(in, min, num);
 
-    for (int i = 0; i < num; i ++) {
-        float val = mWaveFunc(1.0 * mOffset++ / period[i]);
-        out[i] = val * max[i] + (1 - val) * min[i];
+  for (int i = 0; i < num; i ++) {
+    float val = mWaveFunc(1.0 * mOffset++ / period[i]);
+    out[i] = val * max[i] + (1 - val) * min[i];
 
-        if (mOffset >= period[i])
-            mOffset -= period[i];
-    }
+    if (mOffset >= period[i])
+      mOffset -= period[i];
+  }
 }
 
 void Oscillator::setPeriod(float period) { 
-
-    delete mPeriod;
-    mPeriod = new Constant(period); 
+  delete mPeriod;
+  mPeriod = new Constant(period); 
 }
 
 xml_node<> &Oscillator::read(xml_node<> &inode) {
-    mWaveFunc = 
-     WaveFunctions::getFunction(inode.first_attribute("wave")->value());
+  mWaveFunc = 
+      WaveFunctions::getFunction(inode.first_attribute("wave")->value());
 
-    delete mPeriod;
-    mPeriod = readParameter(inode, "period", DEFAULTPERIOD);
-    delete mMin;
-    mMin = readParameter(inode, "min", DEFAULTMIN);
-    delete mMax;
-    mMax = readParameter(inode, "max", DEFAULTMAX);
+  delete mPeriod;
+  mPeriod = readParameter(inode, "period", DEFAULTPERIOD);
+  delete mMin;
+  mMin = readParameter(inode, "min", DEFAULTMIN);
+  delete mMax;
+  mMax = readParameter(inode, "max", DEFAULTMAX);
 
-    return inode;
+  return inode;
 }
 
 xml_node<> &Oscillator::write(xml_node<> &onode) const {
-
-    return onode;
+  return onode;
 }
 

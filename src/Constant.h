@@ -21,19 +21,16 @@
 #include "Processor.h"
 
 class Constant : public Processor {
-public:
-
+  public:
     Constant(float val = 0) : Processor::Processor(), mVal(val) { }
     virtual ~Constant() { }
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Constant(); }
-    static Constant *readConstant(std::istream &is);
 
     virtual void process(const sample_t* in, sample_t* out, int num);
 
-protected:
-
+  protected:
     static Class cls;
 
     float mVal;

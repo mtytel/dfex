@@ -23,12 +23,10 @@ using namespace std;
 Class Differentiator::cls(string("Differentiator"), newInstance);
 
 void Differentiator::process(const sample_t* in, sample_t* out, int num) {
-
     for (int i = 0; i < num; i++) {
 
         out[i] = in[i] - mLastSamp;
         mLastSamp = in[i];
     }
-
     postProcess(in, out, num);
 }

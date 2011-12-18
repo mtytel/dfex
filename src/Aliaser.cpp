@@ -22,34 +22,37 @@ using namespace std;
 
 Class Aliaser::cls(string("Aliaser"), newInstance);
 
+Aliaser::Aliaser(float period) : Effect::Effect(), mOffset(0), mCurSamp(0) { 
+  mPeriod = new Constant(period);
+}
+
+Aliaser::~Aliaser() {
+  delete mPeriod;
+}
+
 void Aliaser::process(const sample_t* in, sample_t* out, int num) {
+  sample_t period[num];
+  mPeriod->process(in, period, num);
 
-    sample_t period[num];
-    mPeriod->process(in, period, num);
-
-    for (int i = 0; i < num; i++) {
-
-        if (++mOffset >= period[i]) { 
-            mCurSamp = in[i];
-            mOffset = 0;
-        }
-        out[i] = mCurSamp;
+  for (int i = 0; i < num; i++) {
+    if (++mOffset >= period[i]) { 
+      mCurSamp = in[i];
+      mOffset = 0;
     }
-
-    postProcess(in, out, num);
+    out[i] = mCurSamp;
+  }
+  postProcess(in, out, num);
 }
 
 xml_node<> &Aliaser::read(xml_node<> &inode) {
-    
-    Effect::read(inode);
+  Effect::read(inode);
 
-    delete mPeriod;
-    mPeriod = Processor::readParameter(inode, "period", DEFAULTPERIOD);
+  delete mPeriod;
+  mPeriod = Processor::readParameter(inode, "period", DEFAULTPERIOD);
 
-    return inode;
+  return inode;
 }
 
 xml_node<> &Aliaser::write(xml_node<> &onode) const {
-    
-    return onode;
+  return onode;
 }

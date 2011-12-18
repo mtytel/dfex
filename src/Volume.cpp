@@ -22,29 +22,34 @@ using namespace std;
 
 Class Volume::cls(string("Volume"), newInstance);
 
+Volume::Volume(float vol) : Effect::Effect() { 
+  mVol = new Constant(vol);
+}
+
+Volume::~Volume() {
+  delete mVol;
+}
+
 void Volume::process(const sample_t* in, sample_t* out, int num) {
+  sample_t vol[num];
+  mVol->process(in, vol, num);
 
-    sample_t vol[num];
-    mVol->process(in, vol, num);
+  for (int i = 0; i < num; i++)
+    out[i] = in[i] * vol[i];
 
-    for (int i = 0; i < num; i++)
-        out[i] = in[i] * vol[i];
-
-    postProcess(in, out, num);
+  postProcess(in, out, num);
 }
 
 xml_node<> &Volume::read(xml_node<> &inode) {
-    
-    Effect::read(inode);
+  Effect::read(inode);
 
-    delete mVol;
-    mVol = Processor::readParameter(inode, "volume", DEFAULTVOLUME);
+  delete mVol;
+  mVol = Processor::readParameter(inode, "volume", DEFAULTVOLUME);
 
-    return inode;
+  return inode;
 }
 
 xml_node<> &Volume::write(xml_node<> &onode) const {
-    
-    return onode;
+  return onode;
 }
 

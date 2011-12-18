@@ -20,38 +20,33 @@
 using namespace std;
 
 void Process::combine(const sample_t* from1, const sample_t* from2, 
- sample_t* to, int num) {
-
-    for (int i = 0; i < num; i++)
-        to[i] = from1[i] + from2[i];
+                      sample_t* to, int num) {
+  for (int i = 0; i < num; i++)
+    to[i] = from1[i] + from2[i];
 }
 
 sample_t Process::linearInterpolate(sample_t left, sample_t right, float perc) {
-
-    return perc * right + (1 - perc) * left;
+  return perc * right + (1 - perc) * left;
 }
 
 void Process::fit(const sample_t* from, sample_t* to, int numFrom, int numTo) {
+  float fromInc = 1.0 * numFrom / numTo;
+  float fromIndex = 0;
 
-    float fromInc = 1.0 * numFrom / numTo;
-    float fromIndex = 0;
-
-    for (int i = 0; i < numTo; i++) {
-        to[i] = linearInterpolate(from[(int)(fromIndex)], 
-         from[(int)ceil(fromIndex)], fromIndex - floor(fromIndex));
-        fromIndex += fromInc;
-    }
+  for (int i = 0; i < numTo; i++) {
+    to[i] = linearInterpolate(from[(int)(fromIndex)], 
+        from[(int)ceil(fromIndex)], fromIndex - floor(fromIndex));
+    fromIndex += fromInc;
+  }
 }
 
 void Process::invert(const sample_t* from, sample_t* to, int num) {
-
-    for (int i = 0; i < num; i++)
-        to[i] = -from[i];
+  for (int i = 0; i < num; i++)
+    to[i] = -from[i];
 }
 
 void Process::power(const sample_t* from, sample_t* to, float exp, int num) {
-
-    for (int i = 0; i < num; i++)
-        to[i] = pow(from[i], exp);
+  for (int i = 0; i < num; i++)
+    to[i] = pow(from[i], exp);
 }
 

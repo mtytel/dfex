@@ -28,20 +28,11 @@
 #define DEFAULTPERIOD 4000
 
 class Oscillator : public Processor {
-public:
+  public:
 
     Oscillator(int period = DEFAULTPERIOD, float min = DEFAULTMIN,
-     float max = DEFAULTMAX) : Processor::Processor(), mOffset(0) { 
-        mMin = new Constant(min);
-        mMax = new Constant(max);
-        mPeriod = new Constant(period);
-    }
-
-    virtual ~Oscillator() {
-        delete mMin;
-        delete mMax;
-        delete mPeriod;
-    }
+        float max = DEFAULTMAX);
+    virtual ~Oscillator();
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Oscillator(); }
@@ -49,8 +40,7 @@ public:
     virtual void process(const sample_t* in, sample_t* out, int num);
     void setPeriod(float period); 
 
-protected:
-
+  protected:
     static Class cls;
 
     Processor *mMin, *mMax, *mPeriod;

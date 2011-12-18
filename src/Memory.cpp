@@ -17,17 +17,19 @@
 
 #include "Memory.h"
 
-void Memory::storeSamples(const sample_t *in, int num) {
+Memory::Memory() : mOffset(0) {
+  memset(mMemory, 0, MAXMEMORY * 3 * sizeof(sample_t));
+}
 
-    for (int i = 0; i < num; i++) {
-        mMemory[mOffset] = mMemory[mOffset + MAXMEMORY] =
-         mMemory[mOffset + MAXMEMORY * 2] = in[i];
-        mOffset = (mOffset + 1) % MAXMEMORY;
-    }
+void Memory::storeSamples(const sample_t *in, int num) {
+  for (int i = 0; i < num; i++) {
+    mMemory[mOffset] = mMemory[mOffset + MAXMEMORY] =
+      mMemory[mOffset + MAXMEMORY * 2] = in[i];
+    mOffset = (mOffset + 1) % MAXMEMORY;
+  }
 }
 
 const sample_t* Memory::getPastSamples(int num) {
-    
-    int index = (MAXMEMORY + mOffset - num) % MAXMEMORY;
-    return &mMemory[MAXMEMORY + index];
+  int index = (MAXMEMORY + mOffset - num) % MAXMEMORY;
+  return &mMemory[MAXMEMORY + index];
 }

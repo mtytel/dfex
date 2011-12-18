@@ -27,10 +27,9 @@
 
 #define DEFAULTSIZE 480000
 #define DEFAULTSILENT 0
-#define DEFAULTREVERSE 9
 
 class Loop : public Parallel {
-public:
+  public:
     Loop(); 
     virtual ~Loop();
 
@@ -46,17 +45,13 @@ public:
     void silenceAll();
     void playAll();
 
-protected:
-
+  protected:
     class LoopTrack : public Processor {
-    public:
+      public:
         enum { kRecording, kPlaying, kSilence };
 
-        LoopTrack(int quant = 1) : mMemSize(DEFAULTSIZE), mRecLength(0), 
-         mOffset(0), mState(kRecording), mQuant(quant) { 
-
-            mMemory = (sample_t*)calloc(mMemSize, sizeof(sample_t));
-        }
+        LoopTrack(int quant = 1);
+        virtual ~LoopTrack();
 
         void process(const sample_t* in, sample_t* out, int num);
         void toggle();
@@ -67,11 +62,11 @@ protected:
         int isRecording() { return mState == kRecording; }
         int getRecLength() { return mRecLength; }
 
-    protected:
-    
+      protected:
+
         void record(const sample_t *in, int num);
         void stopRecording();
-        void play(sample_t *out, int num);
+        void playBack(sample_t *out, int num);
         void resize();
 
         int mMemSize, mRecLength, mOffset, mState, mQuant;
@@ -81,7 +76,7 @@ protected:
     static Class cls;
 
     Processor *mControl;
-    int mSilentId, mReverseId, mTrackQuant;
+    int mSilentId, mTrackQuant;
     std::map<int, LoopTrack*> mTrackMap;
     char mLastVal, mLastButton;
 
@@ -90,4 +85,3 @@ protected:
 };
 
 #endif
-

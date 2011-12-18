@@ -31,8 +31,7 @@
 #include "Setup.h"
 
 class Process {
-public:
-
+  public:
     static sample_t linearInterpolate(sample_t, sample_t, float);
     static void combine(const sample_t*, const sample_t*, sample_t*, int);
     static void fit(const sample_t*, sample_t*, int, int);

@@ -22,56 +22,65 @@ using namespace std;
 
 Class RotateDelay::cls(std::string("RotateDelay"), newInstance);
 
+RotateDelay::RotateDelay(float period, float speed) : mRotation(0) {
+  mPeriod = new Constant(period);
+  mSpeed = new Constant(speed);
+  mMemory = new Memory();
+}
+
+RotateDelay::~RotateDelay() {
+  delete mPeriod;
+  delete mSpeed;
+  delete mMemory;
+}
+
 void RotateDelay::process(const sample_t* in, sample_t* out, int num) {
+  sample_t periods[num], speeds[num], fit[num], buffer[num];
+  mSpeed->process(in, speeds, num);
+  sample_t curSpeed = speeds[num - 1];
 
-    sample_t periods[num], speeds[num], fit[num], buffer[num];
-    mSpeed->process(in, speeds, num);
-    sample_t curSpeed = speeds[num - 1];
+  mPeriod->process(in, periods, num);
+  uint prevPeriod = round(periods[0]);
+  uint curPeriod = round(periods[num - 1]);
 
-    mPeriod->process(in, periods, num);
-    uint prevPeriod = round(periods[0]);
-    uint curPeriod = round(periods[num - 1]);
-    
-    mMemory->storeSamples(in, num);
-    memset(out, 0, num * sizeof(sample_t));
+  mMemory->storeSamples(in, num);
+  memset(out, 0, num * sizeof(sample_t));
 
-    for (uint st = 0; st < mProcessors.size(); st++) {
-        int startOffset = (int)round(mRotation + st * prevPeriod) % 
-         (prevPeriod * mProcessors.size());
-        int endOffset = ((int)round(mRotation + st * curPeriod) % 
-         (curPeriod * mProcessors.size())) - curSpeed * num;
-        int procSize = startOffset - endOffset;
-        const sample_t *sampStart = mMemory->getPastSamples(startOffset);
+  for (uint st = 0; st < mProcessors.size(); st++) {
+    int startOffset = (int)round(mRotation + st * prevPeriod) % 
+      (prevPeriod * mProcessors.size());
+    int endOffset = ((int)round(mRotation + st * curPeriod) % 
+        (curPeriod * mProcessors.size())) - curSpeed * num;
+    int procSize = startOffset - endOffset;
+    const sample_t *sampStart = mMemory->getPastSamples(startOffset);
 
-        Process::fit(sampStart, fit, procSize, num);
-        mProcessors[st]->process(fit, buffer, num);
-        Process::combine(buffer, out, out, num);
-    }
+    Process::fit(sampStart, fit, procSize, num);
+    mProcessors[st]->process(fit, buffer, num);
+    Process::combine(buffer, out, out, num);
+  }
 
-    mRotation *= 1.0 * curPeriod / prevPeriod;
-    mRotation += num - curSpeed * num;
-    if (mRotation >= curPeriod * mProcessors.size())
-        mRotation -= curPeriod * mProcessors.size();
-    else if (mRotation < 0)
-        mRotation += curPeriod * mProcessors.size();
+  mRotation *= 1.0 * curPeriod / prevPeriod;
+  mRotation += num - curSpeed * num;
+  if (mRotation >= curPeriod * mProcessors.size())
+    mRotation -= curPeriod * mProcessors.size();
+  else if (mRotation < 0)
+    mRotation += curPeriod * mProcessors.size();
 
-    postProcess(in, out, num);
+  postProcess(in, out, num);
 }
 
 xml_node<> &RotateDelay::read(xml_node<> &inode) {
+  ProcessorList::read(inode);
 
-    ProcessorList::read(inode);
+  delete mPeriod;
+  mPeriod = Processor::readParameter(inode, "period", DEFAULTPERIOD);
 
-    delete mPeriod;
-    mPeriod = Processor::readParameter(inode, "period", DEFAULTPERIOD);
+  delete mSpeed;
+  mSpeed = Processor::readParameter(inode, "speed", DEFAULTSPEED);
 
-    delete mSpeed;
-    mSpeed = Processor::readParameter(inode, "speed", DEFAULTSPEED);
-    
-    return inode;
+  return inode;
 }
 
 xml_node<> &RotateDelay::write(xml_node<> &onode) const {
-
-    return onode;
+  return onode;
 }

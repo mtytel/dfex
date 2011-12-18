@@ -25,24 +25,16 @@
 #define DEFAULTPERIOD 2.0
 
 class Aliaser : public Effect {
-public:
-
-    Aliaser(float period = DEFAULTPERIOD) : Effect::Effect(), mOffset(0), 
-     mCurSamp(0) { 
-        mPeriod = new Constant(period);
-    }
-
-    virtual ~Aliaser() {
-        delete mPeriod;
-    }
+  public:
+    Aliaser(float period = DEFAULTPERIOD);
+    virtual ~Aliaser();
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Aliaser(); }
 
     void process(const sample_t* in, sample_t* out, int num);
 
-protected:
-
+  protected:
     static Class cls;
 
     Processor *mPeriod;
@@ -54,4 +46,3 @@ protected:
 };
 
 #endif
-

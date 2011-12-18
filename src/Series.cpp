@@ -22,21 +22,19 @@ using namespace std;
 Class Series::cls(string("Series"), newInstance);
 
 void Series::process(const sample_t* in, sample_t* out, int num) {
+  if (mProcessors.size() == 0) {
+    Effect::process(in, out, num);
+    return;
+  }
 
-    if (mProcessors.size() == 0) {
-        Effect::process(in, out, num);
-        return;
-    }
+  const sample_t* from = in;
+  sample_t* to = mProcessors.size() % 2 ? out : mBuffer;
 
-    const sample_t* from = in;
-    sample_t* to = mProcessors.size() % 2 ? out : mBuffer;
-
-    for (uint i = 0; i < mProcessors.size(); i++) {
-        mProcessors[i]->process(from, to, num);
-        from = to;
-        to = from == out ? mBuffer : out;
-    }
-
-    postProcess(in, out, num);
+  for (uint i = 0; i < mProcessors.size(); i++) {
+    mProcessors[i]->process(from, to, num);
+    from = to;
+    to = from == out ? mBuffer : out;
+  }
+  postProcess(in, out, num);
 }
 

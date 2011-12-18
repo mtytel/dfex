@@ -26,15 +26,13 @@
 typedef double(*waveFunction)(double);
 
 class WaveFunctions {
-public:
-
+  public:
     enum {kOn, kOff, kSine, kCos, kSquare, kSawRise, kSawFall};
 
     static waveFunction getFunction(int type);
     static waveFunction getFunction(const std::string &name);
 
-protected:
-
+  protected:
     static double on(double val) { return 1; }
     static double off(double val) { return 0; }
     static double sine(double val);
@@ -42,7 +40,6 @@ protected:
     static double square(double val);
     static double sawRise(double val);
     static double sawFall(double val);
-
     static double cosWindow(double val);
 };
 

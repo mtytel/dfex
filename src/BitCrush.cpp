@@ -21,31 +21,35 @@ using namespace rapidxml;
 
 Class BitCrush::cls(std::string("BitCrush"), newInstance);
 
+BitCrush::BitCrush(float bits) : Effect::Effect() {
+  mBits = new Constant(bits);
+}
+
+BitCrush::~BitCrush() {
+  delete mBits;
+}
+
 void BitCrush::process(const sample_t* in, sample_t* out, int num) {
+  sample_t bits[num];
+  mBits->process(in, bits, num);
 
-    sample_t bits[num];
-    mBits->process(in, bits, num);
-
-    for (int i = 0; i < num; i++) {
-        float mult = pow(2, bits[i] / 2);
-        float disc = round(mult * in[i]);
-        out[i] = disc / mult;
-    }
-
-    postProcess(in, out, num);
+  for (int i = 0; i < num; i++) {
+    float mult = pow(2, bits[i] / 2);
+    float disc = round(mult * in[i]);
+    out[i] = disc / mult;
+  }
+  postProcess(in, out, num);
 }
 
 xml_node<> &BitCrush::read(xml_node<> &inode) {
-    
-    Effect::read(inode);
+  Effect::read(inode);
 
-    delete mBits;
-    mBits = Processor::readParameter(inode, "bits", DEFAULTBITS);
+  delete mBits;
+  mBits = Processor::readParameter(inode, "bits", DEFAULTBITS);
 
-    return inode;
+  return inode;
 }
 
 xml_node<> &BitCrush::write(xml_node<> &onode) const {
-    
-    return onode;
+  return onode;
 }

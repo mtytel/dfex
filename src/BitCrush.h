@@ -20,29 +20,21 @@
 
 #include <stdlib.h>
 #include <math.h>
-
 #include "Effect.h"
 
 #define DEFAULTBITS 2.0
 
 class BitCrush : public Effect {
-public:
-
-    BitCrush(float bits = DEFAULTBITS) : Effect::Effect() {
-        mBits = new Constant(bits);
-    }
-
-    virtual ~BitCrush() {
-        delete mBits;
-    }
+  public:
+    BitCrush(float bits = DEFAULTBITS);
+    virtual ~BitCrush();
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new BitCrush(); }
 
     void process(const sample_t* in, sample_t* out, int num);
 
-protected:
-
+  protected:
     static Class cls;
 
     Processor *mBits;

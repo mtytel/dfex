@@ -22,7 +22,7 @@ using namespace std;
 Class Constant::cls(string("Constant"), newInstance);
 
 void Constant::process(const sample_t* in, sample_t* out, int num) {
-    for (int i = 0; i < num; i++)
-        out[i] = mVal;
+  for (int i = 0; i < num; i++)
+    out[i] = mVal;
 }
 

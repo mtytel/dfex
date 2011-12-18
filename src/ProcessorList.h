@@ -32,9 +32,7 @@ class Series;
 class Oscillator;
 
 class ProcessorList : public Effect {
-public:
-
-    ProcessorList() { }
+  public:
     virtual ~ProcessorList() { }
 
     const Class *getClass() const { return &cls; }
@@ -43,12 +41,11 @@ public:
     void addProcessor(Processor* p);
     void readList(rapidxml::xml_node<> &inode, std::vector<Series*> *);
     void loadAllModifications(rapidxml::xml_node<> &, int, 
-     std::vector<std::pair<rapidxml::xml_node<> *, Oscillator*> > *);
+        std::vector<std::pair<rapidxml::xml_node<> *, Oscillator*> > *);
     void readModifier(rapidxml::xml_node<> &, std::vector<Series*> *); 
     int size() { return mProcessors.size(); }
 
-protected:
-
+  protected:
     static Class cls;
 
     std::vector<Processor*> mProcessors;

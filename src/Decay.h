@@ -25,23 +25,16 @@
 #define DEFAULTDECAY 1
 
 class Decay : public Processor {
-public:
-
-    Decay() : mCurVal(0) {
-        mDecay = new Constant(DEFAULTDECAY);
-    }
-
-    virtual ~Decay() {
-        delete mDecay;
-    }
+  public:
+    Decay();
+    virtual ~Decay();
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Decay(); }
 
     virtual void process(const sample_t* in, sample_t* out, int num);
 
-protected:
-
+  protected:
     static Class cls;
 
     sample_t mCurVal;

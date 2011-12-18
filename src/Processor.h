@@ -26,28 +26,27 @@
 #include "Setup.h"
 #include "Class.h"
 #include "Process.h"
+#include "rapidxml.hpp"
 
 class Processor : public Object {
-public:
-
+  public:
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Processor(); }
 
     static Processor *readProcessor(rapidxml::xml_node<> &);
     static Processor *readParameter(rapidxml::xml_node<> &, 
-     const char *, float);
+                                    const char *, float);
     static Processor *createConstant(const char *);
 
     virtual void process(const sample_t* in, sample_t* out, int num);
     virtual void postProcess(const sample_t* in, sample_t* out, int num) { }
 
     friend rapidxml::xml_node<> &operator<<(rapidxml::xml_node<> &onode, 
-     const Processor &p) { return p.write(onode); }
+        const Processor &p) { return p.write(onode); }
     friend rapidxml::xml_node<> &operator>>(rapidxml::xml_node<> &inode, 
-     Processor &p) { return p.read(inode); }
+        Processor &p) { return p.read(inode); }
 
-protected:
-
+  protected:
     static Class cls;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);

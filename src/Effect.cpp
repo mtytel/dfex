@@ -21,28 +21,32 @@ using namespace rapidxml;
 
 Class Effect::cls(std::string("Effect"), newInstance);
 
-void Effect::process(const sample_t* in, sample_t* out, int num) {
+Effect::Effect(float wet) : Processor::Processor() { 
+  mWet = new Constant(wet);
+}
 
-    Processor::process(in, out, num);
-    postProcess(in, out, num);
+Effect::~Effect() {
+  delete mWet;    
+}
+
+void Effect::process(const sample_t* in, sample_t* out, int num) {
+  Processor::process(in, out, num);
+  postProcess(in, out, num);
 }
 
 void Effect::postProcess(const sample_t* in, sample_t* out, int num) {
+  sample_t wet[num];
+  mWet->process(in, wet, num);
 
-    sample_t wet[num];
-    mWet->process(in, wet, num);
-
-    for (int i = 0; i < num; i++)
-        out[i] = out[i] * wet[i] + in[i] * (1 - wet[i]);
+  for (int i = 0; i < num; i++)
+    out[i] = out[i] * wet[i] + in[i] * (1 - wet[i]);
 }
 
 xml_node<> &Effect::read(xml_node<> &inode) {
-    
-    mWet = Processor::readParameter(inode, "wet", DEFAULTWET);
-    return inode;
+  mWet = Processor::readParameter(inode, "wet", DEFAULTWET);
+  return inode;
 }
 
 xml_node<> &Effect::write(xml_node<> &onode) const {
-
-    return onode;
+  return onode;
 }

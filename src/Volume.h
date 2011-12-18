@@ -19,21 +19,14 @@
 #define VOLUME_H
 
 #include <stdlib.h>
-
 #include "Effect.h"
 
 #define DEFAULTVOLUME 1.0
 
 class Volume : public Effect {
 public:
-
-    Volume(float vol = 1.0) : Effect::Effect() { 
-        mVol = new Constant(vol);
-    }
-
-    virtual ~Volume() {
-        delete mVol;
-    }
+    Volume(float vol = 1.0);
+    virtual ~Volume();
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Volume(); }
@@ -41,7 +34,6 @@ public:
     void process(const sample_t* in, sample_t* out, int num);
 
 protected:
-
     static Class cls;
 
     Processor *mVol;

@@ -23,8 +23,7 @@
 #include "Effect.h"
 
 class Differentiator : public Effect {
-public:
-
+  public:
     Differentiator() : Effect::Effect(), mLastSamp(0) { }
     virtual ~Differentiator() { }
 
@@ -33,8 +32,7 @@ public:
 
     void process(const sample_t* in, sample_t* out, int num);
 
-protected:
-
+  protected:
     static Class cls;
 
     sample_t mLastSamp;

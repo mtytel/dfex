@@ -22,38 +22,42 @@ using namespace rapidxml;
 
 Class Switch::cls(string("Switch"), newInstance);
 
+Switch::Switch() : ProcessorList::ProcessorList() { 
+  mController = new Constant(0);    
+}
+
+Switch::~Switch() {
+  delete mController;
+}
+
 void Switch::process(const sample_t* in, sample_t* out, int num) {
+  sample_t silent[num], buffer[num];
+  memset(silent, 0, num * sizeof(sample_t));
 
-    sample_t silent[num], buffer[num];
-    memset(silent, 0, num * sizeof(sample_t));
+  sample_t cur[num];
+  mController->process(in, cur, num);
 
-    sample_t cur[num];
-    mController->process(in, cur, num);
+  uint val = fmin(cur[num - 1], mProcessors.size() - 1);
+  mProcessors[val]->process(in, out, num);
 
-    uint val = fmin(cur[num - 1], mProcessors.size() - 1);
-    mProcessors[val]->process(in, out, num);
-
-    for (uint p = 0; p < mProcessors.size(); p++) {
-        if (p != val) {
-            mProcessors[p]->process(silent, buffer, num);
-            Process::combine(buffer, out, out, num);
-        }
+  for (uint p = 0; p < mProcessors.size(); p++) {
+    if (p != val) {
+      mProcessors[p]->process(silent, buffer, num);
+      Process::combine(buffer, out, out, num);
     }
-
-    postProcess(in, out, num);
+  }
+  postProcess(in, out, num);
 }
 
 xml_node<> &Switch::read(xml_node<> &inode) {
+  ProcessorList::read(inode);
+  delete mController;
+  mController = Processor::readParameter(inode, "control", DEFAULTCONTROL);
 
-    ProcessorList::read(inode);
-    delete mController;
-    mController = Processor::readParameter(inode, "control", DEFAULTCONTROL);
-
-    return inode;
+  return inode;
 }
 
 xml_node<> &Switch::write(xml_node<> &onode) const {
-
-    return onode;
+  return onode;
 }
 

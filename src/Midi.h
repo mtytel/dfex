@@ -34,14 +34,12 @@
 class MidiControl;
 
 class MidiStream {
-public:
-
+  public:
     static void addController(MidiControl *controller);
     static void readMidi();
     static void stream();
 
-protected:
-    
+  protected:
     static boost::shared_mutex mutex;
     static boost::thread midiThread;
     static int seqfd;
@@ -49,7 +47,7 @@ protected:
 };
 
 class MidiControl : public Processor {
-public:
+  public:
     enum { kOff = -1 };
 
     MidiControl();
@@ -59,8 +57,7 @@ public:
     void midiInput(unsigned char val);
     virtual void matchedValue(char val) { mVal = val; }
 
-protected:
-
+  protected:
     sample_t mVal;
     uint mMatches;
     std::vector<unsigned char> mSignal;
@@ -70,10 +67,8 @@ protected:
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
 };
 
-
 class MidiStomp : public MidiControl {
-public:
-
+  public:
     MidiStomp() : MidiControl(), mToggle(0) { }
     virtual ~MidiStomp() { }
 
@@ -81,8 +76,7 @@ public:
     static Object *newInstance() { return new MidiStomp(); }
     void matchedValue(char val);
 
-protected:
-
+  protected:
     static Class cls;
     int mToggle;
 
@@ -90,29 +84,19 @@ protected:
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
 };
 
-
 class MidiExpression : public MidiControl {
-public:
-    
+  public:
     enum { kExp, kLin };
 
-    MidiExpression() : MidiControl(), mMidiMax(0), mMidiMin(0), mScale(0) {
-        mMin = new Constant(DEFAULTMIN);
-        mMax = new Constant(DEFAULTMAX);
-    }
-
-    ~MidiExpression() {
-        delete mMin;
-        delete mMax;
-    }
+    MidiExpression();
+    virtual ~MidiExpression();
 
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new MidiExpression(); }
 
     virtual void process(const sample_t* in, sample_t* out, int num);
 
-protected:
-
+  protected:
     static Class cls;
 
     char mMidiMax, mMidiMin;

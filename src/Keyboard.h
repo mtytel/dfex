@@ -26,13 +26,11 @@
 class KeyboardStomp;
 
 class KeyboardStream { 
-public:
-
+  public:
     static void stream();
     static void addController(KeyboardStomp*);
 
-protected:
-
+  protected:
     static boost::shared_mutex mutex;
     static std::vector<KeyboardStomp*> controllers;
 
@@ -40,17 +38,10 @@ protected:
 };
 
 class KeyboardStomp : public Processor {
-public:
+  public:
     enum { kOff = -1 };
 
-    KeyboardStomp() : mCur(0), mToggle(0) { 
-        KeyboardStream::addController(this); 
-
-        mMapping.push_back("123\tqwaszx");
-        mMapping.push_back("45678ertyuidfghjcvbn");
-        mMapping.push_back("90-=op[]\\kl;'\nm,./");
-    }
-
+    KeyboardStomp();
     virtual ~KeyboardStomp() { }
 
     const Class *getClass() const { return &cls; }
@@ -59,8 +50,7 @@ public:
     void process(const sample_t* in, sample_t* out, int num);
     void keyInput(char c);
 
-protected:
-
+  protected:
     static Class cls;
     int mCur, mToggle;
 

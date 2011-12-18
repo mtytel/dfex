@@ -21,15 +21,13 @@
 #include "ProcessorList.h"
 
 class Parallel : public ProcessorList {
-public:
-
+  public:
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Parallel(); }
 
     void process(const sample_t* in, sample_t* out, int num);
 
-protected:
-
+  protected:
     static Class cls;
 
     sample_t mBuffer[MAXBUFFER];

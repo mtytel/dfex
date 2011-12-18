@@ -7,7 +7,7 @@ LDFLAGS=
 
 OBJS := $(patsubst src/%.cpp,debug/src/%.o,$(wildcard src/*.cpp))
 
-all: clean dfex
+all: dfex
 
 dfex: $(OBJS)
 	@echo 'Building Executable: $@'

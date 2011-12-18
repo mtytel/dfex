@@ -19,24 +19,20 @@
 #define MEMORY_H
 
 #include <string.h>
-
 #include "Setup.h"
 
 #define MAXMEMORY 4800000
 
 class Memory {
-public:
+  public:
 
-    Memory() : mOffset(0) {
-        memset(mMemory, 0, MAXMEMORY * 3 * sizeof(sample_t));
-    }
-
+    Memory();
     virtual ~Memory() { }
 
     virtual void storeSamples(const sample_t *in, int num);
     const sample_t* getPastSamples(int num);
 
-protected:
+  protected:
 
     sample_t mMemory[MAXMEMORY * 3];
     long mOffset;
