@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -138,7 +138,7 @@ void Loop::buttonPushed(char but) {
 
 int Loop::anyPlaying() {
   map<int, LoopTrack*>::const_iterator it;
-  for (it = mTrackMap.begin(); it != mTrackMap.end(); it++) 
+  for (it = mTrackMap.begin(); it != mTrackMap.end(); it++)
     if (it->second->isPlaying())
       return 1;
 
@@ -147,13 +147,13 @@ int Loop::anyPlaying() {
 
 void Loop::silenceAll() {
   map<int, LoopTrack*>::const_iterator it, end = mTrackMap.end();
-  for (it = mTrackMap.begin(); it != end; it++) 
+  for (it = mTrackMap.begin(); it != end; it++)
     it->second->silence();
 }
 
 void Loop::playAll() {
   map<int, LoopTrack*>::const_iterator it, end = mTrackMap.end();
-  for (it = mTrackMap.begin(); it != end; it++) 
+  for (it = mTrackMap.begin(); it != end; it++)
     it->second->play();
 }
 

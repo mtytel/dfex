@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -20,14 +20,14 @@
 using namespace rapidxml;
 using namespace std;
 
-int MidiStream::seqfd; 
-vector<MidiControl *> MidiStream::controllers; 
+int MidiStream::seqfd;
+vector<MidiControl *> MidiStream::controllers;
 boost::shared_mutex MidiStream::mutex;
 
 boost::thread MidiStream::midiThread(MidiStream::stream);
 
 Class MidiStomp::cls(std::string("MidiStomp"), MidiStomp::newInstance);
-Class MidiExpression::cls(std::string("MidiExpression"), 
+Class MidiExpression::cls(std::string("MidiExpression"),
     MidiExpression::newInstance);
 
 void MidiStream::addController(MidiControl *controller) {
@@ -44,8 +44,8 @@ void MidiStream::readMidi() {
   }
 
   boost::shared_lock<boost::shared_mutex> lock(MidiStream::mutex);
-  if (inbytes[0] == SEQ_MIDIPUTC) 
-    for (uint i = 0; i < MidiStream::controllers.size(); i++)
+  if (inbytes[0] == SEQ_MIDIPUTC)
+    for (size_t i = 0; i < MidiStream::controllers.size(); i++)
       MidiStream::controllers[i]->midiInput(inbytes[1]);
 }
 
@@ -53,7 +53,7 @@ void MidiStream::stream() {
   MidiStream::seqfd = open(MIDI_DEVICE, O_RDONLY);
   //TODO Some sort of error checking
 
-  while (1) 
+  while (1)
     readMidi();
 }
 
@@ -118,7 +118,7 @@ xml_node<> &MidiStomp::write(xml_node<> &onode) const {
   return onode;
 }
 
-MidiExpression::MidiExpression() : MidiControl(), mMidiMax(0), 
+MidiExpression::MidiExpression() : MidiControl(), mMidiMax(0),
                                    mMidiMin(0), mScale(0) {
   mMin = new Constant(DEFAULTMIN);
   mMax = new Constant(DEFAULTMAX);
@@ -134,7 +134,7 @@ void MidiExpression::process(const sample_t* in, sample_t* out, int num) {
   mMin->process(in, min, num);
   mMax->process(in, max, num);
 
-  for (int i = 0; i < num; i++) {    
+  for (int i = 0; i < num; i++) {
     float perc = (mVal - mMidiMin) / (mMidiMax - mMidiMin);
 
     if (mScale == kLin)

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ Processor *Processor::createConstant(const char *val) {
   if (num || val[0] == '0')
     return new Constant(num);
 
-  cerr << "Error reading configuration: " << val << 
+  cerr << "Error reading configuration: " << val <<
     " is not a valid Processor" << endl;
   exit(1);
 }
@@ -44,7 +44,7 @@ Processor* Processor::readProcessor(xml_node<> &inode) {
   const Class *eCls = Class::ForName(clsName);
 
   if (!eCls) {
-    cerr << "Error reading configuration: No Processor '" 
+    cerr << "Error reading configuration: No Processor '"
       << clsName << "'" << endl;
     exit(1);
   }
@@ -54,7 +54,7 @@ Processor* Processor::readProcessor(xml_node<> &inode) {
   return p;
 }
 
-Processor *Processor::readParameter(rapidxml::xml_node<> &node, 
+Processor *Processor::readParameter(rapidxml::xml_node<> &node,
     const char *tag, float defaultVal) {
   xml_node<> *found_node = node.first_node(tag);
 

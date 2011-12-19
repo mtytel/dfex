@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -40,9 +40,9 @@ class ProcessorList : public Effect {
 
     void addProcessor(Processor* p);
     void readList(rapidxml::xml_node<> &inode, std::vector<Series*> *);
-    void loadAllModifications(rapidxml::xml_node<> &, int, 
+    void loadAllModifications(rapidxml::xml_node<> &, int,
         std::vector<std::pair<rapidxml::xml_node<> *, Oscillator*> > *);
-    void readModifier(rapidxml::xml_node<> &, std::vector<Series*> *); 
+    void readModifier(rapidxml::xml_node<> &, std::vector<Series*> *);
     int size() { return mProcessors.size(); }
 
   protected:

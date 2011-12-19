@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify

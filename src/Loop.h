@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@
 
 class Loop : public Parallel {
   public:
-    Loop(); 
+    Loop();
     virtual ~Loop();
 
     const Class *getClass() const { return &cls; }

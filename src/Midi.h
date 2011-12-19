@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -59,9 +59,9 @@ class MidiControl : public Processor {
 
   protected:
     sample_t mVal;
-    uint mMatches;
+    size_t mMatches;
     std::vector<unsigned char> mSignal;
-    uint mLowBound, mUpBound;
+    size_t mLowBound, mUpBound;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);
     virtual rapidxml::xml_node<> &write(rapidxml::xml_node<> &) const;
@@ -100,7 +100,7 @@ class MidiExpression : public MidiControl {
     static Class cls;
 
     char mMidiMax, mMidiMin;
-    uint mScale;
+    size_t mScale;
     Processor *mMax, *mMin;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);

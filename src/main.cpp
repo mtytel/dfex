@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ int process (jack_nframes_t nframes, void *arg){
 
   p->process(in, out, nframes);
 
-  return 0;      
+  return 0;
 }
 
 int srate (jack_nframes_t nframes, void *arg){
@@ -95,7 +95,7 @@ int main (int argc, char *argv[]){
 
   jack_set_error_function(error);
 
-  if ((client = jack_client_open ("controller", 
+  if ((client = jack_client_open ("controller",
           (jack_options_t)(JackNullOption | JackNoStartServer), NULL)) == 0) {
     fprintf(stderr, "jack server not running?\n");
     return 1;
@@ -112,7 +112,7 @@ int main (int argc, char *argv[]){
   input_port = jack_port_register(client, "input",
       JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
 
-  output_port = jack_port_register (client, "output", 
+  output_port = jack_port_register (client, "output",
       JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
 
   if ((input_port == NULL) || (output_port == NULL)) {
@@ -137,7 +137,7 @@ int main (int argc, char *argv[]){
     fprintf (stderr, "cannot connect input ports\n");
   }
 
-  if ((ports = jack_get_ports (client, NULL, NULL, 
+  if ((ports = jack_get_ports (client, NULL, NULL,
           JackPortIsPhysical|JackPortIsInput)) == NULL) {
     fprintf(stderr, "Cannot find any physical playback ports\n");
     exit(1);

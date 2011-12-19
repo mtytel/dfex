@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -33,13 +33,13 @@ class Delay : public ProcessorList {
     const Class *getClass() const { return &cls; }
     static Object *newInstance() { return new Delay(); }
 
-    void granulate(const sample_t *in, sample_t *out, uint per, int num);
+    void granulate(const sample_t *in, sample_t *out, size_t per, int num);
     void process(const sample_t* in, sample_t* out, int num);
 
   protected:
     static Class cls;
 
-    uint mGranular, mGranularOffset;
+    size_t mGranular, mGranularOffset;
     Processor *mPeriod;
     Memory *mMemory;
 

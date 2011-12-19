@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@ using namespace rapidxml;
 
 Class Effect::cls(std::string("Effect"), newInstance);
 
-Effect::Effect(float wet) : Processor::Processor() { 
+Effect::Effect(float wet) : Processor::Processor() {
   mWet = new Constant(wet);
 }
 
 Effect::~Effect() {
-  delete mWet;    
+  delete mWet;
 }
 
 void Effect::process(const sample_t* in, sample_t* out, int num) {

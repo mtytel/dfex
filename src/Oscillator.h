@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ class Oscillator : public Processor {
     static Object *newInstance() { return new Oscillator(); }
 
     virtual void process(const sample_t* in, sample_t* out, int num);
-    void setPeriod(float period); 
+    void setPeriod(float period);
 
   protected:
     static Class cls;

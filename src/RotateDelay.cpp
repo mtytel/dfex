@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -40,16 +40,16 @@ void RotateDelay::process(const sample_t* in, sample_t* out, int num) {
   sample_t curSpeed = speeds[num - 1];
 
   mPeriod->process(in, periods, num);
-  uint prevPeriod = round(periods[0]);
-  uint curPeriod = round(periods[num - 1]);
+  size_t prevPeriod = round(periods[0]);
+  size_t curPeriod = round(periods[num - 1]);
 
   mMemory->storeSamples(in, num);
   memset(out, 0, num * sizeof(sample_t));
 
-  for (uint st = 0; st < mProcessors.size(); st++) {
-    int startOffset = (int)round(mRotation + st * prevPeriod) % 
+  for (size_t st = 0; st < mProcessors.size(); st++) {
+    int startOffset = (int)round(mRotation + st * prevPeriod) %
       (prevPeriod * mProcessors.size());
-    int endOffset = ((int)round(mRotation + st * curPeriod) % 
+    int endOffset = ((int)round(mRotation + st * curPeriod) %
         (curPeriod * mProcessors.size())) - curSpeed * num;
     int procSize = startOffset - endOffset;
     const sample_t *sampStart = mMemory->getPastSamples(startOffset);

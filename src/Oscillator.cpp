@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ using namespace std;
 
 Class Oscillator::cls(std::string("Oscillator"), newInstance);
 
-Oscillator::Oscillator(int period, float min, float max) : 
-                       Processor::Processor(), mOffset(0) { 
+Oscillator::Oscillator(int period, float min, float max) :
+                       Processor::Processor(), mOffset(0) {
   mMin = new Constant(min);
   mMax = new Constant(max);
   mPeriod = new Constant(period);
@@ -50,13 +50,13 @@ void Oscillator::process(const sample_t* in, sample_t* out, int num) {
   }
 }
 
-void Oscillator::setPeriod(float period) { 
+void Oscillator::setPeriod(float period) {
   delete mPeriod;
-  mPeriod = new Constant(period); 
+  mPeriod = new Constant(period);
 }
 
 xml_node<> &Oscillator::read(xml_node<> &inode) {
-  mWaveFunc = 
+  mWaveFunc =
       WaveFunctions::getFunction(inode.first_attribute("wave")->value());
 
   delete mPeriod;

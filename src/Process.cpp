@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 using namespace std;
 
-void Process::combine(const sample_t* from1, const sample_t* from2, 
+void Process::combine(const sample_t* from1, const sample_t* from2,
                       sample_t* to, int num) {
   for (int i = 0; i < num; i++)
     to[i] = from1[i] + from2[i];
@@ -34,7 +34,7 @@ void Process::fit(const sample_t* from, sample_t* to, int numFrom, int numTo) {
   float fromIndex = 0;
 
   for (int i = 0; i < numTo; i++) {
-    to[i] = linearInterpolate(from[(int)(fromIndex)], 
+    to[i] = linearInterpolate(from[(int)(fromIndex)],
         from[(int)ceil(fromIndex)], fromIndex - floor(fromIndex));
     fromIndex += fromInc;
   }

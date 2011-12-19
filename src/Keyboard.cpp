@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -29,12 +29,12 @@ void KeyboardStream::readKey() {
   char c = getch();
   boost::shared_lock<boost::shared_mutex> lock(KeyboardStream::mutex);
 
-  for (uint i = 0; i < KeyboardStream::controllers.size(); i++)
+  for (size_t i = 0; i < KeyboardStream::controllers.size(); i++)
     KeyboardStream::controllers[i]->keyInput(c);
 }
 
 void KeyboardStream::stream() {
-  while (1) 
+  while (1)
     readKey();
 }
 
@@ -43,8 +43,8 @@ void KeyboardStream::addController(KeyboardStomp *controller) {
   KeyboardStream::controllers.push_back(controller);
 }
 
-KeyboardStomp::KeyboardStomp() : mCur(0), mToggle(0) { 
-  KeyboardStream::addController(this); 
+KeyboardStomp::KeyboardStomp() : mCur(0), mToggle(0) {
+  KeyboardStream::addController(this);
 
   mMapping.push_back("123\tqwaszx");
   mMapping.push_back("45678ertyuidfghjcvbn");
@@ -58,7 +58,7 @@ void KeyboardStomp::process(const sample_t* in, sample_t* out, int num) {
 
 void KeyboardStomp::keyInput(char c) {
   for (int i = 0; i < 3; i++) {
-    if (mMapping[i].find(c) != string::npos) 
+    if (mMapping[i].find(c) != string::npos)
       mCur = (mToggle && mCur == i) ? kOff : i;
   }
 }

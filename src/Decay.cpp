@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ void Decay::process(const sample_t* in, sample_t* out, int num) {
   sample_t decay[num];
   mDecay->process(in, decay, num);
 
-  for (int i = 0; i < num; i++) {    
+  for (int i = 0; i < num; i++) {
     mCurVal = in[i] * decay[i] + mCurVal * (1 - decay[i]);
     out[i] = mCurVal;
   }

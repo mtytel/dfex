@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ Delay::~Delay() {
   delete mMemory;
 }
 
-void Delay::granulate(const sample_t *in, sample_t *out, uint per, int num) {
+void Delay::granulate(const sample_t *in, sample_t *out, size_t per, int num) {
 
   for (int i = 0; i < num; i++) {
     if (mGranularOffset >= per * mProcessors.size())
@@ -45,20 +45,20 @@ void Delay::process(const sample_t* in, sample_t* out, int num) {
 
   sample_t periods[num], fit[num], buffer[num];
   mPeriod->process(in, periods, num);
-  uint prevPeriod = round(periods[0]);
-  uint curPeriod = round(periods[num - 1]);
+  size_t prevPeriod = round(periods[0]);
+  size_t curPeriod = round(periods[num - 1]);
 
   if (mGranular) {
     sample_t granulated[num];
     granulate(in, granulated, curPeriod, num);
     mMemory->storeSamples(granulated, num);
   }
-  else 
+  else
     mMemory->storeSamples(in, num);
 
   memset(out, 0, num * sizeof(sample_t));
 
-  for (uint st = 0; st < mProcessors.size(); st++) {
+  for (size_t st = 0; st < mProcessors.size(); st++) {
     int offsetStart = st * prevPeriod + num;
     int offsetEnd = st * curPeriod;
     int procNum = offsetStart - offsetEnd;

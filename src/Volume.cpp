@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ using namespace std;
 
 Class Volume::cls(string("Volume"), newInstance);
 
-Volume::Volume(float vol) : Effect::Effect() { 
+Volume::Volume(float vol) : Effect::Effect() {
   mVol = new Constant(vol);
 }
 

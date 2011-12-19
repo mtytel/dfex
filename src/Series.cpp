@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ void Series::process(const sample_t* in, sample_t* out, int num) {
   const sample_t* from = in;
   sample_t* to = mProcessors.size() % 2 ? out : mBuffer;
 
-  for (uint i = 0; i < mProcessors.size(); i++) {
+  for (size_t i = 0; i < mProcessors.size(); i++) {
     mProcessors[i]->process(from, to, num);
     from = to;
     to = from == out ? mBuffer : out;

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 
 class KeyboardStomp;
 
-class KeyboardStream { 
+class KeyboardStream {
   public:
     static void stream();
     static void addController(KeyboardStomp*);

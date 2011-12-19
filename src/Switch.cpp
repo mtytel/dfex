@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ using namespace rapidxml;
 
 Class Switch::cls(string("Switch"), newInstance);
 
-Switch::Switch() : ProcessorList::ProcessorList() { 
-  mController = new Constant(0);    
+Switch::Switch() : ProcessorList::ProcessorList() {
+  mController = new Constant(0);
 }
 
 Switch::~Switch() {
@@ -37,10 +37,10 @@ void Switch::process(const sample_t* in, sample_t* out, int num) {
   sample_t cur[num];
   mController->process(in, cur, num);
 
-  uint val = fmin(cur[num - 1], mProcessors.size() - 1);
+  size_t val = fmin(cur[num - 1], mProcessors.size() - 1);
   mProcessors[val]->process(in, out, num);
 
-  for (uint p = 0; p < mProcessors.size(); p++) {
+  for (size_t p = 0; p < mProcessors.size(); p++) {
     if (p != val) {
       mProcessors[p]->process(silent, buffer, num);
       Process::combine(buffer, out, out, num);

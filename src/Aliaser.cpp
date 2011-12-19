@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ using namespace std;
 
 Class Aliaser::cls(string("Aliaser"), newInstance);
 
-Aliaser::Aliaser(float period) : Effect::Effect(), mOffset(0), mCurSamp(0) { 
+Aliaser::Aliaser(float period) : Effect::Effect(), mOffset(0), mCurSamp(0) {
   mPeriod = new Constant(period);
 }
 
@@ -35,7 +35,7 @@ void Aliaser::process(const sample_t* in, sample_t* out, int num) {
   mPeriod->process(in, period, num);
 
   for (int i = 0; i < num; i++) {
-    if (++mOffset >= period[i]) { 
+    if (++mOffset >= period[i]) {
       mCurSamp = in[i];
       mOffset = 0;
     }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ class Class {
     Object *(*mCreate)();
     Class *mNext;
 
-    static Class *mClsHead;  
+    static Class *mClsHead;
 };
 
 #endif

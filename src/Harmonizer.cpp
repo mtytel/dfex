@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ using namespace std;
 
 Class Harmonizer::cls(string("Harmonizer"), newInstance);
 
-Harmonizer::Harmonizer() : Effect::Effect() { 
+Harmonizer::Harmonizer() : Effect::Effect() {
   mRoot = new Constant(DEFAULTROOT);
 }
 

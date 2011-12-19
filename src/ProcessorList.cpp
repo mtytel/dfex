@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2011 Matthew Tytel
  *
  * dfex is free software: you can redistribute it and/or modify
@@ -52,15 +52,15 @@ void ProcessorList::readList(xml_node<> &inode, vector<Series*> *procs) {
   }
 }
 
-void ProcessorList::loadAllModifications(xml_node<> &node, int length, 
-                                         vector<pair<xml_node<> *, 
+void ProcessorList::loadAllModifications(xml_node<> &node, int length,
+                                         vector<pair<xml_node<> *,
                                          Oscillator*> > *mods) {
   for (xml_node<> *chi = node.first_node(); chi; chi = chi->next_sibling()) {
     if (chi->first_attribute("mod")) {
       Oscillator *o = new Oscillator();
       *chi->first_node() >> *o;
       o->setPeriod(length);
-      mods->push_back(pair<xml_node<>*, Oscillator*>(chi, o)); 
+      mods->push_back(pair<xml_node<>*, Oscillator*>(chi, o));
       chi->remove_all_nodes();
     }
     else
@@ -75,11 +75,11 @@ void ProcessorList::readModifier(xml_node<> &inode, vector<Series*> *procs) {
 
   sample_t vals[mods.size()][procs->size()], blank[procs->size()];
 
-  for (uint m = 0; m < mods.size(); m++)
+  for (size_t m = 0; m < mods.size(); m++)
     mods[m].second->process(blank, vals[m], procs->size());
 
-  for (uint p = 0; p < procs->size(); p++) {
-    for (uint m = 0; m < mods.size(); m++) {
+  for (size_t p = 0; p < procs->size(); p++) {
+    for (size_t m = 0; m < mods.size(); m++) {
       ostringstream buffer;
       buffer << vals[m][p];
       char *val = doc.allocate_string(buffer.str().c_str());
@@ -89,7 +89,7 @@ void ProcessorList::readModifier(xml_node<> &inode, vector<Series*> *procs) {
     (*procs)[p]->addProcessor(Processor::readProcessor(inode));
   }
 
-  for (uint i = 0; i < mods.size(); i++)
+  for (size_t i = 0; i < mods.size(); i++)
     delete mods[i].second;
 }
 
@@ -100,12 +100,12 @@ xml_node<> &ProcessorList::read(xml_node<> &inode) {
 
   xml_node<> *mList = inode.first_node("modifiers");
   if (mList) {
-    for (xml_node<> *modNode = mList->first_node(); modNode; 
+    for (xml_node<> *modNode = mList->first_node(); modNode;
         modNode = modNode->next_sibling())
       readModifier(*modNode, &procs);
   }
 
-  for (uint i = 0; i < procs.size(); i++)
+  for (size_t i = 0; i < procs.size(); i++)
     addProcessor(procs[i]);
 
   return inode;
