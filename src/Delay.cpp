@@ -32,7 +32,6 @@ Delay::~Delay() {
 }
 
 void Delay::granulate(const sample_t *in, sample_t *out, size_t per, int num) {
-
   for (int i = 0; i < num; i++) {
     if (mGranularOffset >= per * mProcessors.size())
       mGranularOffset = 0;
@@ -42,7 +41,6 @@ void Delay::granulate(const sample_t *in, sample_t *out, size_t per, int num) {
 }
 
 void Delay::process(const sample_t* in, sample_t* out, int num) {
-
   sample_t periods[num], fit[num], buffer[num];
   mPeriod->process(in, periods, num);
   size_t prevPeriod = round(periods[0]);
@@ -57,7 +55,6 @@ void Delay::process(const sample_t* in, sample_t* out, int num) {
     mMemory->storeSamples(in, num);
 
   memset(out, 0, num * sizeof(sample_t));
-
   for (size_t st = 0; st < mProcessors.size(); st++) {
     int offsetStart = st * prevPeriod + num;
     int offsetEnd = st * curPeriod;
@@ -73,7 +70,6 @@ void Delay::process(const sample_t* in, sample_t* out, int num) {
 }
 
 xml_node<> &Delay::read(xml_node<> &inode) {
-
   ProcessorList::read(inode);
 
   delete mPeriod;
@@ -86,6 +82,5 @@ xml_node<> &Delay::read(xml_node<> &inode) {
 }
 
 xml_node<> &Delay::write(xml_node<> &onode) const {
-
   return onode;
 }
