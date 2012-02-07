@@ -84,7 +84,7 @@ int main (int argc, char *argv[]){
   const char **ports;
 
   if (argc < 2) {
-    fprintf(stderr, "usage: controller config_file \n");
+    fprintf(stderr, "usage: dfex config_file \n");
     return 1;
   }
 
