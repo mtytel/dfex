@@ -22,7 +22,7 @@
 
 class EQ : public Effect {
   public:
-    EQ();
+    EQ(int startOff = 1, int endOff = 1);
     virtual ~EQ();
 
     const Class *getClass() const { return &cls; }
@@ -31,6 +31,7 @@ class EQ : public Effect {
     void process(const sample_t* in, sample_t* out, int num);
 
   protected:
+    Processor *mStartOff, *mEndOff;
     static Class cls;
 
     virtual rapidxml::xml_node<> &read(rapidxml::xml_node<> &);

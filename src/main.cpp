@@ -84,7 +84,7 @@ int main (int argc, char *argv[]){
   const char **ports;
 
   if (argc < 2) {
-    fprintf(stderr, "usage: controller config_file \n");
+    fprintf(stderr, "usage: dfex config_file \n");
     return 1;
   }
 
@@ -94,7 +94,7 @@ int main (int argc, char *argv[]){
 
   jack_set_error_function(error);
 
-  if ((client = jack_client_open ("controller",
+  if ((client = jack_client_open ("dfex",
           (jack_options_t)(JackNullOption | JackNoStartServer), NULL)) == 0) {
     fprintf(stderr, "jack server not running?\n");
     return 1;
@@ -124,6 +124,7 @@ int main (int argc, char *argv[]){
     return 1;
   }
 
+  /*
   ports = jack_get_ports (client, NULL, NULL,
       JackPortIsPhysical|JackPortIsOutput);
 
@@ -149,6 +150,7 @@ int main (int argc, char *argv[]){
   }
 
   free (ports);
+  */
 
   initscr();
   noecho();

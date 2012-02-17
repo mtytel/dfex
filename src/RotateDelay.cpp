@@ -54,7 +54,13 @@ void RotateDelay::process(const sample_t* in, sample_t* out, int num) {
     int procSize = startOffset - endOffset;
     const sample_t *sampStart = mMemory->getPastSamples(startOffset);
 
-    Process::fit(sampStart, fit, procSize, num);
+    sample_t vals[procSize];
+    memcpy(vals, sampStart, procSize * sizeof(sample_t));
+    for (int i = 0; i < procSize; i++)
+      vals[i] *= 0.5 * (1 - cos(2 * PI * (startOffset - i) /
+          (mProcessors.size() * prevPeriod)));
+
+    Process::fit(vals, fit, procSize, num);
     mProcessors[st]->process(fit, buffer, num);
     Process::combine(buffer, out, out, num);
   }
