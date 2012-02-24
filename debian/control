@@ -3,7 +3,7 @@ Architecture: all
 Priority: optional
 Maintainer: Matthew Tytel <matthewtytel@gmail.com>
 Standards-Version: 3.7.2
-Build-Depends: libjack0, jackd, fftw3, libboost-thread-dev
+Build-Depends: libjack0, jackd, libboost-thread-dev
 
 Package: dfex
 Homepage: http://github.com/mtytel/dfex
