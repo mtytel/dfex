@@ -1,6 +1,6 @@
 CC=g++
 EXEC=dfex
-CFLAGS=-o $(EXEC) -g -Wall -O3 -lncurses -lm -lboost_thread-mt `pkg-config --cflags --libs jack`
+CFLAGS=-o $(EXEC) -g -Wall -O3 -lncurses -lm -lboost_thread-mt -ljack
 COMPILE=$(CC) -o $(EXEC) -c -I lib/rapidxml-1.13/ -I /opt/local/include/
 LDFLAGS=
 
