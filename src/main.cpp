@@ -152,7 +152,7 @@ int main (int argc, char *argv[]){
   free (ports);
   */
 
-  initscr();
+  //initscr();
   noecho();
   cbreak();
 
